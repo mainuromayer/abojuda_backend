@@ -20,7 +20,7 @@
 <div class="aside-logo flex-column-auto px-10 pt-9 pb-5 justify-content-center" id="kt_aside_logo" style="text-align: center;">
     <!--begin::Logo-->
     <a href="#">
-        <img alt="Logo" src="{{ $imageUrl ?? asset('backend/assets/media/logos/logo-default.svg') }}" class="" style="width:40%; height: 40%" />
+        <img alt="Logo" src="{{ $imageUrl ?? asset('backend/assets/media/logos/logo-default.svg') }}" class="" style="width:40%; height: 40%; object-fit: cover;" />
     </a>
     <!--end::Logo-->
 </div>

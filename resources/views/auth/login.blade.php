@@ -5,11 +5,11 @@
     <div class="d-flex flex-column flex-lg-row flex-column-fluid">
 
         <!--begin::Body-->
-        <div class="d-flex flex-column flex-lg-row-fluid py-10">
+        <div class="content d-flex flex-column flex-lg-row-fluid py-10">
             <!--begin::Content-->
             <div class="d-flex flex-center flex-column flex-column-fluid">
                 <!--begin::Wrapper-->
-                <div class="w-lg-500px p-10 p-lg-15 mx-auto">
+                <div class="w-lg-500px p-10 p-lg-15 mx-auto card">
 
                     <!--begin::Form-->
                     <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate"
@@ -17,6 +17,12 @@
                         @csrf
                         <!--begin::Heading-->
                         <div class="text-center mb-10">
+                            <!-- <a href="#" class="mb-5 d-block">
+                                <img alt="Logo" src="{{ URL::to('./.png') }}"
+                                    class="h-100px h-lg-150px" />
+                            </a> -->
+                            @include('backend.partials.brand_logo')
+
                             <!--begin::Title-->
                             <h1 class="text-dark mb-3">
                                 Sign In to Dashboard </h1>

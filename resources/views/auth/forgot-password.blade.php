@@ -33,15 +33,16 @@
     <div class="d-flex flex-column flex-lg-row flex-column-fluid">
 
         <!--begin::Body-->
-        <div class="d-flex flex-column flex-lg-row-fluid py-10">
+        <div class="content d-flex flex-column flex-lg-row-fluid py-10">
             <!--begin::Content-->
             <div class="d-flex flex-center flex-column flex-column-fluid">
                 <!--begin::Wrapper-->
-                <div class="w-lg-500px p-10 p-lg-15 mx-auto">
+                <div class="w-lg-500px p-10 p-lg-15 mx-auto card">
 
                     <!--begin::Form-->
                     <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate" method="POST" action="{{ route('password.email') }}">
                         @csrf
+                        @include('backend.partials.brand_logo')
                         <!--begin::Heading-->
                         <div class="text-center mb-10">
                             <!--begin::Title-->

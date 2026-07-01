@@ -67,97 +67,47 @@
                     </div>
                     <!--end:Users List-->
 
-                    <!--begin:Roles And Permission-->
-                    <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('roles.*', 'role.*', 'user.roles.*') ? 'show' : '' }}">
-                        <span class="menu-link">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Roles And Permission</span>
-                            <span class="menu-arrow"></span>
-                        </span>
-
-                        <div class="menu-sub menu-sub-accordion">
-                            <!-- Roles List -->
-                            <div class="menu-item">
-                                <a class="menu-link {{ request()->routeIs('roles.index') ? 'active' : '' }}"
-                                    href="{{ route('roles.index') }}">
-                                    <span class="menu-bullet">
-                                        <span class="bullet bullet-dot"></span>
-                                    </span>
-                                    <span class="menu-title">Roles List</span>
-                                </a>
-                            </div>
-                            <!-- User Role & Permission -->
-                            <div class="menu-item">
-                                <a class="menu-link {{ request()->routeIs('user.roles.index') ? 'active' : '' }}"
-                                    href="{{ route('user.roles.index') }}">
-                                    <span class="menu-bullet">
-                                        <span class="bullet bullet-dot"></span>
-                                    </span>
-                                    <span class="menu-title">User Role & Permission</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <!--end:Roles And Permission-->
-
                 </div>
                 <!--end:Menu sub-->
             </div>
             <!--end:Menu item-->
 
-            <!--begin:Menu item-->
-            <div data-kt-menu-trigger="click"
-                 class="menu-item menu-accordion {{ request()->routeIs('dynamic-pages.*') ? 'show' : '' }}">
 
+            <!--begin:Category Management-->
+            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('category.*') ? 'show' : '' }}">
                 <!--begin:Menu link-->
                 <span class="menu-link">
                     <span class="menu-icon">
                         <i class="ki-duotone ki-element-plus fs-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
-                            <span class="path3"></span>
-                            <span class="path4"></span>
-                            <span class="path5"></span>
                         </i>
                     </span>
-                    <span class="menu-title">Dynamic Pages</span>
+                    <span class="menu-title">Category Management</span>
                     <span class="menu-arrow"></span>
                 </span>
                 <!--end:Menu link-->
 
                 <!--begin:Menu sub-->
-                <div class="menu-sub menu-sub-accordion {{ request()->routeIs('dynamic-pages.*') ? 'show' : '' }}">
+                <div class="menu-sub menu-sub-accordion"
+                    style="{{ request()->routeIs('category.*') ? '' : 'display: none; overflow: hidden;' }}">
 
-                    <!--begin:Page List-->
+                    <!--begin:Categories List-->
                     <div class="menu-item mb-1">
-                        <a class="menu-link {{ request()->routeIs('dynamic-pages.index','dynamic-pages.edit') ? 'active' : '' }}"
-                           href="{{ route('dynamic-pages.index') }}">
+                        <a class="menu-link {{ request()->routeIs('category.index') ? 'active' : '' }}"
+                            href="{{ route('category.index') }}">
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">List of Pages</span>
+                            <span class="menu-title">Categories List</span>
                         </a>
                     </div>
-                    <!--end:Page List-->
-
-                    <!--begin:Create Page-->
-                    <div class="menu-item mb-1">
-                        <a class="menu-link {{ request()->routeIs('dynamic-pages.create') ? 'active' : '' }}"
-                           href="{{ route('dynamic-pages.create') }}">
-                            <span class="menu-bullet">
-                                <span class="bullet bullet-dot"></span>
-                            </span>
-                            <span class="menu-title">Create New Page</span>
-                        </a>
-                    </div>
-                    <!--end:Create Page-->
+                    <!--end:Categories List-->
 
                 </div>
                 <!--end:Menu sub-->
             </div>
-            <!--end:Menu item-->
+            <!--end:Category Management-->
 
 
             <!--begin:Menu item-->

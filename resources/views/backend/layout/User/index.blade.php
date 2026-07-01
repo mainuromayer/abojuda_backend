@@ -196,9 +196,10 @@
                             console.log(response);
                             // Update form action
                             $('#kt_modal_edit_user_form').attr('action', "{{ route('user.update', ['id' => '__id__']) }}".replace('__id__', userId));
-                            // Populate form fields
-                            $('#edit_first_name').val(response.user.first_name);
-                            $('#edit_last_name').val(response.user.last_name);
+                            $('#edit_name').val(response.user.name);
+                            $('#edit_province').val(response.user.province);
+                            $('#edit_city').val(response.user.city);
+                            $('#edit_address').val(response.user.address);
                             $('#edit_email').val(response.user.email);
                             $('#edit_role').val(response.user.role);
                             // Set avatar preview
@@ -255,6 +256,10 @@
                     $('#edit_avatar_preview').css('background-image', 'url({{ asset('backend/assets/media/avatars/300-1.jpg') }})');
                     $('#edit_passwordInput').val('');
                     $('#edit_role').val('');
+                    $('#edit_name').val('');
+                    $('#edit_province').val('');
+                    $('#edit_city').val('');
+                    $('#edit_address').val('');
                 });
 
 

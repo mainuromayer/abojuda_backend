@@ -14,13 +14,16 @@ class SocialAuthResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-//        return parent::toArray($request);
         return [
-            'id'         => $this->id,
-            'first_name' => $this->first_name,
-            'last_name'  => $this->last_name,
-            'email'      => $this->email,
-            'role'       => $this->role,
+            'id'                 => $this->id,
+            'uuid'               => $this->uuid,
+            'name'               => $this->name,
+            'email'              => $this->email,
+            'province'           => $this->province,
+            'city'               => $this->city,
+            'address'            => $this->address,
+            'status'             => $this->status,
+            'role'               => $this->role,
         ];
     }
 }

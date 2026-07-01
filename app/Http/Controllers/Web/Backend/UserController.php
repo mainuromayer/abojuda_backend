@@ -30,7 +30,7 @@ class UserController extends Controller
             return DataTables::of($data)
 //                ->addIndexColumn()
                 ->addColumn('user', function ($row) {
-                    $fullName = $row->first_name . ' ' . $row->last_name;
+                    $fullName = $row->name;
                     $avatarUrl = $row->avatar ? Helpers::generateTempURL($row->avatar,config('app.file_system')) : asset('backend/assets/media/avatars/300-1.jpg');
 
                     return '
@@ -79,8 +79,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
        $validData = $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name'  => ['required', 'string', 'max:255'],
+            'name'       => ['required', 'string', 'max:255'],
             'email'      => [
                 'required',
                 'string',
@@ -88,9 +87,12 @@ class UserController extends Controller
                 'max:255',
                 'unique:users'
             ],
-            'password'    => ['required', 'string', 'min:8'],
-            'avatar'      => ['nullable', 'file', 'max:2048', 'mimes:jpeg,jpg,png'],
-            'role'        => ['required', new Enum(Role::class)],
+            'province'   => ['required', 'string', 'max:255'],
+            'city'       => ['required', 'string', 'max:255'],
+            'address'    => ['nullable', 'string', 'max:255'],
+            'password'   => ['required', 'string', 'min:8'],
+            'avatar'     => ['nullable', 'file', 'max:2048', 'mimes:jpeg,jpg,png'],
+            'role'       => ['required', new Enum(Role::class)],
         ]);
 
         try {
@@ -103,20 +105,23 @@ class UserController extends Controller
 
             // create user
             $user = User::create([
-                'first_name' => $validData['first_name'],
-                'last_name'  => $validData['last_name'],
+                'name'       => $validData['name'],
                 'email'      => $validData['email'],
                 'password'   => Hash::make($validData['password']),
+                'province'   => $validData['province'],
+                'city'       => $validData['city'],
+                'address'    => $validData['address'] ?? null,
                 'avatar'     => $validData['avatar'] ?? null,
                 'role'       => $validData['role'],
+                'status'     => 'active',
             ]);
 
             $title = "Welcome to " . config('app.name') . "! Your Account Has Been Created";
 
-            $message = "Dear " . $user->first_name . ",\n\n"
+            $message = "Dear " . $user->name . ",\n\n"
                 . "We’re thrilled to welcome you to " . config('app.name') . "! Your account has been successfully created with the following details:\n\n"
                 . "- Email: " . $user->email . "\n"
-                . "- Name: " . $user->first_name . " " . $user->last_name . "\n\n"
+                . "- Name: " . $user->name . "\n\n"
                 . "You can now log in and start exploring all the features we have to offer. If you have any questions or need assistance, feel free to contact our support team.\n\n"
                 . "Best regards,\n"
                 . "The " . config('app.name') . " Team";
@@ -153,20 +158,24 @@ class UserController extends Controller
             $user = User::findOrFail($id);
 
             $validated = $request->validate([
-                'first_name'    => ['required', 'string', 'max:255'],
-                'last_name'     => ['required', 'string', 'max:255'],
+                'name'          => ['required', 'string', 'max:255'],
+                'province'      => ['required', 'string', 'max:255'],
+                'city'          => ['required', 'string', 'max:255'],
+                'address'       => ['nullable', 'string', 'max:255'],
                 'email'         => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $id],
                 'password'      => ['nullable', 'string', 'min:8'],
                 'avatar'        => ['nullable', 'file', 'max:2048', 'mimes:jpeg,jpg,png'],
-                 'role'         => ['required', new Enum(Role::class)],
+                'role'          => ['required', new Enum(Role::class)],
                 'avatar_remove' => ['nullable', 'boolean'],
             ]);
 
             // Update user fields
-            $user->first_name = $validated['first_name'];
-            $user->last_name  = $validated['last_name'];
-            $user->email      = $validated['email'];
-            $user->role       = $validated['role'];
+            $user->name      = $validated['name'];
+            $user->province  = $validated['province'];
+            $user->city      = $validated['city'];
+            $user->address   = $validated['address'];
+            $user->email     = $validated['email'];
+            $user->role      = $validated['role'];
 
             // Handle avatar
             if ($request->hasFile('avatar')) {

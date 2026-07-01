@@ -6,5 +6,6 @@
 <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
 <link href="{{ asset('backend/assets') ."/plugins/global/plugins.bundle.css" }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('backend/assets') ."/css/style.bundle.css" }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('backend/assets/css/custom-theme.css') }}" rel="stylesheet" type="text/css" />
 
 @stack('styles')

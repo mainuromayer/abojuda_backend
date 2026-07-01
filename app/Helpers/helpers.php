@@ -10,7 +10,7 @@ class helpers
      */
     public static function uploadFile($folderName, $file, $fileName = null, $disk = 'public'): string
     {
-        $filePath = 'uploads/'.$folderName.'/'.$fileName;
+        $filePath = 'uploads/' . $folderName . '/' . $fileName;
 
         if ($disk === 's3') {
             Storage::disk($disk)->put(
@@ -24,7 +24,7 @@ class helpers
             );
         } else {
             Storage::disk($disk)->putFileAs(
-                'uploads/'.$folderName,
+                'uploads/' . $folderName,
                 $file,
                 $fileName
             );

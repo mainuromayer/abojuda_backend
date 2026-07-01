@@ -2,6 +2,7 @@
 
 
 
+use App\Http\Controllers\Web\Backend\CategoryController;
 use App\Http\Controllers\Web\Backend\DashboardController;
 use App\Http\Controllers\Web\Backend\DynamicPageController;
 use App\Http\Controllers\Web\Backend\PermissionController;
@@ -13,6 +14,15 @@ use App\Http\Controllers\Web\Backend\UserRoleManagementController;
 
 //! dashboard
 Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+
+//! categories
+Route::controller(CategoryController::class)->group(function () {
+    Route::get('/category', 'index')->name('category.index');
+    Route::post('/category/store', 'store')->name('category.store');
+    Route::get('/category/{id}/edit', 'edit')->name('category.edit');
+    Route::post('/category/update/{id}', 'update')->name('category.update');
+    Route::delete('/category/{id}/delete', 'destroy')->name('category.delete');
+});
 //! profile
 Route::controller(ProfileController::class)->group(function () {
     Route::get('/profile',  'index')->name('profile.edit');

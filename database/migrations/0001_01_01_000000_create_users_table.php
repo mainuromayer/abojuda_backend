@@ -15,15 +15,21 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('uuid')->unique();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('avatar')->nullable();
+            $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('role')->default(Role::USER->value);
+            $table->string('province')->nullable();
+            $table->string('city')->nullable();
             $table->string('address')->nullable();
-            $table->text('bio')->nullable();
+            $table->string('status')->default('active');
+            $table->string('role')->default(Role::USER->value);
+            $table->longText('blocked_users')->nullable();
+            $table->boolean('new_message')->default(false);
+            $table->boolean('marketing')->default(false);
+            $table->boolean('email_notification')->default(false);
+            $table->text('guest_token')->nullable();
+            $table->bigInteger('guest_expires_at')->nullable();
             $table->string('provider')->nullable(); // e.g., 'google', 'apple'
             $table->string('provider_id')->nullable(); // Unique ID from the provider
             $table->rememberToken();

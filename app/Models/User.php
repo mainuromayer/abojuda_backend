@@ -10,11 +10,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Post;
+use App\Models\Wish;
+use App\Models\Report;
 
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,softDeletes,HasRoles;
+    use HasFactory, Notifiable, softDeletes, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -22,16 +25,24 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'avatar',
+        'uuid',
+        'name',
         'email',
         'password',
-        'role',
+        'province',
+        'city',
         'address',
-        'bio',
+        'status',
+        'role',
+        'blocked_users',
+        'new_message',
+        'marketing',
+        'email_notification',
+        'guest_token',
+        'guest_expires_at',
         'provider',
         'provider_id',
+        'remember_token',
     ];
 
     /**
@@ -55,6 +66,9 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => Role::class,
+            'new_message' => 'boolean',
+            'marketing' => 'boolean',
+            'email_notification' => 'boolean',
         ];
     }
 
@@ -79,5 +93,20 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function wishes()
+    {
+        return $this->hasMany(Wish::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
     }
 }

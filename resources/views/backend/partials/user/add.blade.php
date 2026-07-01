@@ -12,7 +12,7 @@
 
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-icon-primary"
-                     data-kt-users-modal-action="close">
+                     data-kt-users-modal-action="close" data-bs-dismiss="modal">
                     <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span
                             class="path2"></span></i>
                 </div>
@@ -109,20 +109,33 @@
                         <!--end::Input group-->
 
                         <!--begin::Input group-->
+                        <div class="fv-row mb-6">
+                            <label class="required form-label">Name</label>
+                            <input class="form-control form-control-solid" type="text" name="name" placeholder="Enter name" value="{{ old('name') }}" required>
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
                         <div class="d-flex flex-column flex-md-row gap-5 mb-6">
-                            <!-- first name-->
+                            <!-- Province -->
                             <div class="fv-row flex-row-fluid">
-                                <label class="required form-label">First Name</label>
-                                <input class="form-control form-control-solid" type="text" name="first_name" placeholder="Enter first name " value="{{ old('first_name') }}">
+                                <label class="required form-label">Province</label>
+                                <input class="form-control form-control-solid" type="text" name="province" placeholder="Enter province" value="{{ old('province') }}" required>
                             </div>
 
-                            <!-- last name -->
+                            <!-- City -->
                             <div class="fv-row flex-row-fluid">
-                                <label class="required form-label">Last Name</label>
-                                <input class="form-control form-control-solid" type="text" name="last_name" placeholder="Enter last name" value="{{ old('last_name') }}">
+                                <label class="required form-label">City</label>
+                                <input class="form-control form-control-solid" type="text" name="city" placeholder="Enter city" value="{{ old('city') }}" required>
                             </div>
                         </div>
+                        <!--end::Input group-->
 
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-6">
+                            <label class="form-label">Address</label>
+                            <input class="form-control form-control-solid" type="text" name="address" placeholder="Enter address" value="{{ old('address') }}">
+                        </div>
                         <!--end::Input group-->
 
                         <!--begin::Input group-->
@@ -149,7 +162,8 @@
                             <select class="form-select form-select-solid" aria-label="Select example" name="role">
                                 <option selected>Select Role </option>
                                 <option value="{{ \App\Enum\Role::USER->value }}">{{ \App\Enum\Role::USER->name }}</option>
-                                <option value="{{ \App\Enum\Role::MODERATOR->value }}">{{ \App\Enum\Role::MODERATOR->name }}</option>
+                                <option value="{{ \App\Enum\Role::ADMIN->value }}">{{ \App\Enum\Role::ADMIN->name }}</option>
+                                <option value="{{ \App\Enum\Role::GUEST->value }}">{{ \App\Enum\Role::GUEST->name }}</option>
                             </select>
                         </div>
                         <!--end::Input group-->
@@ -185,7 +199,7 @@
                     <!--begin::Actions-->
                     <div class="text-center pt-10">
                         <button type="reset" class="btn btn-light me-3"
-                                data-kt-users-modal-action="cancel">
+                                data-kt-users-modal-action="cancel" data-bs-dismiss="modal">
                             Discard
                         </button>
 
@@ -224,7 +238,7 @@
         <div class="modal-content">
             <div class="modal-header" id="kt_modal_edit_user_header">
                 <h2 class="fw-bold">Edit User</h2>
-                <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close">
+                <div class="btn btn-icon btn-sm btn-active-icon-primary" data-kt-users-modal-action="close" data-bs-dismiss="modal">
                     <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
                 </div>
             </div>
@@ -252,16 +266,26 @@
                             </div>
                             <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
                         </div>
-                        <!-- First and Last Name -->
+                        <!-- Name -->
+                        <div class="fv-row mb-6">
+                            <label class="required form-label">Name</label>
+                            <input class="form-control form-control-solid" type="text" name="name" id="edit_name" placeholder="Enter name" required>
+                        </div>
+                        <!-- Province and City -->
                         <div class="d-flex flex-column flex-md-row gap-5 mb-6">
                             <div class="fv-row flex-row-fluid">
-                                <label class="required form-label">First Name</label>
-                                <input class="form-control form-control-solid" type="text" name="first_name" id="edit_first_name" placeholder="Enter first name">
+                                <label class="required form-label">Province</label>
+                                <input class="form-control form-control-solid" type="text" name="province" id="edit_province" placeholder="Enter province" required>
                             </div>
                             <div class="fv-row flex-row-fluid">
-                                <label class="required form-label">Last Name</label>
-                                <input class="form-control form-control-solid" type="text" name="last_name" id="edit_last_name" placeholder="Enter last name">
+                                <label class="required form-label">City</label>
+                                <input class="form-control form-control-solid" type="text" name="city" id="edit_city" placeholder="Enter city" required>
                             </div>
+                        </div>
+                        <!-- Address -->
+                        <div class="fv-row mb-6">
+                            <label class="form-label">Address</label>
+                            <input class="form-control form-control-solid" type="text" name="address" id="edit_address" placeholder="Enter address">
                         </div>
                         <!-- Email -->
                         <div class="fv-row mb-7 fv-plugins-icon-container">
@@ -275,7 +299,8 @@
                             <select class="form-select form-select-solid" aria-label="Select example" name="role" id="edit_role">
                                 <option value="">Select Role</option>
                                 <option value="{{ \App\Enum\Role::USER->value }}">{{ \App\Enum\Role::USER->name }}</option>
-                                <option value="{{ \App\Enum\Role::MODERATOR->value }}">{{ \App\Enum\Role::MODERATOR->name }}</option>
+                                <option value="{{ \App\Enum\Role::ADMIN->value }}">{{ \App\Enum\Role::ADMIN->name }}</option>
+                                <option value="{{ \App\Enum\Role::GUEST->value }}">{{ \App\Enum\Role::GUEST->name }}</option>
                             </select>
                         </div>
                         <!-- Password -->
@@ -293,7 +318,7 @@
                     </div>
                     <!-- Actions -->
                     <div class="text-center pt-10">
-                        <button type="reset" class="btn btn-light me-3" data-kt-users-modal-action="cancel">Discard</button>
+                        <button type="reset" class="btn btn-light me-3" data-kt-users-modal-action="cancel" data-bs-dismiss="modal">Discard</button>
                         <button type="submit" class="btn btn-primary" data-kt-users-modal-action="submit">
                             <span class="indicator-label">Submit</span>
                             <span class="indicator-progress">Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
