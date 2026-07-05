@@ -1,10 +1,16 @@
+@php
+    $unreadCount = \App\Models\SystemNotification::where('is_read', false)->count();
+    $notifications = \App\Models\SystemNotification::latest()->take(10)->get();
+@endphp
 <div class="d-flex align-items-center ms-1 ms-lg-2">
     <!--begin::Menu wrapper-->
-    <div class="btn btn-icon btn-active-light-primary w-30px h-30px w-md-40px h-md-40px"
+    <div class="btn btn-icon btn-active-light-primary w-30px h-30px w-md-40px h-md-40px position-relative"
         data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent"
         data-kt-menu-placement="bottom-end">
-        <i class="ki-duotone ki-element-11 fs-1"><span class="path1"></span><span class="path2"></span><span
-                class="path3"></span><span class="path4"></span></i>
+        <i class="fa-solid fa-bell fs-2 text-gray-600"></i>
+        @if($unreadCount > 0)
+            <span class="badge badge-circle badge-danger position-absolute translate-middle start-75 top-25 fs-9 h-18px w-18px d-flex align-items-center justify-content-center" style="font-size: 0.75rem;">{{ $unreadCount }}</span>
+        @endif
     </div>
 
     <!--begin::Menu-->
@@ -14,8 +20,12 @@
         <div class="d-flex flex-column bgi-no-repeat rounded-top"
             style="background-image: url({{ asset('backend/assets/media/misc/menu-header-bg.jpg') }})">
             <!--begin::Title-->
-            <h3 class="text-white fw-semibold px-9 mt-10 mb-6">
-                Notifications <span class="fs-8 opacity-75 ps-3">24 reports</span>
+            <h3 class="text-white fw-semibold px-9 mt-10 mb-6 d-flex align-items-center justify-content-between w-100">
+                <span>Notifications <span class="fs-8 opacity-75 ps-3" id="unread_count_text">{{ $unreadCount }} unread</span></span>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="#" class="fs-9 text-white opacity-75 opacity-state-100 text-hover-primary text-decoration-underline" id="mark_all_notifications_read_btn" style="{{ $unreadCount > 0 ? '' : 'display: none;' }}">Mark all as read</a>
+                    <a href="#" class="fs-9 text-white opacity-75 opacity-state-100 text-hover-danger text-decoration-underline" id="clear_all_notifications_btn" style="{{ count($notifications) > 0 ? '' : 'display: none;' }}">Clear all</a>
+                </div>
             </h3>
             <!--end::Title-->
 
@@ -36,79 +46,51 @@
             <div class="tab-pane fade show active" id="kt_topbar_notifications_1" role="tabpanel">
                 <!--begin::Items-->
                 <div class="scroll-y mh-325px my-5 px-8">
+                    @forelse($notifications as $notification)
                     <!--begin::Item-->
-                    <div class="d-flex flex-stack py-4">
-                        <!--begin::Section-->
-                        <div class="d-flex align-items-center">
+                    <div class="d-flex flex-stack py-4 w-100 ps-3 mb-2 rounded notification-item {{ !$notification->is_read ? 'border-start border-4 border-danger bg-light-danger bg-opacity-20' : '' }}" id="notification_item_{{ $notification->id }}">
+                        <a href="{{ $notification->target_url ?? '#' }}" class="d-flex align-items-center text-gray-800 text-hover-primary text-decoration-none w-100 me-3">
                             <!--begin::Symbol-->
                             <div class="symbol symbol-35px me-4">
+                                @if($notification->type === 'contact_support')
                                 <span class="symbol-label bg-light-primary">
-                                    <i class="ki-duotone ki-abstract-28 fs-2 text-primary"><span
-                                            class="path1"></span><span class="path2"></span></i>
+                                    <i class="ki-duotone ki-message-text-2 fs-2 text-primary"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
                                 </span>
+                                @else
+                                <span class="symbol-label bg-light-danger">
+                                    <i class="ki-duotone ki-information fs-2 text-danger"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                </span>
+                                @endif
                             </div>
                             <!--end::Symbol-->
 
                             <!--begin::Title-->
                             <div class="mb-0 me-2">
-                                <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bold">Project
-                                    Alice</a>
-                                <div class="text-gray-400 fs-7">Phase 1 development
+                                <span class="fs-6 fw-semibold">{{ $notification->title }}</span>
+                                <div class="text-gray-400 fs-7" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    {{ $notification->content }}
                                 </div>
                             </div>
                             <!--end::Title-->
-                        </div>
-                        <!--end::Section-->
+                        </a>
 
-                        <!--begin::Label-->
-                        <span class="badge badge-light fs-8">1 hr</span>
-                        <!--end::Label-->
-                    </div>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <div class="d-flex flex-stack py-4">
-                        <!--begin::Section-->
+                        <!--begin::Actions-->
                         <div class="d-flex align-items-center">
-                            <!--begin::Symbol-->
-                            <div class="symbol symbol-35px me-4">
-                                <span class="symbol-label bg-light-danger">
-                                    <i class="ki-duotone ki-information fs-2 text-danger"><span
-                                            class="path1"></span><span class="path2"></span><span
-                                            class="path3"></span></i>
-                                </span>
-                            </div>
-                            <!--end::Symbol-->
-
-                            <!--begin::Title-->
-                            <div class="mb-0 me-2">
-                                <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-bold">HR
-                                    Confidential</a>
-                                <div class="text-gray-400 fs-7">Confidential staff
-                                    documents</div>
-                            </div>
-                            <!--end::Title-->
+                            <span class="badge badge-light fs-8 me-2">{{ $notification->created_at ? $notification->created_at->diffForHumans(null, true) : '' }}</span>
+                            <button class="btn btn-icon btn-sm btn-light-success mark-notification-read-btn" data-id="{{ $notification->id }}" title="Mark as read" style="width: 20px; height: 20px; min-width: 20px; {{ $notification->is_read ? 'display: none;' : '' }}">
+                                <i class="ki-duotone ki-check fs-8"></i>
+                            </button>
                         </div>
-                        <!--end::Section-->
-
-                        <!--begin::Label-->
-                        <span class="badge badge-light fs-8">2 hrs</span>
-                        <!--end::Label-->
+                        <!--end::Actions-->
                     </div>
                     <!--end::Item-->
+                    @empty
+                    <div class="text-center text-muted py-8 fs-7">
+                        No new notifications
+                    </div>
+                    @endforelse
                 </div>
                 <!--end::Items-->
-
-                <!--begin::View more-->
-                <div class="py-3 text-center border-top">
-                    <a href="#" class="btn btn-color-gray-600 btn-active-color-primary">
-                        View All
-                        <i class="ki-duotone ki-arrow-right fs-5">
-                            <span class="path1"></span>
-                            <span class="path2"></span>
-                        </i>
-                    </a>
-                </div>
-                <!--end::View more-->
             </div>
             <!--end::Tab panel-->
         </div>
@@ -116,3 +98,72 @@
     </div>
     <!--end::Menu--> <!--end::Menu wrapper-->
 </div>
+
+@push('script')
+<script>
+$(document).ready(function() {
+    // Mark single notification as read
+    $(document).on('click', '.mark-notification-read-btn', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var id = $(this).data('id');
+        var btn = $(this);
+        var item = $('#notification_item_' + id);
+        var url = "{{ route('notifications.read', ['id' => '___id___']) }}".replace('___id___', id);
+        
+        $.post(url, { _token: '{{ csrf_token() }}' }, function(res) {
+            if (res.success) {
+                // Remove highlight classes instead of deleting row
+                item.removeClass('border-start border-4 border-danger bg-light-danger bg-opacity-20');
+                btn.hide(); // Hide checkmark button
+                
+                // Update count
+                var badges = $('.badge-circle.badge-danger');
+                var count = parseInt(badges.first().text()) - 1;
+                if (count > 0) {
+                    badges.text(count);
+                    $('#unread_count_text').text(count + ' unread');
+                } else {
+                    badges.remove();
+                    $('#unread_count_text').text('0 unread');
+                    $('#mark_all_notifications_read_btn').hide();
+                }
+            }
+        });
+    });
+
+    // Mark all notifications as read
+    $(document).on('click', '#mark_all_notifications_read_btn', function(e) {
+        e.preventDefault();
+        var url = "{{ route('notifications.read-all') }}";
+        $.post(url, { _token: '{{ csrf_token() }}' }, function(res) {
+            if (res.success) {
+                $('.notification-item').removeClass('border-start border-4 border-danger bg-light-danger bg-opacity-20');
+                $('.mark-notification-read-btn').hide();
+                $('.badge-circle.badge-danger').remove();
+                $('#unread_count_text').text('0 unread');
+                $('#mark_all_notifications_read_btn').hide();
+            }
+        });
+    });
+
+    // Clear all notifications
+    $(document).on('click', '#clear_all_notifications_btn', function(e) {
+        e.preventDefault();
+        var url = "{{ route('notifications.clear') }}";
+        $.post(url, { _token: '{{ csrf_token() }}' }, function(res) {
+            if (res.success) {
+                $('.notification-item').fadeOut(300, function() {
+                    $(this).remove();
+                });
+                $('.badge-circle.badge-danger').remove();
+                $('#unread_count_text').text('0 unread');
+                $('#mark_all_notifications_read_btn').hide();
+                $('#clear_all_notifications_btn').hide();
+                $('.scroll-y.mh-325px').html('<div class="text-center text-muted py-8 fs-7">No new notifications</div>');
+            }
+        });
+    });
+});
+</script>
+@endpush

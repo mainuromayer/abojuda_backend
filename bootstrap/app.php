@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\BlockGuest;
 use App\Http\Middleware\JWTMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
         'admin' => AdminMiddleware::class,
         'jwt.verify'       => JWTMiddleware::class,
+        'block.guest'      => BlockGuest::class,
     ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

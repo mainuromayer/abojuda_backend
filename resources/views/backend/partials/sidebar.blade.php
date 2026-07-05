@@ -47,6 +47,12 @@
                         </i>
                     </span>
                     <span class="menu-title">User Management</span>
+                    @php
+                        $pendingUsersCount = \App\Models\User::where('status', 'pending_delete')->count();
+                    @endphp
+                    @if($pendingUsersCount > 0)
+                        <span class="badge badge-danger fs-8 fw-bold px-2 py-1 ms-2">{{ $pendingUsersCount }}</span>
+                    @endif
                     <span class="menu-arrow"></span>
                 </span>
                 <!--end:Menu link-->
@@ -104,10 +110,51 @@
                     </div>
                     <!--end:Categories List-->
 
-                </div>
-                <!--end:Menu sub-->
             </div>
-            <!--end:Category Management-->
+            <!--end:Menu sub-->
+        </div>
+        <!--end:Category Management-->
+
+        <!--begin:Post Management-->
+        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('post.*') ? 'show' : '' }}">
+            <!--begin:Menu link-->
+            <span class="menu-link">
+                <span class="menu-icon">
+                    <i class="ki-duotone ki-abstract-26 fs-2">
+                        <span class="path1"></span><span class="path2"></span>
+                    </i>
+                </span>
+                <span class="menu-title">Post Management</span>
+                @php
+                    $pendingCount = \App\Models\Post::where('status', 'pending')->count();
+                @endphp
+                @if($pendingCount > 0)
+                    <span class="badge badge-warning fs-8 fw-bold px-2 py-1 ms-2">{{ $pendingCount }}</span>
+                @endif
+                <span class="menu-arrow"></span>
+            </span>
+            <!--end:Menu link-->
+
+            <!--begin:Menu sub-->
+            <div class="menu-sub menu-sub-accordion"
+                style="{{ request()->routeIs('post.*') ? '' : 'display: none; overflow: hidden;' }}">
+
+                <!--begin:Posts List-->
+                <div class="menu-item mb-1">
+                    <a class="menu-link {{ request()->routeIs('post.index') ? 'active' : '' }}"
+                        href="{{ route('post.index') }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">All Posts</span>
+                    </a>
+                </div>
+                <!--end:Posts List-->
+
+            </div>
+            <!--end:Menu sub-->
+        </div>
+        <!--end:Post Management-->
 
 
             <!--begin:Menu item-->

@@ -30,6 +30,9 @@ class CategoryController extends Controller
                 ->addColumn('name', function ($row) {
                     return $row->name;
                 })
+                ->addColumn('slug', function ($row) {
+                    return $row->slug ?? '-';
+                })
                 ->addColumn('description', function ($row) {
                     return $row->shot_desc ?? '-';
                 })
@@ -88,6 +91,7 @@ class CategoryController extends Controller
 
             Category::create([
                 'name' => $validated['name'],
+                'slug' => Str::slug($validated['name']),
                 'shot_desc' => $validated['shot_desc'] ?? null,
                 'status' => $validated['status'],
                 'icon' => $iconPath,
@@ -148,6 +152,7 @@ class CategoryController extends Controller
 
             $category->update([
                 'name' => $validated['name'],
+                'slug' => Str::slug($validated['name']),
                 'shot_desc' => $validated['shot_desc'] ?? null,
                 'status' => $validated['status'],
                 'icon' => $category->icon,

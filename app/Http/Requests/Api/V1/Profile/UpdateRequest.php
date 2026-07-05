@@ -23,8 +23,9 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'  => ['required', 'string', 'max:255'],
-            'email' => [
+            'name'     => ['sometimes', 'required', 'string', 'max:255'],
+            'email'    => [
+                'sometimes',
                 'required',
                 'string',
                 'email',
@@ -34,6 +35,7 @@ class UpdateRequest extends FormRequest
             'province' => ['sometimes', 'nullable', 'string', 'max:255'],
             'city'     => ['sometimes', 'nullable', 'string', 'max:255'],
             'address'  => ['sometimes', 'nullable', 'string', 'max:255'],
+            'avatar'   => ['sometimes', 'nullable'],
         ];
     }
 }

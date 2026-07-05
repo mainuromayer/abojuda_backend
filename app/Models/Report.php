@@ -14,14 +14,25 @@ class Report extends Model
     protected $fillable = [
         'user_id',
         'post_id',
+        'reported_user_id',
         'report_type',
         'reason',
         'other_note',
+        'is_read',
+    ];
+
+    protected $casts = [
+        'is_read' => 'boolean',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reportedUser()
+    {
+        return $this->belongsTo(User::class, 'reported_user_id');
     }
 
     public function post()

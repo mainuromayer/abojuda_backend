@@ -23,8 +23,9 @@
                         <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" aria-label="Change avatar" data-bs-original-title="Change avatar" data-kt-initialized="1">
                             <i class="ki-duotone ki-pencil fs-7"><span class="path1"></span><span class="path2"></span></i>
                             <!--begin::Inputs-->
-                            <input type="file" name="avatar" accept=".png, .jpg, .jpeg">
+                            <input type="file" name="avatar" id="avatar_file_input" accept=".png, .jpg, .jpeg">
                             <input type="hidden" name="avatar_remove">
+                            <input type="hidden" name="cropped_avatar" id="cropped_avatar">
                             <!--end::Inputs-->
                         </label>
                         <!--end::Label-->
@@ -64,22 +65,9 @@
                 <!--end::Label-->
 
                 <!--begin::Col-->
-                <div class="col-lg-8">
-                    <!--begin::Row-->
-                    <div class="row">
-                        <!--begin::Col-->
-                        <div class="col-lg-6 fv-row fv-plugins-icon-container">
-                            <input type="text" name="fname" class="form-control form-control-lg form-control-solid mb-3 mb-lg-0" placeholder="First name" value="{{ old('fname',$user?->first_name) }}">
-                            <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div></div>
-                        <!--end::Col-->
-
-                        <!--begin::Col-->
-                        <div class="col-lg-6 fv-row fv-plugins-icon-container">
-                            <input type="text" name="lname" class="form-control form-control-lg form-control-solid" placeholder="Last name" value="{{ old('lname',$user?->last_name) }}">
-                            <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div></div>
-                        <!--end::Col-->
-                    </div>
-                    <!--end::Row-->
+                <div class="col-lg-8 fv-row fv-plugins-icon-container">
+                    <input type="text" name="name" class="form-control form-control-lg form-control-solid" placeholder="Full name" value="{{ old('name',$user?->name) }}">
+                    <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
                 </div>
                 <!--end::Col-->
             </div>
@@ -97,3 +85,46 @@
         <input type="hidden"></form>
     <!--end::Form-->
 </div>
+
+<!-- Avatar Crop Modal -->
+<div class="modal fade" id="avatarCropModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Crop & Position Avatar</h5>
+                <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                    <i class="ki-duotone ki-cross fs-1">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="image-container d-flex justify-content-center align-items-center" style="max-height: 450px; overflow: hidden; background-color: #f7f7f7; border-radius: 8px; padding: 10px;">
+                    <img id="avatarCropImage" src="" style="max-width: 100%; max-height: 400px; display: block;">
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div>
+                    <button type="button" class="btn btn-sm btn-icon btn-outline btn-outline-dashed btn-outline-default me-1" id="btnZoomIn" title="Zoom In">
+                        <i class="fa fa-search-plus fs-4"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-icon btn-outline btn-outline-dashed btn-outline-default me-1" id="btnZoomOut" title="Zoom Out">
+                        <i class="fa fa-search-minus fs-4"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-icon btn-outline btn-outline-dashed btn-outline-default me-1" id="btnRotateLeft" title="Rotate Left">
+                        <i class="fa fa-undo fs-4"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-icon btn-outline btn-outline-dashed btn-outline-default" id="btnRotateRight" title="Rotate Right">
+                        <i class="fa fa-redo fs-4"></i>
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-light me-2" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveCrop">Save Crop</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

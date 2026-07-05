@@ -26,34 +26,61 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $validatedData = $request->validate([
-            'fname'             => 'nullable|string|max:255',
-            'lname'             => 'nullable|string|max:255',
+            'name'              => 'required|string|max:255',
             'email'             => 'sometimes|nullable|email|max:255',
-            'avatar'            => 'nullable|mimes:jpeg,jpg,png,gif|max:4800'
-
+            'avatar'            => 'nullable|mimes:jpeg,jpg,png,gif|max:4800',
+            'cropped_avatar'    => 'nullable|string'
         ]);
 
         $auth = auth()->user();
 
         try {
             $imagePaths = $auth->avatar;
-            // Update avatar if provided
-            if ($request->hasFile('avatar')) {
+
+            // Handle Cropped Avatar (Base64)
+            if ($request->filled('cropped_avatar')) {
                 if (!empty($auth->avatar)) {
-                    Helpers::deleteFile($auth->avatar,config('app.file_system'));
+                    Helpers::deleteFile($auth->avatar, config('app.file_system'));
+                }
+
+                $croppedData = $request->input('cropped_avatar');
+                if (preg_match('/^data:image\/(\w+);base64,/', $croppedData, $type)) {
+                    $croppedData = substr($croppedData, strpos($croppedData, ',') + 1);
+                    $type = strtolower($type[1]); // jpg, png, etc
+
+                    if (!in_array($type, ['jpg', 'jpeg', 'png', 'gif'])) {
+                        throw new \Exception('Invalid image type.');
+                    }
+
+                    $croppedData = base64_decode($croppedData);
+                    if ($croppedData === false) {
+                        throw new \Exception('Base64 decode failed.');
+                    }
+
+                    $fileName = time() . Str::random(10) . Str::uuid() . '_' . date('Ymd_His') . '.' . $type;
+                    $folderName = 'avatar';
+                    $filePath = 'uploads/' . $folderName . '/' . $fileName;
+                    $disk = config('app.file_system', 'public');
+
+                    // Store the file manually using Storage facade
+                    \Illuminate\Support\Facades\Storage::disk($disk)->put($filePath, $croppedData);
+                    $imagePaths = $filePath;
+                }
+            } elseif ($request->hasFile('avatar')) {
+                // Fallback to standard file upload if crop is not used
+                if (!empty($auth->avatar)) {
+                    Helpers::deleteFile($auth->avatar, config('app.file_system'));
                 }
 
                 $file = $request->file('avatar');
                 $mediaFile = time() . Str::random(10) . Str::uuid() . '_' . date('Ymd_His') . '.' . $file->getClientOriginalExtension();
-                $imagePaths = Helpers::uploadFile('avatar',$file,$mediaFile,config('app.file_system')); // store url
+                $imagePaths = Helpers::uploadFile('avatar', $file, $mediaFile, config('app.file_system')); // store url
             }
-            $auth->avatar     = $imagePaths;
 
-            if (isset($validatedData['fname'])) {
-                $auth->first_name = $validatedData['fname'];
-            }
-            if (isset($validatedData['lname'])) {
-                $auth->last_name = $validatedData['lname'];
+            $auth->avatar = $imagePaths;
+
+            if (isset($validatedData['name'])) {
+                $auth->name = $validatedData['name'];
             }
             if (isset($validatedData['email'])) {
                 $auth->email = $validatedData['email'];
@@ -61,9 +88,9 @@ class ProfileController extends Controller
 
             $auth->save();
 
-            return redirect()->route('profile.edit')->with('success','Profile updated successfully');
-        }catch (\Exception $exception){
-            return redirect()->back()->with('error',$exception->getMessage());
+            return redirect()->route('profile.edit')->with('success', 'Profile updated successfully');
+        } catch (\Exception $exception) {
+            return redirect()->back()->with('error', $exception->getMessage());
         }
     }
 

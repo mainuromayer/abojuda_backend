@@ -157,8 +157,13 @@
     </div>
     <!--end::Content-->
 
+    @push('style')
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css" />
+    @endpush
+
     @push('script')
             <!--begin::Javascript(only this page)-->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
             <script src="{{ asset('backend/assets') ."/js/custom/account/settings/signin-methods.js"}}"></script>
             <script src="{{ asset('backend/assets') ."/js/custom/account/settings/profile-details.js"}}"></script>
             <script src="{{ asset('backend/assets') ."/js/custom/pages/user-profile/general.js"}}"></script>
@@ -169,12 +174,15 @@
                 document.querySelectorAll('.toggle-password').forEach(toggle => {
                     toggle.addEventListener('click', function () {
                         const input = document.getElementById(this.dataset.target);
+                        const icon = this.querySelector('i');
                         if (input.type === 'password') {
                             input.type = 'text';
-                            this.innerHTML = '<i class="fa fa-eye-slash"></i>';
+                            icon.classList.remove('fa-eye-slash');
+                            icon.classList.add('fa-eye');
                         } else {
                             input.type = 'password';
-                            this.innerHTML = '<i class="fa fa-eye"></i>';
+                            icon.classList.remove('fa-eye');
+                            icon.classList.add('fa-eye-slash');
                         }
                     });
                 });
@@ -195,8 +203,97 @@
                         }
                     });
                 });
+
+                // Avatar Cropper implementation
+                $(document).ready(function() {
+                    let cropper;
+                    const fileInput = document.getElementById('avatar_file_input');
+                    const cropImage = document.getElementById('avatarCropImage');
+                    const cropModalElement = document.getElementById('avatarCropModal');
+                    const cropModal = new bootstrap.Modal(cropModalElement);
+                    const croppedAvatarInput = document.getElementById('cropped_avatar');
+
+                    if (fileInput) {
+                        fileInput.addEventListener('change', function(e) {
+                            const files = e.target.files;
+                            if (files && files.length > 0) {
+                                const file = files[0];
+                                const reader = new FileReader();
+                                reader.onload = function(event) {
+                                    cropImage.src = event.target.result;
+                                    cropModal.show();
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    }
+
+                    // Initialize Cropper when modal is shown
+                    cropModalElement.addEventListener('shown.bs.modal', function() {
+                        cropper = new Cropper(cropImage, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            dragMode: 'move',
+                            autoCropArea: 0.8,
+                            restore: false,
+                            guides: true,
+                            center: true,
+                            highlight: false,
+                            cropBoxMovable: true,
+                            cropBoxResizable: true,
+                            toggleDragModeOnDblclick: false
+                        });
+                    });
+
+                    // Destroy Cropper when modal is hidden
+                    cropModalElement.addEventListener('hidden.bs.modal', function() {
+                        if (cropper) {
+                            cropper.destroy();
+                            cropper = null;
+                        }
+                        // Reset input file value if crop not saved
+                        if (!croppedAvatarInput.value) {
+                            fileInput.value = '';
+                        }
+                    });
+
+                    // Cropper Controls
+                    $('#btnZoomIn').on('click', function() {
+                        if (cropper) cropper.zoom(0.1);
+                    });
+
+                    $('#btnZoomOut').on('click', function() {
+                        if (cropper) cropper.zoom(-0.1);
+                    });
+
+                    $('#btnRotateLeft').on('click', function() {
+                        if (cropper) cropper.rotate(-90);
+                    });
+
+                    $('#btnRotateRight').on('click', function() {
+                        if (cropper) cropper.rotate(90);
+                    });
+
+                    // Save Crop
+                    $('#btnSaveCrop').on('click', function() {
+                        if (cropper) {
+                            const canvas = cropper.getCroppedCanvas({
+                                width: 300,
+                                height: 300
+                            });
+                            const croppedDataUrl = canvas.toDataURL('image/jpeg');
+                            
+                            // Set to hidden input
+                            croppedAvatarInput.value = croppedDataUrl;
+
+                            // Update UI preview
+                            $('.image-input-wrapper').css('background-image', 'url(' + croppedDataUrl + ')');
+
+                            // Hide modal
+                            cropModal.hide();
+                        }
+                    });
+                });
             </script>
-
-
     @endpush
 @endsection

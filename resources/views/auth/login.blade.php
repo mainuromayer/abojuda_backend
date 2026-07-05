@@ -37,7 +37,7 @@
                             <!--end::Label-->
 
                             <!--begin::Input-->
-                            <input class="form-control form-control-lg form-control-solid" type="text" name="email"
+                            <input class="form-control form-control-lg form-control-solid" type="text" name="email" id="email"
                                 autocomplete="off" value="{{ old('email') }}" required autofocus>
                             <!--end::Input-->
                             <div
@@ -63,8 +63,13 @@
                             <!--end::Wrapper-->
 
                             <!--begin::Input-->
-                            <input class="form-control form-control-lg form-control-solid" type="password" name="password"
-                                autocomplete="off" required >
+                            <div class="input-group">
+                                <input class="form-control form-control-lg form-control-solid" type="password" name="password" id="password"
+                                    autocomplete="off" required style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                <button class="btn btn-solid btn-active-light-primary border" type="button" id="togglePassword" style="border-top-left-radius: 0; border-bottom-left-radius: 0; background-color: #f1f1f4;">
+                                    <i class="fa fa-eye-slash fs-3" id="toggleIcon"></i>
+                                </button>
+                            </div>
                             <!--end::Input-->
                             <div
                                 class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
@@ -86,6 +91,14 @@
                             </button>
                             <!--end::Submit button-->
 
+                            <!--begin::Quick credentials-->
+                            <div class="mb-5">
+                                <button type="button" class="btn btn-light-success btn-sm w-100 fw-bold" id="btnQuickAdmin">
+                                    Use Admin Credentials
+                                </button>
+                            </div>
+                            <!--end::Quick credentials-->
+
                         </div>
                         <!--end::Actions-->
                     </form>
@@ -100,4 +113,24 @@
     </div>
 @endsection
 @push('scripts')
+<script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordInput = document.getElementById('password');
+        const icon = document.getElementById('toggleIcon');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    });
+
+    document.getElementById('btnQuickAdmin').addEventListener('click', function () {
+        document.getElementById('email').value = 'admin@admin.com';
+        document.getElementById('password').value = '12345678';
+    });
+</script>
 @endpush

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Helpers\helpers;
+use App\Models\BusinessHour;
+use App\Models\Category;
+use App\Models\Report;
+use App\Models\User;
+use App\Models\Wish;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Category;
-use App\Models\BusinessHour;
-use App\Models\Wish;
-use App\Models\Report;
 
 class Post extends Model
 {
@@ -19,6 +20,8 @@ class Post extends Model
         'category_id',
         'title',
         'company_name',
+        'business_name',
+        'business_category',
         'description',
         'price',
         'condition',
@@ -37,7 +40,40 @@ class Post extends Model
         'is_app_chat',
         'is_featured',
         'status',
+        'views',
     ];
+
+    protected static function booted()
+    {
+        static::deleting(function ($post) {
+            if ($post->thumbnail) {
+                helpers::deleteFile($post->thumbnail, config('app.file_system'));
+            }
+            if ($post->logo) {
+                helpers::deleteFile($post->logo, config('app.file_system'));
+            }
+            if (is_array($post->photos)) {
+                foreach ($post->photos as $path) {
+                    helpers::deleteFile($path, config('app.file_system'));
+                }
+            }
+            $post->wishes()->delete();
+            $post->reports()->delete();
+        });
+    }
+
+    protected $appends = [
+        'is_wish',
+    ];
+
+    public function getIsWishAttribute(): bool
+    {
+        $userId = auth('api')->id();
+        if (!$userId) {
+            return false;
+        }
+        return $this->wishes()->where('user_id', $userId)->exists();
+    }
 
     protected $casts = [
         'condition' => 'array',
@@ -72,5 +108,10 @@ class Post extends Model
     public function reports()
     {
         return $this->hasMany(Report::class);
+    }
+
+    public function histories()
+    {
+        return $this->hasMany(PostHistory::class, 'post_id')->latest();
     }
 }

@@ -18,6 +18,11 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'brevo' => [
+        'key' => env('BREVO_API_KEY'),
+        'dsn' => 'brevo+api://' . env('BREVO_API_KEY') . '@default',
+    ],
+
     'resend' => [
         'key' => env('RESEND_KEY'),
     ],
@@ -35,15 +40,15 @@ return [
         ],
     ],
 
-    'google'   => [
-        'client_id'     => env('GOOGLE_CLIENT_ID'),
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect'      => env('GOOGLE_REDIRECT_URI'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
     'apple' => [
-        'client_id'     => env('APPLE_CLIENT_ID'),
+        'client_id' => env('APPLE_CLIENT_ID'),
         'client_secret' => env('APPLE_CLIENT_SECRET'),
-        'redirect'      => env('APPLE_REDIRECT_URI'),
+        'redirect' => env('APPLE_REDIRECT_URI'),
     ],
 ];

@@ -73,6 +73,8 @@
                                     rowspan="1" colspan="1"
                                     aria-label="Joined Date: activate to sort column ascending"
                                     style="width: 210.266px;">Joined Date</th>
+                                <th class="min-w-100px sorting_disabled" rowspan="1" colspan="1"
+                                    aria-label="Reports" style="width: 120px;">Reports</th>
                                 <th class="text-end min-w-100px sorting_disabled" rowspan="1" colspan="1"
                                     aria-label="Actions" style="width: 132.484px;">Actions</th>
                             </tr>

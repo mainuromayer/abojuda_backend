@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->string('address')->nullable();
             $table->string('status')->default('active');
+            $table->string('avatar')->nullable();
             $table->string('role')->default(Role::USER->value);
             $table->longText('blocked_users')->nullable();
             $table->boolean('new_message')->default(false);

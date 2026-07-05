@@ -25,6 +25,9 @@ class JWTMiddleware
             if (!$user) {
                 return $this->sendError("User not found or deleted.", [], 401);
             }
+            if ($user->status === 'suspended') {
+                return $this->sendError("Your account has been suspended. Please contact support.", [], 403);
+            }
             return $next($request);
         } catch (\Exception $e) {
             if ($e instanceof TokenInvalidException) {

@@ -14,7 +14,7 @@ class CreateDraftRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => ['required', 'integer', 'exists:categories,id'],
+            'category_slug' => ['required', 'string', 'exists:categories,slug'],
             'title' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['nullable', 'numeric', 'min:0'],

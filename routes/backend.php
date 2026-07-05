@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\Backend\CategoryController;
 use App\Http\Controllers\Web\Backend\DashboardController;
 use App\Http\Controllers\Web\Backend\DynamicPageController;
 use App\Http\Controllers\Web\Backend\PermissionController;
+use App\Http\Controllers\Web\Backend\PostController;
 use App\Http\Controllers\Web\Backend\ProfileController;
 use App\Http\Controllers\Web\Backend\RoleController;
 use App\Http\Controllers\Web\Backend\SettingController;
@@ -14,6 +15,18 @@ use App\Http\Controllers\Web\Backend\UserRoleManagementController;
 
 //! dashboard
 Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+
+Route::controller(PostController::class)->group(function () {
+    Route::get('/posts', 'index')->name('post.index');
+    Route::get('/posts/{id}', 'show')->name('post.show');
+    Route::post('/posts/{id}/update', 'update')->name('post.update');
+    Route::post('/posts/{id}/approve', 'approve')->name('post.approve');
+    Route::post('/posts/{id}/reject', 'reject')->name('post.reject');
+    Route::post('/posts/{id}/featured', 'toggleFeatured')->name('post.featured');
+    Route::delete('/posts/{id}/delete', 'destroy')->name('post.delete');
+    Route::get('/posts/{id}/reports', 'getPostReports')->name('post.reports');
+    Route::post('/posts/{id}/reports/read-all', 'markAllPostReportsRead')->name('post.reports.read-all');
+});
 
 //! categories
 Route::controller(CategoryController::class)->group(function () {
@@ -50,6 +63,19 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/user/{id}/edit',  'edit')->name('user.edit');
     Route::put('/user/{id}/update',  'update')->name('user.update');
     Route::delete('/user/{id}/delete',  'delete')->name('user.delete');
+    Route::get('/user/{id}/reports', 'getReports')->name('user.reports');
+    Route::post('/user/{id}/suspend', 'suspend')->name('user.suspend');
+    Route::post('/user/{id}/unsuspend', 'unsuspend')->name('user.unsuspend');
+    Route::post('/user/{id}/approve-delete', 'approveDelete')->name('user.approve-delete');
+    Route::post('/user/{id}/reject-delete', 'rejectDelete')->name('user.reject-delete');
+    Route::post('/user/send-email', 'sendCustomEmail')->name('user.send-email');
+    Route::post('/notifications/{id}/read', 'markNotificationRead')->name('notifications.read');
+    Route::post('/notifications/read-all', 'markAllNotificationsRead')->name('notifications.read-all');
+    Route::post('/notifications/clear', 'clearNotifications')->name('notifications.clear');
+    Route::post('/reports/{id}/read', 'markReportRead')->name('reports.read');
+    Route::post('/user/{id}/reports/read-all', 'markAllReportsRead')->name('user.reports.read-all');
+    Route::delete('/reports/{id}', 'deleteReport')->name('reports.delete');
+    Route::post('/reports/bulk-delete', 'bulkDeleteReports')->name('reports.bulk-delete');
 });
 
 

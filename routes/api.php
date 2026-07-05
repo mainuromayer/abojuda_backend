@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\User\AuthenticationController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\WishController;
+use App\Http\Controllers\API\SupportController;
+use App\Http\Controllers\API\ReportController;
 
 //! Route for user
 Route::prefix('v1')->controller(AuthenticationController::class)->group(function () {
@@ -27,33 +30,57 @@ Route::prefix('v1')->controller(LocationController::class)->group(function () {
 });
 
 
-//! Route for categories
+//! Route for categories and posts
 Route::prefix('v1')->controller(PostController::class)->group(function () {
     Route::get('/categories', 'categories');
+    Route::get('/posts', 'index');
+    Route::get('/post/details', 'show');
+    Route::get('/posts/recent', 'recent');
+    Route::get('/posts/featured', 'featured');
+    Route::get('/post/related', 'related');
 });
 
 
 // Route for user social auth
 Route::post('v1/social-login', [SocialAuthController::class, 'SocialLogin']);
 
+// Route for contact support
+Route::post('v1/contact-support', [SupportController::class, 'contactSupport']);
 
 Route::group(['middleware' => ['jwt.verify']], function () {
     /**
-     * Profile
+     * Guest-accessible authenticated routes
      */
-    Route::prefix('v1/auth')->controller(ProfileController::class)->group(function () {
-        Route::get('/profile', 'index');
-        Route::put('/profile', 'update');
-        Route::post('/logout', 'logout');
+    Route::prefix('v1/auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'index']);
+        Route::post('/logout', [ProfileController::class, 'logout']);
+        
+        Route::get('/wishes', [WishController::class, 'index']);
+        Route::post('/wishes', [WishController::class, 'toggle']);
     });
 
     /**
-     * Posts / Listings
+     * Restricted authenticated routes (blocked for guests)
      */
-    Route::prefix('v1/auth')->controller(PostController::class)->group(function () {
-        Route::post('/post/draft', 'saveDraft');
-        Route::get('/post/draft', 'getDraft');
-        Route::post('/post/create', 'create');
-    });
+    Route::group(['middleware' => ['block.guest']], function () {
+        Route::prefix('v1/auth')->group(function () {
+            Route::put('/profile', [ProfileController::class, 'update']);
+            Route::post('/change-password', [ProfileController::class, 'changePassword']);
+            Route::post('/block', [ProfileController::class, 'blockUser']);
+            Route::get('/blocked-users', [ProfileController::class, 'blockedUsersList']);
+            Route::post('/delete-account', [ProfileController::class, 'deleteAccount']);
+            Route::get('/notification-settings', [ProfileController::class, 'getNotificationSettings']);
+            Route::put('/notification-settings', [ProfileController::class, 'updateNotificationSettings']);
 
+            Route::post('/post/draft', [PostController::class, 'saveDraft']);
+            Route::get('/post/draft', [PostController::class, 'getDraft']);
+            Route::post('/post/create', [PostController::class, 'store']);
+            Route::post('/post/update', [PostController::class, 'update']); // Edit Listing Route
+            Route::get('/posts', [PostController::class, 'userPosts']);
+            Route::post('/posts', [PostController::class, 'deletePost']);
+
+            Route::post('/report/user', [ReportController::class, 'reportUser']);
+            Route::post('/report/post', [ReportController::class, 'reportPost']);
+        });
+    });
 });

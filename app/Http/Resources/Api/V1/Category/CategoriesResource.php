@@ -18,6 +18,7 @@ class CategoriesResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'slug' => $this->slug,
             'shot_desc' => $this->shot_desc,
             'icon' => $this->icon ? $this->getImageUrl($this->icon) : null,
         ];

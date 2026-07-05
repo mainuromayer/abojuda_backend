@@ -18,8 +18,10 @@
                     <div class="mb-3 position-relative">
                         <label class="form-label fw-bold">Current Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control form-control-lg form-control-solid password-field" id="currentpassword" name="currentpassword">
-                            <span class="input-group-text toggle-password" data-target="currentpassword"><i class="fa fa-eye"></i></span>
+                            <input type="password" class="form-control form-control-lg form-control-solid password-field" id="currentpassword" name="currentpassword" style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                            <button class="btn btn-solid btn-active-light-primary border toggle-password" type="button" data-target="currentpassword" style="border-top-left-radius: 0; border-bottom-left-radius: 0; background-color: #f1f1f4;">
+                                <i class="fa fa-eye-slash fs-3"></i>
+                            </button>
                         </div>
                         @error('currentpassword')
                         <div class="text-danger">{{ $message }}</div>
@@ -32,8 +34,10 @@
                     <div class="mb-3 position-relative">
                         <label class="form-label fw-bold">New Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control form-control-lg form-control-solid password-field" id="password" name="password">
-                            <span class="input-group-text toggle-password" data-target="password"><i class="fa fa-eye"></i></span>
+                            <input type="password" class="form-control form-control-lg form-control-solid password-field" id="password" name="password" style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                            <button class="btn btn-solid btn-active-light-primary border toggle-password" type="button" data-target="password" style="border-top-left-radius: 0; border-bottom-left-radius: 0; background-color: #f1f1f4;">
+                                <i class="fa fa-eye-slash fs-3"></i>
+                            </button>
                         </div>
                         @error('password')
                         <div class="text-danger">{{ $message }}</div>
@@ -46,8 +50,10 @@
                     <div class="mb-3 position-relative">
                         <label class="form-label fw-bold">Confirm Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control form-control-lg form-control-solid password-field" id="password_confirmation" name="password_confirmation">
-                            <span class="input-group-text toggle-password" data-target="password_confirmation"><i class="fa fa-eye"></i></span>
+                            <input type="password" class="form-control form-control-lg form-control-solid password-field" id="password_confirmation" name="password_confirmation" style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                            <button class="btn btn-solid btn-active-light-primary border toggle-password" type="button" data-target="password_confirmation" style="border-top-left-radius: 0; border-bottom-left-radius: 0; background-color: #f1f1f4;">
+                                <i class="fa fa-eye-slash fs-3"></i>
+                            </button>
                         </div>
                         <div id="password-match-msg" class="small mt-1"></div>
                         @error('password_confirmation')

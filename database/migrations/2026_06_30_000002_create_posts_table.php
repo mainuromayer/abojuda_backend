@@ -17,8 +17,10 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->string('company_name')->nullable();
+            $table->string('business_name')->nullable();
+            $table->string('business_category')->nullable();
             $table->text('description')->nullable();
             $table->decimal('price', 15, 2)->default(0.00);
             $table->json('condition')->nullable();
@@ -37,6 +39,7 @@ return new class extends Migration
             $table->boolean('is_app_chat')->default(false);
             $table->boolean('is_featured')->default(false);
             $table->string('status')->default('pending');
+            $table->unsignedInteger('views')->default(0);
             $table->timestamps();
         });
     }

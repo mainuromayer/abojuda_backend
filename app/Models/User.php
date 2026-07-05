@@ -4,15 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enum\Role;
+use App\Helpers\helpers;
+use App\Models\Post;
+use App\Models\Report;
+use App\Models\Wish;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
-use App\Models\Post;
-use App\Models\Wish;
-use App\Models\Report;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -34,6 +35,7 @@ class User extends Authenticatable implements JWTSubject
         'address',
         'status',
         'role',
+        'avatar',
         'blocked_users',
         'new_message',
         'marketing',
@@ -69,6 +71,7 @@ class User extends Authenticatable implements JWTSubject
             'new_message' => 'boolean',
             'marketing' => 'boolean',
             'email_notification' => 'boolean',
+            'blocked_users' => 'array',
         ];
     }
 
@@ -77,9 +80,26 @@ class User extends Authenticatable implements JWTSubject
         static::creating(function ($user) {
             // Generate uuid only if it's not already set
             if (empty($user->uuid)) {
-                $lastCode = self::max('uuid') ?? 100000;
+                $lastCode = self::withTrashed()->max('uuid') ?? 100000;
                 $user->uuid = $lastCode + 1;
             }
+        });
+
+        static::deleting(function ($user) {
+            if ($user->avatar) {
+                helpers::deleteFile($user->avatar, config('app.file_system'));
+            }
+
+            // Delete posts (triggers post deleting observer to clean files/wishes/reports)
+            foreach ($user->posts as $post) {
+                $post->delete();
+            }
+
+            // Delete wishes
+            $user->wishes()->delete();
+
+            // Delete reports
+            $user->reports()->delete();
         });
     }
 
@@ -108,5 +128,22 @@ class User extends Authenticatable implements JWTSubject
     public function reports()
     {
         return $this->hasMany(Report::class);
+    }
+
+    public function getBlockedUserIds(): array
+    {
+        $blocked = is_array($this->blocked_users) ? $this->blocked_users : [];
+        $blockedIds = array_map(fn($item) => (int)($item['user_id'] ?? 0), $blocked);
+
+        $blockedBy = self::whereJsonContains('blocked_users', ['user_id' => $this->id])
+            ->pluck('id')
+            ->toArray();
+
+        return array_unique(array_merge($blockedIds, $blockedBy));
+    }
+
+    public function reportsAgainst()
+    {
+        return $this->hasMany(Report::class, 'reported_user_id');
     }
 }

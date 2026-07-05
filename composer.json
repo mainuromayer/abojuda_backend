@@ -18,6 +18,8 @@
         "php-open-source-saver/jwt-auth": "^2.8",
         "socialiteproviders/apple": "^5.7",
         "spatie/laravel-permission": "6.17",
+        "symfony/brevo-mailer": "^7.4",
+        "symfony/http-client": "^7.4",
         "yajra/laravel-datatables": "11.0",
         "yajra/laravel-datatables-oracle": "^11.1"
     },

@@ -2,6 +2,7 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class helpers
 {
@@ -54,14 +55,14 @@ class helpers
             return null;
         }
 
-        if (method_exists(Storage::disk($disk), 'temporaryUrl')) {
+        try {
             return Storage::disk($disk)->temporaryUrl(
                 $path,
                 now()->addMinutes(30),
             );
+        } catch (Throwable $e) {
+            return Storage::disk($disk)->url($path);
         }
-
-        return Storage::disk($disk)->url($path);
     }
 
 }

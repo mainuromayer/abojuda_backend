@@ -64,6 +64,7 @@
                     columns: [
                         { data: 'icon', name: 'icon', orderable: false, searchable: false },
                         { data: 'name', name: 'name' },
+                        { data: 'slug', name: 'slug' },
                         { data: 'description', name: 'description' },
                         { data: 'status', name: 'status' },
                         { data: 'created_at', name: 'created_at' },

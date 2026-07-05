@@ -47,6 +47,7 @@
                             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                 <th class="min-w-80px">Icon</th>
                                 <th class="min-w-150px">Category Name</th>
+                                <th class="min-w-120px">Slug</th>
                                 <th class="min-w-200px">Description</th>
                                 <th class="min-w-100px">Status</th>
                                 <th class="min-w-150px">Created At</th>

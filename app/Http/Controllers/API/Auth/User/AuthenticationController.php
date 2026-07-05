@@ -103,7 +103,6 @@ class AuthenticationController extends Controller
             return $this->sendResponse(new VerifyOtpResource(['email' => $email]), 'OTP verified successfully. You can now reset your password.', 200);
         }
     }
-
     public function login(LoginRequest $request)
     {
         $validatedData = $request->validated();
@@ -113,6 +112,11 @@ class AuthenticationController extends Controller
         }
 
         $user = Auth::user();
+
+        if ($user->status === 'suspended') {
+            auth('api')->logout();
+            return $this->sendError('Your account has been suspended. Please contact support.', [], 403);
+        }
 
         return $this->sendResponse(new UserResource($user), 'User logged in successfully.', 200, $token);
     }
