@@ -110,3 +110,30 @@ Route::prefix('/dynamic-pages')->controller(DynamicPageController::class)->group
     Route::post('/{id}','update')->name('dynamic-pages.update');
     Route::delete('/{id}','destroy')->name('dynamic-pages.delete');
 });
+
+Route::get('/migrate-uploads', function() {
+    $src = storage_path('app/public/uploads');
+    $dst = public_path('uploads');
+    if (file_exists($src)) {
+        if (!file_exists($dst)) {
+            mkdir($dst, 0777, true);
+        }
+        $recurseCopy = function($src, $dst) use (&$recurseCopy) {
+            $dir = opendir($src);
+            @mkdir($dst, 0777, true);
+            while(false !== ( $file = readdir($dir)) ) {
+                if (( $file != '.' ) && ( $file != '..' )) {
+                    if ( is_dir($src . '/' . $file) ) {
+                        $recurseCopy($src . '/' . $file, $dst . '/' . $file);
+                    } else {
+                        copy($src . '/' . $file, $dst . '/' . $file);
+                    }
+                }
+            }
+            closedir($dir);
+        };
+        $recurseCopy($src, $dst);
+        return "Uploads successfully copied to public/uploads!";
+    }
+    return "No source uploads folder found in storage/app/public/uploads.";
+})->name('admin.migrate-uploads');

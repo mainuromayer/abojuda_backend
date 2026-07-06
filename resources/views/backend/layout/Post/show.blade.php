@@ -449,58 +449,7 @@
                     </div>
                     @endif
 
-                    {{-- Post Changes History Card --}}
-                    @if($post->histories && $post->histories->count() > 0)
-                    <div class="card card-flush py-4 mb-5">
-                        <div class="card-header border-0 pt-6">
-                            <h3 class="card-title fw-bold text-primary">Proposed Changes / History</h3>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div class="table-responsive">
-                                <table class="table table-row-dashed align-middle fs-6 gy-4">
-                                    <thead>
-                                        <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
-                                            <th>Field</th>
-                                            <th>Old Value</th>
-                                            <th>New Value</th>
-                                            <th>Updated At</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-gray-600 fw-semibold">
-                                        @foreach($post->histories as $history)
-                                            @php
-                                                $old = $history->old_data ?? [];
-                                                $new = $history->new_data ?? [];
-                                                $fields = array_keys($new);
-                                            @endphp
-                                            @foreach($fields as $field)
-                                                @if($field === 'status') @continue @endif
-                                                <tr>
-                                                    <td><strong class="text-capitalize">{{ str_replace('_', ' ', $field) }}</strong></td>
-                                                    <td>
-                                                        @if(is_array($old[$field] ?? null))
-                                                            {{ json_encode($old[$field]) }}
-                                                        @else
-                                                            {{ $old[$field] ?? '-' }}
-                                                        @endif
-                                                    </td>
-                                                    <td class="text-primary">
-                                                        @if(is_array($new[$field] ?? null))
-                                                            {{ json_encode($new[$field]) }}
-                                                        @else
-                                                            {{ $new[$field] ?? '-' }}
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $history->created_at ? $history->created_at->diffForHumans() : '' }}</td>
-                                                </tr>
-                                            @endforeach
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
+
                 </div>
 
                 {{-- Right column: meta info --}}
@@ -567,6 +516,13 @@
                                     <span class="text-muted">Created At</span>
                                     <span class="fw-semibold">{{ $post->created_at->format('d M Y') }}</span>
                                 </div>
+                                @if($post->histories && $post->histories->count() > 0)
+                                    <div class="separator my-2"></div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">History</span>
+                                        <button type="button" class="btn btn-sm btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_post_history">Log History</button>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -965,4 +921,65 @@ $(document).ready(function () {
     </div>
 </div>
 <!--end::Modal - Send Custom Email-->
+
+@if($post->histories && $post->histories->count() > 0)
+<!--begin::Modal - Post History-->
+<div class="modal fade" id="kt_modal_post_history" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="fw-bold">Proposed Changes / History</h2>
+                <div class="btn btn-icon btn-sm btn-active-icon-primary" onclick="$('#kt_modal_post_history').modal('hide')">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+            </div>
+            <div class="modal-body scroll-y mx-5 my-3">
+                <div class="table-responsive">
+                    <table class="table table-row-dashed align-middle fs-6 gy-4">
+                        <thead>
+                            <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                <th>Field</th>
+                                <th>Old Value</th>
+                                <th>New Value</th>
+                                <th>Updated At</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 fw-semibold">
+                            @foreach($post->histories as $history)
+                                @php
+                                    $old = $history->old_data ?? [];
+                                    $new = $history->new_data ?? [];
+                                    $fields = array_keys($new);
+                                @endphp
+                                @foreach($fields as $field)
+                                    @if($field === 'status') @continue @endif
+                                    <tr>
+                                        <td><strong class="text-capitalize">{{ str_replace('_', ' ', $field) }}</strong></td>
+                                        <td>
+                                            @if(is_array($old[$field] ?? null))
+                                                {{ json_encode($old[$field]) }}
+                                            @else
+                                                {{ $old[$field] ?? '-' }}
+                                            @endif
+                                        </td>
+                                        <td class="text-primary">
+                                            @if(is_array($new[$field] ?? null))
+                                                {{ json_encode($new[$field]) }}
+                                            @else
+                                                {{ $new[$field] ?? '-' }}
+                                            @endif
+                                        </td>
+                                        <td>{{ $history->created_at ? $history->created_at->diffForHumans() : '' }}</td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Modal - Post History-->
+@endif
 @endsection
