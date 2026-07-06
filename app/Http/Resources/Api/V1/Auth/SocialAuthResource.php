@@ -22,6 +22,9 @@ class SocialAuthResource extends JsonResource
             'province'           => $this->province,
             'city'               => $this->city,
             'address'            => $this->address,
+            'avatar'             => $this->avatar,
+            'latitude'           => $this->latitude,
+            'longitude'          => $this->longitude,
             'status'             => $this->status,
             'role'               => $this->role,
         ];

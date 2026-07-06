@@ -13,6 +13,8 @@ class LocationSelectResource extends JsonResource
             'user_id'          => $this->id,
             'province'         => $this->province,
             'city'             => $this->city,
+            'latitude'         => $this->latitude,
+            'longitude'        => $this->longitude,
             'role'             => $this->role,
             'guest_token'      => $this->guest_token,
             'guest_expires_at' => $this->guest_expires_at,

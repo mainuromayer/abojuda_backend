@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Actions\GeoLocation;
 use App\Enum\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Location\SelectLocationRequest;
@@ -82,6 +83,14 @@ class LocationController extends Controller
 
         $user->province = $province;
         $user->city = $city;
+
+        // Resolve coordinates based on province and city
+        $address = implode(', ', array_filter([$city, $province]));
+        $geoLocation = app(GeoLocation::class);
+        $coords = $geoLocation->getCoordinates($address);
+        $user->latitude = $coords['latitude'] ?? null;
+        $user->longitude = $coords['longitude'] ?? null;
+
         $user->save();
 
         return $this->sendResponse(new LocationSelectResource($user), 'Location updated successfully.', 200);

@@ -1,16 +1,18 @@
 <?php
 
+use App\Http\Controllers\API\Auth\User\AuthenticationController;
 use App\Http\Controllers\API\Auth\User\ProfileController;
 use App\Http\Controllers\API\Auth\User\SocialAuthController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\Auth\User\AuthenticationController;
+use App\Http\Controllers\API\ChatController;
+use App\Http\Controllers\API\FirebaseTokenController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\PostController;
-use App\Http\Controllers\API\WishController;
-use App\Http\Controllers\API\SupportController;
 use App\Http\Controllers\API\ReportController;
-use App\Http\Controllers\API\ChatController;
+use App\Http\Controllers\API\SupportController;
+use App\Http\Controllers\API\WishController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
 
 //! Route for user
 Route::prefix('v1')->controller(AuthenticationController::class)->group(function () {
@@ -99,4 +101,34 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('/conversations/read', [ChatController::class, 'markAsRead']);
         });
     });
+});
+
+Route::get('v1/test-geolocation', function (\Illuminate\Http\Request $request) {
+    $address = $request->query('address', 'Brandon, Manitoba');
+    $geoLocation = app(\App\Actions\GeoLocation::class);
+    
+    $client = new \GuzzleHttp\Client();
+    $apiKey = env('GOOGLE_MAPS_API_KEY');
+    
+    try {
+        $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', [
+            'query' => [
+                'address' => $address,
+                'key' => $apiKey,
+            ],
+        ]);
+        
+        $data = json_decode($response->getBody(), true);
+        
+        return response()->json([
+            'address' => $address,
+            'api_key_used' => substr($apiKey, 0, 8) . '...',
+            'google_response' => $data,
+            'resolved_coordinates' => $geoLocation->getCoordinates($address)
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage()
+        ], 500);
+    }
 });

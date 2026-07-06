@@ -22,6 +22,8 @@ class UserResource extends JsonResource
             'province'           => $this->province,
             'city'               => $this->city,
             'address'            => $this->address,
+            'latitude'           => $this->latitude,
+            'longitude'          => $this->longitude,
             'status'             => $this->status,
             'role'               => $this->role,
             'guest_token'        => $this->guest_token,
