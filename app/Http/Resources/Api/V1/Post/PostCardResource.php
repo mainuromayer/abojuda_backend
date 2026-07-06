@@ -45,6 +45,9 @@ class PostCardResource extends JsonResource
             'is_featured' => (bool)$this->is_featured,
             'is_wish' => (bool)$this->is_wish,
             'time_ago' => $this->created_at ? $this->created_at->diffForHumans() : null,
+            'distance' => isset($this->distance) ? round($this->distance, 2) : null,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
         ];
 
 

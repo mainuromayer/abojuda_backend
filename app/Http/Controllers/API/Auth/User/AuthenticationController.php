@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\API\Auth\User;
 
+use App\Actions\GeoLocation;
 use App\Enum\Role;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\Auth\OtpVerifyRequest;
-use App\Http\Requests\Api\V1\Auth\SignupRequest;
-use App\Http\Requests\Api\V1\Auth\ForgotPasswordRequest;
-use App\Http\Requests\Api\V1\Auth\ResetPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\ResendOtpRequest;
-use App\Http\Resources\Api\V1\Auth\UserResource;
-use App\Http\Resources\Api\V1\Auth\GuestResource;
+use App\Http\Requests\Api\V1\Auth\ResetPasswordRequest;
+use App\Http\Requests\Api\V1\Auth\SignupRequest;
 use App\Http\Resources\Api\V1\Auth\ForgotPasswordResource;
-use App\Http\Resources\Api\V1\Auth\VerifyOtpResource;
-use App\Http\Resources\Api\V1\Auth\ResetPasswordResource;
+use App\Http\Resources\Api\V1\Auth\GuestResource;
 use App\Http\Resources\Api\V1\Auth\ResendOtpResource;
+use App\Http\Resources\Api\V1\Auth\ResetPasswordResource;
+use App\Http\Resources\Api\V1\Auth\UserResource;
+use App\Http\Resources\Api\V1\Auth\VerifyOtpResource;
 use App\Mail\Api\V1\SendOtpMail;
 use App\Models\User;
 use App\Traits\ApiResponse;
@@ -73,6 +74,22 @@ class AuthenticationController extends Controller
                 $user->password = Hash::make($cachedData['password']);
                 $user->province = $cachedData['province'] ?? null;
                 $user->city = $cachedData['city'] ?? null;
+
+                $latitude = $cachedData['latitude'] ?? null;
+                $longitude = $cachedData['longitude'] ?? null;
+
+                if (is_null($latitude) || is_null($longitude)) {
+                    if ($user->city || $user->province) {
+                        $address = implode(', ', array_filter([$user->city, $user->province]));
+                        $geoLocation = app(GeoLocation::class);
+                        $coords = $geoLocation->getCoordinates($address);
+                        $latitude = $coords['latitude'] ?? null;
+                        $longitude = $coords['longitude'] ?? null;
+                    }
+                }
+
+                $user->latitude = $latitude;
+                $user->longitude = $longitude;
                 $user->role = Role::USER;
                 $user->status = 'active';
                 $user->save();

@@ -28,10 +28,18 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use App\Actions\GeoLocation;
 
 class PostController extends Controller
 {
     use ApiResponse;
+
+    private $geoLocation;
+
+    public function __construct(GeoLocation $geoLocation)
+    {
+        $this->geoLocation = $geoLocation;
+    }
 
     public function index(IndexRequest $request)
     {
@@ -39,8 +47,20 @@ class PostController extends Controller
             $query = Post::where('status', 'active')->with('category');
             $this->applyFilters($query, $request);
 
-            if (!$request->filled('sort_by')) {
-                $query->latest();
+            $user = auth('api')->user();
+            if ($user && $user->latitude && $user->longitude) {
+                $latitude = $user->latitude;
+                $longitude = $user->longitude;
+
+                $query->selectRaw("posts.*, (6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance", [$latitude, $longitude, $latitude]);
+
+                if (!$request->filled('sort_by')) {
+                    $query->orderBy('distance', 'asc');
+                }
+            } else {
+                if (!$request->filled('sort_by')) {
+                    $query->latest();
+                }
             }
 
             $posts = $query->paginate($request->input('per_page', 10));
@@ -68,7 +88,7 @@ class PostController extends Controller
             if (!$post) {
                 return $this->sendError('Post not found.', [], 404);
             }
-            
+
             $post->increment('views');
 
             return $this->sendResponse(new PostResource($post), 'Post retrieved successfully.');
@@ -162,11 +182,11 @@ class PostController extends Controller
             $totalMessage = 0; // Default to 0 since no chat/message tables exist yet
 
             return $this->sendResponse([
-                'total_post'    => $totalPost,
-                'total_view'    => $totalView,
-                'total_wish'    => $totalWish,
+                'total_post' => $totalPost,
+                'total_view' => $totalView,
+                'total_wish' => $totalWish,
                 'total_message' => $totalMessage,
-                'posts'         => AuthPostResource::collection($posts),
+                'posts' => AuthPostResource::collection($posts),
             ], 'User posts retrieved successfully.', 200, null, $posts);
         } catch (Exception $e) {
             return $this->sendError('Failed to retrieve user posts.', ['error' => $e->getMessage()], 500);
@@ -618,6 +638,13 @@ class PostController extends Controller
             $post->province = $draftData['province'] ?? null;
             $post->city = $draftData['city'] ?? null;
             $post->address = $draftData['address'] ?? null;
+
+            // Resolve coordinates via GeoLocation
+            $postAddress = implode(', ', array_filter([$post->address, $post->city, $post->province]));
+            $coords = $this->geoLocation->getCoordinates($postAddress);
+            $post->latitude = $coords['latitude'] ?? null;
+            $post->longitude = $coords['longitude'] ?? null;
+
             $post->phone = $draftData['phone'] ?? null;
             $post->whatsapp = $draftData['whatsapp'] ?? null;
             $post->email = $draftData['email'] ?? null;
@@ -642,13 +669,13 @@ class PostController extends Controller
 
                 $bh = new BusinessHour();
                 $bh->post_id = $post->id;
-                $bh->sunday    = $normalizedHours['sunday'] ?? null;
-                $bh->monday    = $normalizedHours['monday'] ?? null;
-                $bh->tuesday   = $normalizedHours['tuesday'] ?? null;
+                $bh->sunday = $normalizedHours['sunday'] ?? null;
+                $bh->monday = $normalizedHours['monday'] ?? null;
+                $bh->tuesday = $normalizedHours['tuesday'] ?? null;
                 $bh->wednesday = $normalizedHours['wednesday'] ?? null;
-                $bh->thursday  = $normalizedHours['thursday'] ?? null;
-                $bh->friday    = $normalizedHours['friday'] ?? null;
-                $bh->saturday  = $normalizedHours['saturday'] ?? null;
+                $bh->thursday = $normalizedHours['thursday'] ?? null;
+                $bh->friday = $normalizedHours['friday'] ?? null;
+                $bh->saturday = $normalizedHours['saturday'] ?? null;
                 $bh->save();
             }
 
@@ -689,129 +716,129 @@ class PostController extends Controller
 
         if ($categorySlug === 'buy-sell') {
             return [
-                'user_id'       => $draftData['user_id'] ?? null,
-                'user_name'     => $user?->name,
-                'user_since'    => $user?->created_at ? (string)$user->created_at->format('Y') : null,
-                'category_id'   => $categoryId,
+                'user_id' => $draftData['user_id'] ?? null,
+                'user_name' => $user?->name,
+                'user_since' => $user?->created_at ? (string) $user->created_at->format('Y') : null,
+                'category_id' => $categoryId,
                 'category_name' => $categoryName,
                 'category_slug' => $categorySlug,
-                'thumbnail'     => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
-                'photos'        => $resolvedPhotos,
-                'title'         => $draftData['title'] ?? null,
-                'description'   => $draftData['description'] ?? null,
-                'price'         => $draftData['price'] ?? null,
-                'condition'     => $draftData['condition'] ?? null,
-                'province'      => $draftData['province'] ?? null,
-                'city'          => $draftData['city'] ?? null,
-                'address'       => $draftData['address'] ?? null,
-                'phone'         => $draftData['phone'] ?? null,
-                'whatsapp'      => $draftData['whatsapp'] ?? null,
-                'email'         => $draftData['email'] ?? null,
-                'is_app_chat'   => (bool)($draftData['is_app_chat'] ?? false),
-                'status'        => $draftData['status'] ?? null,
+                'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
+                'photos' => $resolvedPhotos,
+                'title' => $draftData['title'] ?? null,
+                'description' => $draftData['description'] ?? null,
+                'price' => $draftData['price'] ?? null,
+                'condition' => $draftData['condition'] ?? null,
+                'province' => $draftData['province'] ?? null,
+                'city' => $draftData['city'] ?? null,
+                'address' => $draftData['address'] ?? null,
+                'phone' => $draftData['phone'] ?? null,
+                'whatsapp' => $draftData['whatsapp'] ?? null,
+                'email' => $draftData['email'] ?? null,
+                'is_app_chat' => (bool) ($draftData['is_app_chat'] ?? false),
+                'status' => $draftData['status'] ?? null,
             ];
         } elseif ($categorySlug === 'jobs') {
             return [
-                'user_id'       => $draftData['user_id'] ?? null,
-                'user_name'     => $user?->name,
-                'user_since'    => $user?->created_at ? (string)$user->created_at->format('Y') : null,
-                'category_id'   => $categoryId,
+                'user_id' => $draftData['user_id'] ?? null,
+                'user_name' => $user?->name,
+                'user_since' => $user?->created_at ? (string) $user->created_at->format('Y') : null,
+                'category_id' => $categoryId,
                 'category_name' => $categoryName,
                 'category_slug' => $categorySlug,
-                'thumbnail'     => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
-                'title'         => $draftData['title'] ?? null,
-                'company_name'  => $draftData['company_name'] ?? null,
-                'description'   => $draftData['description'] ?? null,
-                'job_type'      => $draftData['job_type'] ?? null,
-                'province'      => $draftData['province'] ?? null,
-                'city'          => $draftData['city'] ?? null,
-                'address'       => $draftData['address'] ?? null,
-                'phone'         => $draftData['phone'] ?? null,
-                'whatsapp'      => $draftData['whatsapp'] ?? null,
-                'email'         => $draftData['email'] ?? null,
-                'is_app_chat'   => (bool)($draftData['is_app_chat'] ?? false),
-                'status'        => $draftData['status'] ?? null,
+                'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
+                'title' => $draftData['title'] ?? null,
+                'company_name' => $draftData['company_name'] ?? null,
+                'description' => $draftData['description'] ?? null,
+                'job_type' => $draftData['job_type'] ?? null,
+                'province' => $draftData['province'] ?? null,
+                'city' => $draftData['city'] ?? null,
+                'address' => $draftData['address'] ?? null,
+                'phone' => $draftData['phone'] ?? null,
+                'whatsapp' => $draftData['whatsapp'] ?? null,
+                'email' => $draftData['email'] ?? null,
+                'is_app_chat' => (bool) ($draftData['is_app_chat'] ?? false),
+                'status' => $draftData['status'] ?? null,
             ];
         } elseif ($categorySlug === 'business-directory') {
             return [
-                'user_id'           => $draftData['user_id'] ?? null,
-                'user_name'         => $user?->name,
-                'user_since'        => $user?->created_at ? (string)$user->created_at->format('Y') : null,
-                'category_id'       => $categoryId,
-                'category_name'     => $categoryName,
-                'category_slug'     => $categorySlug,
-                'thumbnail'         => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
-                'business_name'     => $draftData['business_name'] ?? null,
+                'user_id' => $draftData['user_id'] ?? null,
+                'user_name' => $user?->name,
+                'user_since' => $user?->created_at ? (string) $user->created_at->format('Y') : null,
+                'category_id' => $categoryId,
+                'category_name' => $categoryName,
+                'category_slug' => $categorySlug,
+                'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
+                'business_name' => $draftData['business_name'] ?? null,
                 'business_category' => $draftData['business_category'] ?? null,
-                'description'       => $draftData['description'] ?? null,
-                'website'           => $draftData['website'] ?? null,
-                'photos'            => $resolvedPhotos,
-                'province'          => $draftData['province'] ?? null,
-                'city'              => $draftData['city'] ?? null,
-                'address'           => $draftData['address'] ?? null,
-                'phone'             => $draftData['phone'] ?? null,
-                'whatsapp'          => $draftData['whatsapp'] ?? null,
-                'email'             => $draftData['email'] ?? null,
-                'is_app_chat'       => (bool)($draftData['is_app_chat'] ?? false),
-                'logo'              => isset($draftData['logo']) ? $this->getImageUrl($draftData['logo']) : null,
-                'status'            => $draftData['status'] ?? null,
-                'business_hours'    => $draftData['business_hours'] ?? null,
+                'description' => $draftData['description'] ?? null,
+                'website' => $draftData['website'] ?? null,
+                'photos' => $resolvedPhotos,
+                'province' => $draftData['province'] ?? null,
+                'city' => $draftData['city'] ?? null,
+                'address' => $draftData['address'] ?? null,
+                'phone' => $draftData['phone'] ?? null,
+                'whatsapp' => $draftData['whatsapp'] ?? null,
+                'email' => $draftData['email'] ?? null,
+                'is_app_chat' => (bool) ($draftData['is_app_chat'] ?? false),
+                'logo' => isset($draftData['logo']) ? $this->getImageUrl($draftData['logo']) : null,
+                'status' => $draftData['status'] ?? null,
+                'business_hours' => $draftData['business_hours'] ?? null,
             ];
         } elseif ($categorySlug === 'services') {
             return [
-                'user_id'       => $draftData['user_id'] ?? null,
-                'user_name'     => $user?->name,
-                'user_since'    => $user?->created_at ? (string)$user->created_at->format('Y') : null,
-                'category_id'   => $categoryId,
+                'user_id' => $draftData['user_id'] ?? null,
+                'user_name' => $user?->name,
+                'user_since' => $user?->created_at ? (string) $user->created_at->format('Y') : null,
+                'category_id' => $categoryId,
                 'category_name' => $categoryName,
                 'category_slug' => $categorySlug,
-                'thumbnail'     => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
-                'photos'        => $resolvedPhotos,
-                'title'         => $draftData['title'] ?? null,
-                'description'   => $draftData['description'] ?? null,
-                'service_area'  => $draftData['service_area'] ?? null,
-                'province'      => $draftData['province'] ?? null,
-                'city'          => $draftData['city'] ?? null,
-                'address'       => $draftData['address'] ?? null,
-                'phone'         => $draftData['phone'] ?? null,
-                'whatsapp'      => $draftData['whatsapp'] ?? null,
-                'email'         => $draftData['email'] ?? null,
-                'is_app_chat'   => (bool)($draftData['is_app_chat'] ?? false),
-                'status'        => $draftData['status'] ?? null,
+                'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
+                'photos' => $resolvedPhotos,
+                'title' => $draftData['title'] ?? null,
+                'description' => $draftData['description'] ?? null,
+                'service_area' => $draftData['service_area'] ?? null,
+                'province' => $draftData['province'] ?? null,
+                'city' => $draftData['city'] ?? null,
+                'address' => $draftData['address'] ?? null,
+                'phone' => $draftData['phone'] ?? null,
+                'whatsapp' => $draftData['whatsapp'] ?? null,
+                'email' => $draftData['email'] ?? null,
+                'is_app_chat' => (bool) ($draftData['is_app_chat'] ?? false),
+                'status' => $draftData['status'] ?? null,
             ];
         }
 
         return [
-            'user_id'           => $draftData['user_id'] ?? null,
-            'user_name'         => $user?->name,
-            'user_since'        => $user?->created_at ? (string)$user->created_at->format('Y') : null,
-            'category_id'       => $categoryId,
-            'category_name'     => $categoryName,
-            'category_slug'     => $categorySlug,
-            'thumbnail'         => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
-            'title'             => $draftData['title'] ?? null,
-            'business_name'     => $draftData['business_name'] ?? null,
-            'company_name'      => $draftData['company_name'] ?? null,
+            'user_id' => $draftData['user_id'] ?? null,
+            'user_name' => $user?->name,
+            'user_since' => $user?->created_at ? (string) $user->created_at->format('Y') : null,
+            'category_id' => $categoryId,
+            'category_name' => $categoryName,
+            'category_slug' => $categorySlug,
+            'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
+            'title' => $draftData['title'] ?? null,
+            'business_name' => $draftData['business_name'] ?? null,
+            'company_name' => $draftData['company_name'] ?? null,
             'business_category' => $draftData['business_category'] ?? null,
-            'description'       => $draftData['description'] ?? null,
-            'price'             => $draftData['price'] ?? null,
-            'condition'         => $draftData['condition'] ?? null,
-            'job_type'          => $draftData['job_type'] ?? null,
-            'service_area'      => $draftData['service_area'] ?? null,
-            'website'           => $draftData['website'] ?? null,
-            'logo'              => isset($draftData['logo']) ? $this->getImageUrl($draftData['logo']) : null,
-            'photos'            => $resolvedPhotos,
-            'province'          => $draftData['province'] ?? null,
-            'city'              => $draftData['city'] ?? null,
-            'address'           => $draftData['address'] ?? null,
-            'phone'             => $draftData['phone'] ?? null,
-            'whatsapp'          => $draftData['whatsapp'] ?? null,
-            'email'             => $draftData['email'] ?? null,
-            'is_app_chat'       => (bool)($draftData['is_app_chat'] ?? false),
-            'status'            => $draftData['status'] ?? null,
+            'description' => $draftData['description'] ?? null,
+            'price' => $draftData['price'] ?? null,
+            'condition' => $draftData['condition'] ?? null,
+            'job_type' => $draftData['job_type'] ?? null,
+            'service_area' => $draftData['service_area'] ?? null,
+            'website' => $draftData['website'] ?? null,
+            'logo' => isset($draftData['logo']) ? $this->getImageUrl($draftData['logo']) : null,
+            'photos' => $resolvedPhotos,
+            'province' => $draftData['province'] ?? null,
+            'city' => $draftData['city'] ?? null,
+            'address' => $draftData['address'] ?? null,
+            'phone' => $draftData['phone'] ?? null,
+            'whatsapp' => $draftData['whatsapp'] ?? null,
+            'email' => $draftData['email'] ?? null,
+            'is_app_chat' => (bool) ($draftData['is_app_chat'] ?? false),
+            'status' => $draftData['status'] ?? null,
         ];
     }
-        
+
     public function update(UpdatePostRequest $request)
     {
         try {
@@ -870,23 +897,48 @@ class PostController extends Controller
             }
 
             // Map standard fields if present
-            if ($request->has('title')) $post->title = $request->title;
-            if ($request->has('company_name')) $post->company_name = $request->company_name;
-            if ($request->has('business_name')) $post->business_name = $request->business_name;
-            if ($request->has('business_category')) $post->business_category = $request->business_category;
-            if ($request->has('description')) $post->description = $request->description;
-            if ($request->has('price')) $post->price = $request->price;
-            if ($request->has('condition')) $post->condition = $request->condition;
-            if ($request->has('job_type')) $post->job_type = $request->job_type;
-            if ($request->has('service_area')) $post->service_area = $request->service_area;
-            if ($request->has('province')) $post->province = $request->province;
-            if ($request->has('city')) $post->city = $request->city;
-            if ($request->has('address')) $post->address = $request->address;
-            if ($request->has('phone')) $post->phone = $request->phone;
-            if ($request->has('whatsapp')) $post->whatsapp = $request->whatsapp;
-            if ($request->has('email')) $post->email = $request->email;
-            if ($request->has('website')) $post->website = $request->website;
-            if ($request->has('is_app_chat')) $post->is_app_chat = $request->boolean('is_app_chat');
+            if ($request->has('title'))
+                $post->title = $request->title;
+            if ($request->has('company_name'))
+                $post->company_name = $request->company_name;
+            if ($request->has('business_name'))
+                $post->business_name = $request->business_name;
+            if ($request->has('business_category'))
+                $post->business_category = $request->business_category;
+            if ($request->has('description'))
+                $post->description = $request->description;
+            if ($request->has('price'))
+                $post->price = $request->price;
+            if ($request->has('condition'))
+                $post->condition = $request->condition;
+            if ($request->has('job_type'))
+                $post->job_type = $request->job_type;
+            if ($request->has('service_area'))
+                $post->service_area = $request->service_area;
+            if ($request->has('province'))
+                $post->province = $request->province;
+            if ($request->has('city'))
+                $post->city = $request->city;
+            if ($request->has('address'))
+                $post->address = $request->address;
+            if ($request->has('phone'))
+                $post->phone = $request->phone;
+            if ($request->has('whatsapp'))
+                $post->whatsapp = $request->whatsapp;
+            if ($request->has('email'))
+                $post->email = $request->email;
+            if ($request->has('website'))
+                $post->website = $request->website;
+            if ($request->has('is_app_chat'))
+                $post->is_app_chat = $request->boolean('is_app_chat');
+
+            // If location changed, update geocoding coordinates
+            if ($request->has('province') || $request->has('city') || $request->has('address')) {
+                $postAddress = implode(', ', array_filter([$post->address, $post->city, $post->province]));
+                $coords = $this->geoLocation->getCoordinates($postAddress);
+                $post->latitude = $coords['latitude'] ?? null;
+                $post->longitude = $coords['longitude'] ?? null;
+            }
 
             // Force cleanup of unrelated fields depending on category
             $categorySlug = $post->category?->slug ?? '';
@@ -953,7 +1005,7 @@ class PostController extends Controller
                     $oldValues[$field] = $post->getOriginal($field);
                     $newValues[$field] = $newValue;
                 }
-                
+
                 if (!empty($newValues)) {
                     PostHistory::create([
                         'post_id' => $post->id,
@@ -977,13 +1029,13 @@ class PostController extends Controller
 
                     $bh = $post->businessHours ?: new BusinessHour();
                     $bh->post_id = $post->id;
-                    $bh->sunday    = $normalizedHours['sunday'] ?? null;
-                    $bh->monday    = $normalizedHours['monday'] ?? null;
-                    $bh->tuesday   = $normalizedHours['tuesday'] ?? null;
+                    $bh->sunday = $normalizedHours['sunday'] ?? null;
+                    $bh->monday = $normalizedHours['monday'] ?? null;
+                    $bh->tuesday = $normalizedHours['tuesday'] ?? null;
                     $bh->wednesday = $normalizedHours['wednesday'] ?? null;
-                    $bh->thursday  = $normalizedHours['thursday'] ?? null;
-                    $bh->friday    = $normalizedHours['friday'] ?? null;
-                    $bh->saturday  = $normalizedHours['saturday'] ?? null;
+                    $bh->thursday = $normalizedHours['thursday'] ?? null;
+                    $bh->friday = $normalizedHours['friday'] ?? null;
+                    $bh->saturday = $normalizedHours['saturday'] ?? null;
                     $bh->save();
                 }
             }

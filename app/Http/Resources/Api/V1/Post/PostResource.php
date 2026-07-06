@@ -53,6 +53,9 @@ class PostResource extends JsonResource
                 'status'        => $this->status,
                 'created_at'    => $this->created_at,
                 'time_ago'      => $this->created_at ? $this->created_at->diffForHumans() : null,
+                'latitude'      => $this->latitude,
+                'longitude'     => $this->longitude,
+                'distance'      => isset($this->distance) ? round($this->distance, 2) : null,
             ];
         } elseif ($categorySlug === 'jobs') {
             return [
@@ -77,6 +80,9 @@ class PostResource extends JsonResource
                 'status'        => $this->status,
                 'created_at'    => $this->created_at,
                 'time_ago'      => $this->created_at ? $this->created_at->diffForHumans() : null,
+                'latitude'      => $this->latitude,
+                'longitude'     => $this->longitude,
+                'distance'      => isset($this->distance) ? round($this->distance, 2) : null,
             ];
         } elseif ($categorySlug === 'business-directory') {
             return [
@@ -103,6 +109,9 @@ class PostResource extends JsonResource
                 'status'            => $this->status,
                 'created_at'        => $this->created_at,
                 'time_ago'          => $this->created_at ? $this->created_at->diffForHumans() : null,
+                'latitude'          => $this->latitude,
+                'longitude'         => $this->longitude,
+                'distance'          => isset($this->distance) ? round($this->distance, 2) : null,
                 'business_hours'    => $this->relationLoaded('businessHours') && $this->businessHours ? [
                     'sunday'    => $this->businessHours->sunday,
                     'monday'    => $this->businessHours->monday,
@@ -136,6 +145,9 @@ class PostResource extends JsonResource
                 'status'        => $this->status,
                 'created_at'    => $this->created_at,
                 'time_ago'      => $this->created_at ? $this->created_at->diffForHumans() : null,
+                'latitude'      => $this->latitude,
+                'longitude'     => $this->longitude,
+                'distance'      => isset($this->distance) ? round($this->distance, 2) : null,
             ];
         }
 
@@ -170,6 +182,9 @@ class PostResource extends JsonResource
             'status'        => $this->status,
             'created_at'    => $this->created_at,
             'time_ago'      => $this->created_at ? $this->created_at->diffForHumans() : null,
+            'latitude'      => $this->latitude,
+            'longitude'     => $this->longitude,
+            'distance'      => isset($this->distance) ? round($this->distance, 2) : null,
             'business_hours' => $this->relationLoaded('businessHours') && $this->businessHours ? [
                 'sunday'    => $this->businessHours->sunday,
                 'monday'    => $this->businessHours->monday,

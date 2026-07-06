@@ -33,6 +33,8 @@ class Post extends Model
         'province',
         'city',
         'address',
+        'latitude',
+        'longitude',
         'phone',
         'email',
         'whatsapp',
