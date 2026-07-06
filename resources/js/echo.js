@@ -1,5 +1,4 @@
 import Echo from 'laravel-echo';
-
 import Pusher from 'pusher-js';
 window.Pusher = Pusher;
 
@@ -13,24 +12,17 @@ window.Echo = new Echo({
     enabledTransports: ['ws', 'wss'],
 });
 
-console.log(
-    'reverb working..'
-);
+console.log('reverb working..');
 
-
-/**
- * Chat channel listener helpers
- */
+// Expose global helpers to subscribe/unsubscribe chat
 window.joinChat = (conversationId, callback) => {
-    return window.Echo.private(`chat.${conversationId}`)
-        .listen('.message.sent', (message) => {
-            if (callback) {
-                callback(message);
-            }
-        });
+    console.log(`Subscribing to public channel: chat.${conversationId}`);
+    return window.Echo.channel(`chat.${conversationId}`)
+        .listen('.message.sent', (data) => callback('message.sent', data))
+        .listen('.messages.read', (data) => callback('messages.read', data));
 };
 
 window.leaveChat = (conversationId) => {
+    console.log(`Leaving channel: chat.${conversationId}`);
     window.Echo.leave(`chat.${conversationId}`);
 };
-

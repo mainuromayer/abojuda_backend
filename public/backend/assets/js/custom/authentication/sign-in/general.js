@@ -204,6 +204,10 @@ var KTSigninGeneral = function () {
             form = document.querySelector('#kt_sign_in_form');
             submitButton = document.querySelector('#kt_sign_in_submit');
 
+            if (!form || !submitButton) {
+                return;
+            }
+
             handleValidation();
 
             if (isValidUrl(submitButton.closest('form').getAttribute('action'))) {

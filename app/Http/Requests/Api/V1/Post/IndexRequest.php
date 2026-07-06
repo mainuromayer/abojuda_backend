@@ -27,6 +27,8 @@ class IndexRequest extends FormRequest
             'max_price'   => 'nullable|numeric|min:0',
             'sort_by'     => 'nullable|string|in:featured,newest,oldest,price_low_high,price_high_low',
             'search'      => 'nullable|string|max:255',
+            'per_page'    => 'nullable|integer|min:1|max:100',
+            'page'        => 'nullable|integer|min:1',
         ];
     }
 }

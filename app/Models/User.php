@@ -133,7 +133,7 @@ class User extends Authenticatable implements JWTSubject
     public function getBlockedUserIds(): array
     {
         $blocked = is_array($this->blocked_users) ? $this->blocked_users : [];
-        $blockedIds = array_map(fn($item) => (int)($item['user_id'] ?? 0), $blocked);
+        $blockedIds = array_map(fn($item) => (int) ($item['user_id'] ?? 0), $blocked);
 
         $blockedBy = self::whereJsonContains('blocked_users', ['user_id' => $this->id])
             ->pluck('id')
@@ -145,5 +145,10 @@ class User extends Authenticatable implements JWTSubject
     public function reportsAgainst()
     {
         return $this->hasMany(Report::class, 'reported_user_id');
+    }
+
+    public function firebaseTokens()
+    {
+        return $this->hasMany(FirebaseToken::class);
     }
 }

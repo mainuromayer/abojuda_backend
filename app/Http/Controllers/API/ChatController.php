@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Events\MessageSent;
+use App\Events\MessagesRead;
 use App\Helpers\helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Chat\GetMessagesRequest;
@@ -193,6 +194,27 @@ class ChatController extends Controller
             $message->load('sender');
             broadcast(new MessageSent($message))->toOthers();
 
+            // Send Firebase push notification to the receiver
+            $receiverId = ($conversation->sender_id === $senderId) ? $conversation->receiver_id : $conversation->sender_id;
+            $receiver = User::find($receiverId);
+            if ($receiver) {
+                $tokens = $receiver->firebaseTokens()->where('is_active', true)->pluck('token')->toArray();
+                if (!empty($tokens)) {
+                    $notificationData = [
+                        'title' => $user->name ?? 'New Message',
+                        'message' => $message->message ?? 'Sent an attachment',
+                        'data' => [
+                            'type' => 'chat',
+                            'conversation_id' => (string)$conversation->id,
+                            'sender_id' => (string)$senderId,
+                        ]
+                    ];
+                    foreach ($tokens as $token) {
+                        helpers::sendNotifyMobile($token, $notificationData);
+                    }
+                }
+            }
+
             return $this->sendResponse(new MessageResource($message), 'Message sent successfully.');
         } catch (Exception $e) {
             return $this->sendError('Failed to send message.', ['error' => $e->getMessage()], 500);
@@ -231,6 +253,9 @@ class ChatController extends Controller
                 $msg->is_read = true;
                 $msg->save();
             }
+
+            // Broadcast that the messages were read
+            broadcast(new MessagesRead($conversation->id, $userId))->toOthers();
 
             return $this->sendResponse(null, 'Conversation marked as read.');
         } catch (Exception $e) {

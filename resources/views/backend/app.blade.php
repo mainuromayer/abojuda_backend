@@ -7,6 +7,7 @@
 <head>
     <title>@yield('title')</title>
     <meta charset="utf-8" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description"
         content="Craft admin dashboard live demo. Check out all the features of the admin panel. A large number of settings, additional services and widgets." />
     <meta name="keywords"

@@ -43,9 +43,9 @@ class PostController extends Controller
                 $query->latest();
             }
 
-            $posts = $query->get();
+            $posts = $query->paginate($request->input('per_page', 10));
 
-            return $this->sendResponse(PostCardResource::collection($posts), 'Posts retrieved successfully.');
+            return $this->sendResponse(PostCardResource::collection($posts), 'Posts retrieved successfully.', 200, null, $posts);
         } catch (Exception $e) {
             return $this->sendError('Failed to retrieve posts.', ['error' => $e->getMessage()], 500);
         }
@@ -128,9 +128,9 @@ class PostController extends Controller
                 $query->latest();
             }
 
-            $posts = $query->get();
+            $posts = $query->paginate($request->input('per_page', 10));
 
-            return $this->sendResponse(PostCardResource::collection($posts), 'Posts retrieved successfully.');
+            return $this->sendResponse(PostCardResource::collection($posts), 'Posts retrieved successfully.', 200, null, $posts);
         } catch (Exception $e) {
             return $this->sendError('Failed to retrieve posts.', ['error' => $e->getMessage()], 500);
         }
@@ -154,7 +154,7 @@ class PostController extends Controller
                 $query->where('is_featured', $request->boolean('is_featured'));
             }
 
-            $posts = $query->latest()->get();
+            $posts = $query->latest()->paginate($request->input('per_page', 10));
 
             $totalPost = Post::where('user_id', $user->id)->count();
             $totalView = (int) Post::where('user_id', $user->id)->sum('views');
@@ -167,7 +167,7 @@ class PostController extends Controller
                 'total_wish'    => $totalWish,
                 'total_message' => $totalMessage,
                 'posts'         => AuthPostResource::collection($posts),
-            ], 'User posts retrieved successfully.');
+            ], 'User posts retrieved successfully.', 200, null, $posts);
         } catch (Exception $e) {
             return $this->sendError('Failed to retrieve user posts.', ['error' => $e->getMessage()], 500);
         }

@@ -9,6 +9,7 @@
 <head>
     <title>@yield('title')</title>
     <meta charset="utf-8" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description"
         content="Craft admin dashboard live demo. Check out all the features of the admin panel. A large number of settings, additional services and widgets." />
     <meta name="keywords"
@@ -26,7 +27,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!--Begin::Google Tag Manager -->
-    <script>
+    {{-- <script>
         (function (w, d, s, l, i) {
             w[l] = w[l] || [];
             w[l].push({
@@ -41,7 +42,7 @@
                 '../../../../www.googletagmanager.com/gtm5445.html?id=' + i + dl;
             f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-5FS8GGP');
-    </script>
+    </script> --}}
     <!--End::Google Tag Manager -->
 
     <script>

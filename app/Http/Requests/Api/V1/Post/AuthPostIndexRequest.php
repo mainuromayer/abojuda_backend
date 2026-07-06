@@ -22,6 +22,8 @@ class AuthPostIndexRequest extends FormRequest
         return [
             'status'      => 'nullable|string|in:pending,active,expired,reject',
             'is_featured' => 'nullable|boolean',
+            'per_page'    => 'nullable|integer|min:1|max:100',
+            'page'        => 'nullable|integer|min:1',
         ];
     }
 }

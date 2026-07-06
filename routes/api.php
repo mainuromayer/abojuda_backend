@@ -48,6 +48,15 @@ Route::post('v1/social-login', [SocialAuthController::class, 'SocialLogin']);
 // Route for contact support
 Route::post('v1/contact-support', [SupportController::class, 'contactSupport']);
 
+/**
+ * Firebase Token Module
+ */
+Route::prefix('v1/firebase/token')->controller(FirebaseTokenController::class)->group(function () {
+    Route::post('/add', 'store');
+    Route::post('/get', 'getToken');
+    Route::post('/delete', 'deleteToken');
+});
+
 Route::group(['middleware' => ['jwt.verify']], function () {
     /**
      * Guest-accessible authenticated routes
@@ -55,7 +64,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::prefix('v1/auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'index']);
         Route::post('/logout', [ProfileController::class, 'logout']);
-        
+
         Route::get('/wishes', [WishController::class, 'index']);
         Route::post('/wishes', [WishController::class, 'toggle']);
     });
