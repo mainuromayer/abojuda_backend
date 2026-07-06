@@ -10,6 +10,7 @@ use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\WishController;
 use App\Http\Controllers\API\SupportController;
 use App\Http\Controllers\API\ReportController;
+use App\Http\Controllers\API\ChatController;
 
 //! Route for user
 Route::prefix('v1')->controller(AuthenticationController::class)->group(function () {
@@ -81,6 +82,12 @@ Route::group(['middleware' => ['jwt.verify']], function () {
 
             Route::post('/report/user', [ReportController::class, 'reportUser']);
             Route::post('/report/post', [ReportController::class, 'reportPost']);
+
+            // Chat/Messaging Routes
+            Route::get('/conversations', [ChatController::class, 'index']);
+            Route::get('/conversations/messages', [ChatController::class, 'messages']);
+            Route::post('/conversations/send', [ChatController::class, 'sendMessage']);
+            Route::post('/conversations/read', [ChatController::class, 'markAsRead']);
         });
     });
 });

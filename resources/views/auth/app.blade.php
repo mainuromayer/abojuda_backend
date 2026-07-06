@@ -23,9 +23,11 @@
 
     @include('auth.partials.style')
 
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <!--Begin::Google Tag Manager -->
     <script>
-        (function(w, d, s, l, i) {
+        (function (w, d, s, l, i) {
             w[l] = w[l] || [];
             w[l].push({
                 'gtm.start': new Date().getTime(),

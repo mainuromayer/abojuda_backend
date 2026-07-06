@@ -21,6 +21,8 @@
 
 
     @include('backend.partials.style')
+    
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!--Begin::Google Tag Manager -->
     {{--    <script> --}}
