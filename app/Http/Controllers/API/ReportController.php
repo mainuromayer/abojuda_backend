@@ -19,7 +19,7 @@ class ReportController extends Controller
     public function reportUser(ReportUserRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }
@@ -56,7 +56,7 @@ class ReportController extends Controller
     public function reportPost(ReportPostRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }

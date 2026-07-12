@@ -103,9 +103,11 @@ class UserController extends Controller
                                     <div class="menu-item px-3">
                                         <a href="#" data-id="' . $row->id . '" class="menu-link edit-user-btn px-3">Edit</a>
                                     </div>
+                                    ' . ($row->status !== 'pending_delete' ? '
                                     <div class="menu-item px-3">
                                         <a href="#" class="menu-link px-3 delete-user-btn" data-id="' . $row->id . '">Delete</a>
                                     </div>
+                                    ' : '') . '
                                 </div>
                             </div>
                             ';
@@ -269,20 +271,17 @@ class UserController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'You cannot delete admin account']);
             }
 
-            if ($user->avatar) {
-                Helpers::deleteFile($user->avatar, config('app.file_system'));
+            if ($user->status === 'pending_delete') {
+                $user->status = 'active';
+                $user->save();
+                return response()->json(['status' => 'success', 'message' => 'User account deletion request rejected. User status set to active.']);
             }
 
-            $user->update([
-                'email' => null,
-                'avatar' => null,
-            ]);
-
-            // Soft delete user
+            // Permanently delete user
             $user->delete();
 
-            return response()->json(['status' => 'success', 'message' => 'User soft-deleted successfully.']);
-        } catch (\Exception $exception) {
+            return response()->json(['status' => 'success', 'message' => 'User permanently deleted successfully.']);
+        } catch (Exception $exception) {
             return response()->json(['status' => 'error', 'message' => $exception->getMessage()]);
         }
     }
@@ -294,17 +293,10 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            if ($user->avatar) {
-                Helpers::deleteFile($user->avatar, config('app.file_system'));
-            }
-            $user->update([
-                'email' => null,
-                'avatar' => null,
-                'status' => 'deleted',
-            ]);
+            // Permanently delete user
             $user->delete();
-            return response()->json(['success' => true, 'message' => 'User account deletion approved and deleted successfully.']);
-        } catch (\Exception $e) {
+            return response()->json(['success' => true, 'message' => 'User account deletion approved and permanently deleted successfully.']);
+        } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }

@@ -23,7 +23,7 @@ class WishController extends Controller
     public function index(IndexRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }
@@ -55,7 +55,7 @@ class WishController extends Controller
     public function toggle(StoreRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }

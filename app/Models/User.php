@@ -9,7 +9,6 @@ use App\Models\Post;
 use App\Models\Report;
 use App\Models\Wish;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
@@ -18,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, softDeletes, HasRoles;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -82,7 +81,7 @@ class User extends Authenticatable implements JWTSubject
         static::creating(function ($user) {
             // Generate uuid only if it's not already set
             if (empty($user->uuid)) {
-                $lastCode = self::withTrashed()->max('uuid') ?? 100000;
+                $lastCode = self::max('uuid') ?? 100000;
                 $user->uuid = $lastCode + 1;
             }
         });
@@ -102,6 +101,9 @@ class User extends Authenticatable implements JWTSubject
 
             // Delete reports
             $user->reports()->delete();
+
+            // Delete firebase tokens
+            $user->firebaseTokens()->delete();
         });
     }
 

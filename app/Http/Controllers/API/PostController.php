@@ -159,7 +159,7 @@ class PostController extends Controller
     public function userPosts(AuthPostIndexRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }
@@ -196,7 +196,7 @@ class PostController extends Controller
     public function deletePost(DeletePostRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }
@@ -311,7 +311,7 @@ class PostController extends Controller
     public function saveDraft(SaveDraftRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }
@@ -554,7 +554,7 @@ class PostController extends Controller
     public function getDraft()
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }
@@ -578,7 +578,7 @@ class PostController extends Controller
     public function store()
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }
@@ -842,7 +842,7 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!$user) {
                 return $this->sendError('Unauthenticated user.', [], 401);
             }

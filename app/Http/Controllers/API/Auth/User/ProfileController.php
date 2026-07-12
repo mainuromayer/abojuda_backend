@@ -30,7 +30,7 @@ class ProfileController extends Controller
     public function index()
     {
         try {
-            $auth = auth()->user();
+            $auth = auth('api')->user();
             return $this->sendResponse(new getResource($auth), 'User profile retrieved successfully.');
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
@@ -45,7 +45,7 @@ class ProfileController extends Controller
         $validated = $request->validated();
 
         try {
-            $auth = auth()->user();
+            $auth = auth('api')->user();
 
             if ($auth->role === Role::GUEST) {
                 return $this->sendError('Guest users cannot update their profile.', [], 403);
@@ -109,7 +109,7 @@ class ProfileController extends Controller
     public function changePassword(ChangePasswordRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!Hash::check($request->current_password, $user->password)) {
                 return $this->sendError('Current password does not match.', [], 422);
             }
@@ -133,7 +133,7 @@ class ProfileController extends Controller
         ]);
 
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             $targetUserId = (int)$request->input('user_id');
 
             if ($user->id === $targetUserId) {
@@ -175,7 +175,7 @@ class ProfileController extends Controller
     public function blockedUsersList()
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             $blockedEntries = is_array($user->blocked_users) ? $user->blocked_users : [];
 
             if (empty($blockedEntries)) {
@@ -207,7 +207,7 @@ class ProfileController extends Controller
     public function deleteAccount(DeleteAccountRequest $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             if (!Hash::check($request->password, $user->password)) {
                 return $this->sendError('Incorrect password.', [], 422);
             }
@@ -227,7 +227,7 @@ class ProfileController extends Controller
     public function getNotificationSettings()
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
             return $this->sendResponse([
                 'all_notification'   => $user->new_message && $user->marketing && $user->email_notification,
                 'new_message'        => (bool)$user->new_message,
@@ -245,7 +245,7 @@ class ProfileController extends Controller
     public function updateNotificationSettings(Request $request)
     {
         try {
-            $user = auth()->user();
+            $user = auth('api')->user();
 
             if ($request->has('all_notification')) {
                 $status = $request->boolean('all_notification');
