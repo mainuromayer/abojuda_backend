@@ -120,6 +120,7 @@ class AuthenticationController extends Controller
             return $this->sendResponse(new VerifyOtpResource(['email' => $email]), 'OTP verified successfully. You can now reset your password.', 200);
         }
     }
+    
     public function login(LoginRequest $request)
     {
         $validatedData = $request->validated();
