@@ -5,7 +5,7 @@
 
 @push('style')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
     <style>
 
     </style>
@@ -52,26 +52,25 @@
         <!--end::Content-->
 
         @push('script')
-            <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
             <script>
                 // DataTables initialization
                 $(document).ready(function() {
 
-                    // Initialize Quill editor for Add Page Modal
-                    let quillAdd = new Quill('#kt_add_page_content', {
-                        theme: 'snow',
-                        modules: {
-                            toolbar: [
-                                [{ 'header': [1, 2, false] }],
-                                ['bold', 'italic', 'underline'],
-                            ]
-                        },
-                        placeholder: 'Type your content here...'
-                    });
-
-                    // Sync Quill content to hidden input
-                    quillAdd.on('text-change', function() {
-                        document.getElementById('add_page_content_hidden').value = quillAdd.root.innerHTML;
+                    // Initialize Summernote editor
+                    $('#kt_add_page_content').summernote({
+                        placeholder: 'Type your content here...',
+                        tabsize: 2,
+                        height: 300,
+                        toolbar: [
+                            ['style', ['style']],
+                            ['font', ['bold', 'underline', 'clear']],
+                            ['color', ['color']],
+                            ['para', ['ul', 'ol', 'paragraph']],
+                            ['table', ['table']],
+                            ['insert', ['link', 'picture', 'video']],
+                            ['view', ['fullscreen', 'codeview', 'help']]
+                        ]
                     });
 
                     // Add Page
@@ -88,20 +87,20 @@
                             success: function(response) {
                                 if (response.success) {
                                     toastr.success(response.message);
-                                    $('#add-page-form')[0].reset();
-                                    $('#kt_modal_add_page').modal('hide');
-                                    $('#kt_table_users').DataTable().ajax.reload();
+                                    setTimeout(function() {
+                                        window.location.href = "{{ route('dynamic-pages.index') }}";
+                                    }, 1000);
                                 } else {
                                     toastr.error(response.message);
                                 }
                             },
                             error: function(xhr) {
-                                let errors = xhr.responseJSON.errors || {};
+                                let errors = xhr.responseJSON?.errors || {};
                                 let errorMsg = '';
                                 $.each(errors, function(key, value) {
                                     errorMsg += value[0] + '\n';
                                 });
-                                toastr.error(errorMsg || 'Something went wrong!');
+                                toastr.error(errorMsg || xhr.responseJSON?.message || 'Something went wrong!');
                             }
                         });
                     });

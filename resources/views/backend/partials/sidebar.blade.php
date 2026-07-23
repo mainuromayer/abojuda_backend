@@ -157,6 +157,58 @@
         <!--end:Post Management-->
 
 
+        <!--begin:Dynamic Page-->
+        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('dynamic-pages.*') ? 'show' : '' }}">
+            <!--begin:Menu link-->
+            <span class="menu-link">
+                <span class="menu-icon">
+                    <i class="ki-duotone ki-notepad fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                        <span class="path3"></span>
+                        <span class="path4"></span>
+                        <span class="path5"></span>
+                    </i>
+                </span>
+                <span class="menu-title">Dynamic Page</span>
+                <span class="menu-arrow"></span>
+            </span>
+            <!--end:Menu link-->
+
+            <!--begin:Menu sub-->
+            <div class="menu-sub menu-sub-accordion"
+                style="{{ request()->routeIs('dynamic-pages.*') ? '' : 'display: none; overflow: hidden;' }}">
+
+                <!--begin:Pages List-->
+                <div class="menu-item mb-1">
+                    <a class="menu-link {{ request()->routeIs('dynamic-pages.index') ? 'active' : '' }}"
+                        href="{{ route('dynamic-pages.index') }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">All Pages</span>
+                    </a>
+                </div>
+                <!--end:Pages List-->
+
+                <!--begin:Create Page-->
+                <div class="menu-item mb-1">
+                    <a class="menu-link {{ request()->routeIs('dynamic-pages.create') ? 'active' : '' }}"
+                        href="{{ route('dynamic-pages.create') }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">Create Page</span>
+                    </a>
+                </div>
+                <!--end:Create Page-->
+
+            </div>
+            <!--end:Menu sub-->
+        </div>
+        <!--end:Page Management-->
+
+
             <!--begin:Menu item-->
             <div class="menu-item pt-5">
                 <div class="menu-content">

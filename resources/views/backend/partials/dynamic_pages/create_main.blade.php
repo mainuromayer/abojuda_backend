@@ -48,8 +48,7 @@
                     <div class="fv-row mb-6">
                         <label class="required form-label">Content</label>
                         <!--begin::Editor-->
-                        <div id="kt_add_page_content" class="min-h-200px mb-2"></div>
-                        <input type="hidden" name="text" id="add_page_content_hidden">
+                        <textarea class="form-control" name="text" id="kt_add_page_content"></textarea>
                         <!--end::Editor-->
                         <div class="fv-plugins-message-container invalid-feedback"></div>
                         <div class="text-muted fs-7">Set the content for the page using the rich text editor.</div>

@@ -35,6 +35,7 @@ class DynamicPageController extends Controller
                 })
                 ->addColumn('actions', function ($row) {
                     $editUrl = route('dynamic-pages.edit',['id' => $row->id]);
+                    $showUrl = route('dynamic-pages.show', ['id' => $row->id]);
                     return '
                         <div class="d-flex justify-content-end">
                             <a href="#" class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm"
@@ -44,6 +45,9 @@ class DynamicPageController extends Controller
                             </a>
                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
                                  data-kt-menu="true">
+                                <div class="menu-item px-3">
+                                    <a href="' . $showUrl . '" class="menu-link px-3 view-page-btn">View</a>
+                                </div>
                                 <div class="menu-item px-3">
                                     <a href="' . $editUrl . '" class="menu-link px-3 edit-page-btn">Edit</a>
                                 </div>
@@ -89,11 +93,25 @@ class DynamicPageController extends Controller
                 'message' => 'Page created successfully.',
             ]);
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('DynamicPage creation failed: ' . $e->getMessage(), ['exception' => $e]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create page.',
+                'message' => 'Failed to create page: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Display a dynamic page details
+     */
+    public function show($id)
+    {
+        $page = DynamicPage::find($id);
+        if (!$page)
+        {
+            return redirect()->route('dynamic-pages.index')->with('error', 'Page not found');
+        }
+        return view('backend.layout.dynamic_pages.show', compact('page'));
     }
 
     /**
@@ -132,9 +150,10 @@ class DynamicPageController extends Controller
                 'message' => 'Page updated successfully.',
             ]);
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('DynamicPage update failed: ' . $e->getMessage(), ['exception' => $e]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update page.',
+                'message' => 'Failed to update page: ' . $e->getMessage(),
             ], 500);
         }
     }

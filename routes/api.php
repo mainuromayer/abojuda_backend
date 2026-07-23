@@ -10,6 +10,7 @@ use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\ReportController;
 use App\Http\Controllers\API\SupportController;
 use App\Http\Controllers\API\WishController;
+use App\Http\Controllers\API\DynamicPageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +50,12 @@ Route::post('v1/social-login', [SocialAuthController::class, 'SocialLogin']);
 
 // Route for contact support
 Route::post('v1/contact-support', [SupportController::class, 'contactSupport']);
+
+//! Route for dynamic pages
+Route::prefix('v1')->controller(DynamicPageController::class)->group(function () {
+    Route::get('/pages', 'index');
+    Route::get('/page', 'show');
+});
 
 /**
  * Firebase Token Module

@@ -4,12 +4,7 @@
 
 @push('style')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css">
-    <style>
-        .ql-editor {
-            min-height: 200px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
 @endpush
 
 @section('content')
@@ -48,28 +43,23 @@
     <!--end::Content-->
 
     @push('script')
-        <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
         <script>
             $(document).ready(function () {
-                // Initialize Quill editor for Edit Page Modal
-                let quillEdit = new Quill('#kt_edit_page_content', {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            [{ 'header': [1, 2, false] }],
-                            ['bold', 'italic', 'underline'],
-                            ['image', 'code-block']
-                        ]
-                    },
-                    placeholder: 'Type your content here...'
-                });
-
-                // Pre-populate Quill editor with existing content
-                quillEdit.root.innerHTML = `{!! $page->content ?? '' !!}`;
-
-                // Sync Quill content to hidden input
-                quillEdit.on('text-change', function () {
-                    document.getElementById('edit_page_content_hidden').value = quillEdit.root.innerHTML;
+                // Initialize Summernote editor
+                $('#kt_edit_page_content').summernote({
+                    placeholder: 'Type your content here...',
+                    tabsize: 2,
+                    height: 300,
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'underline', 'clear']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ]
                 });
 
                 // Edit Page Form Submission
@@ -90,15 +80,9 @@
                         success: function (response) {
                             if (response.success) {
                                 toastr.success(response.message);
-                                $('#edit-page-form')[0].reset();
-                                if (typeof quillEdit !== 'undefined' && quillEdit) {
-                                    quillEdit.root.innerHTML = response.page.content || '';
-                                }
-                                // Optionally close the modal or refresh the page list
-                                $('#kt_modal_edit_page').modal('hide');
-                                if ($.fn.DataTable.isDataTable('#kt_table_pages')) {
-                                    $('#kt_table_pages').DataTable().ajax.reload();
-                                }
+                                setTimeout(function() {
+                                    window.location.href = "{{ route('dynamic-pages.index') }}";
+                                }, 1000);
                             } else {
                                 toastr.error(response.message || 'Update failed.');
                             }
