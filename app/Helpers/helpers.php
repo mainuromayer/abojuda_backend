@@ -81,7 +81,16 @@ class helpers
                 return;
             }
             
-            $factory = (new Factory)->withServiceAccount(storage_path('app/private/google-services.json'));
+            $credentialsPath = env('FIREBASE_CREDENTIALS');
+            if (!$credentialsPath || !file_exists($credentialsPath)) {
+                if (file_exists(storage_path('app/public/chat.json'))) {
+                    $credentialsPath = storage_path('app/public/chat.json');
+                } else {
+                    $credentialsPath = storage_path('app/private/google-services.json');
+                }
+            }
+
+            $factory = (new Factory)->withServiceAccount($credentialsPath);
 
             $messaging    = $factory->createMessaging();
             $notification = FirebaseNotification::create($data['title'], Str::limit($data['message'], 100));
