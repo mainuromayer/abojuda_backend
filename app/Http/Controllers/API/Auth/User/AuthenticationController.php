@@ -45,6 +45,7 @@ class AuthenticationController extends Controller
 
             return $this->sendResponse([], 'A verification code has been sent to your email address.'.$code, 200);
         } catch (Exception $exception) {
+            \Illuminate\Support\Facades\Log::error('Sign Up Error: ' . $exception->getMessage());
             return $this->sendError($exception->getMessage(), [], 500);
         }
     }

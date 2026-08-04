@@ -86,6 +86,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::put('/profile', [ProfileController::class, 'update']);
             Route::post('/change-password', [ProfileController::class, 'changePassword']);
             Route::post('/block', [ProfileController::class, 'blockUser']);
+            Route::post('/unblock', [ProfileController::class, 'unblockUser']);
             Route::get('/blocked-users', [ProfileController::class, 'blockedUsersList']);
             Route::post('/delete-account', [ProfileController::class, 'deleteAccount']);
             Route::get('/notification-settings', [ProfileController::class, 'getNotificationSettings']);
@@ -133,7 +134,7 @@ Route::get('v1/test-geolocation', function (\Illuminate\Http\Request $request) {
             'google_response' => $data,
             'resolved_coordinates' => $geoLocation->getCoordinates($address)
         ]);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         return response()->json([
             'error' => $e->getMessage()
         ], 500);

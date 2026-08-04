@@ -5,8 +5,10 @@ namespace App\Http\Controllers\API\Auth\User;
 use App\Enum\Role;
 use App\Helpers\helpers;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Profile\BlockUserRequest;
 use App\Http\Requests\Api\V1\Profile\ChangePasswordRequest;
 use App\Http\Requests\Api\V1\Profile\DeleteAccountRequest;
+use App\Http\Requests\Api\V1\Profile\UnblockUserRequest;
 use App\Http\Requests\Api\V1\Profile\UpdateRequest;
 use App\Http\Resources\Api\V1\Profile\BlockedUserResource;
 use App\Http\Resources\Api\V1\Profile\getResource;
@@ -126,12 +128,8 @@ class ProfileController extends Controller
     /**
      * Block a user
      */
-    public function blockUser(Request $request)
+    public function blockUser(BlockUserRequest $request)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-        ]);
-
         try {
             $user = auth('api')->user();
             $targetUserId = (int)$request->input('user_id');
@@ -196,6 +194,30 @@ class ProfileController extends Controller
             }
 
             return $this->sendResponse(BlockedUserResource::collection($result), 'Blocked users retrieved successfully.');
+        } catch (Exception $exception) {
+            return $this->sendError($exception->getMessage(), [], 500);
+        }
+    }
+
+    /**
+     * Unblock a user
+     */
+    public function unblockUser(UnblockUserRequest $request)
+    {
+        try {
+            $user = auth('api')->user();
+            $targetUserId = (int)$request->input('user_id');
+
+            $blockedUsers = is_array($user->blocked_users) ? $user->blocked_users : [];
+
+            $filtered = array_values(array_filter($blockedUsers, function ($entry) use ($targetUserId) {
+                return isset($entry['user_id']) && (int)$entry['user_id'] !== $targetUserId;
+            }));
+
+            $user->blocked_users = $filtered;
+            $user->save();
+
+            return $this->sendResponse([], 'User unblocked successfully.');
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }

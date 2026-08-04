@@ -327,75 +327,69 @@ class PostController extends Controller
                 $draftData = Cache::get($draftKey);
 
                 if ($draftData) {
-                    $uploadedPhotos = $draftData['photos'] ?? [];
+                    $uploadedPhotos = [];
                     if ($request->hasFile('photos')) {
-                        $uploadedPhotos = [];
                         foreach ($request->file('photos') as $index => $file) {
                             $fileName = time() . '_' . Str::random(10) . '_' . $index . '.' . $file->getClientOriginalExtension();
                             $path = helpers::uploadFile('posts', $file, $fileName, config('app.file_system'));
                             $uploadedPhotos[] = $path;
                         }
                     }
-                    $condition = $request->condition ? $request->condition : $draftData['condition'];
 
-                    if ($request->has('category_slug')) {
+                    $category = null;
+                    if ($request->filled('category_slug')) {
                         $category = Category::where('slug', $request->category_slug)->first();
-                        if ($category) {
-                            $draftData['category_id'] = $category->id;
-                            $draftData['category_name'] = $category->name;
-                            $draftData['category_slug'] = $category->slug;
-                        }
-                    } elseif ($request->has('category_id')) {
+                    } elseif ($request->filled('category_id')) {
                         $category = Category::find($request->category_id);
-                        if ($category) {
-                            $draftData['category_id'] = $category->id;
-                            $draftData['category_name'] = $category->name;
-                            $draftData['category_slug'] = $category->slug;
-                        }
-                    } elseif (!isset($draftData['category_name']) && isset($draftData['category_id'])) {
-                        $category = Category::find($draftData['category_id']);
-                        $draftData['category_name'] = $category?->name ?? '';
-                        $draftData['category_slug'] = $category?->slug ?? '';
                     }
+                    $categoryId = $category?->id;
+                    $categoryName = $category?->name ?? '';
+                    $categorySlug = $category?->slug ?? '';
 
+                    $thumbnailPath = null;
                     if ($request->hasFile('thumbnail')) {
                         $thumbnailName = time() . '_thumb_' . Str::random(10) . '.' . $request->file('thumbnail')->getClientOriginalExtension();
-                        $draftData['thumbnail'] = helpers::uploadFile('posts', $request->file('thumbnail'), $thumbnailName, config('app.file_system'));
+                        $thumbnailPath = helpers::uploadFile('posts', $request->file('thumbnail'), $thumbnailName, config('app.file_system'));
+                    } elseif (!empty($uploadedPhotos)) {
+                        $thumbnailPath = $uploadedPhotos[0];
                     }
-                    if (empty($draftData['thumbnail']) && !empty($uploadedPhotos)) {
-                        $draftData['thumbnail'] = $uploadedPhotos[0];
-                    }
+
+                    $logoPath = null;
                     if ($request->hasFile('logo')) {
                         $logoName = time() . '_logo_' . Str::random(10) . '.' . $request->file('logo')->getClientOriginalExtension();
-                        $draftData['logo'] = helpers::uploadFile('posts', $request->file('logo'), $logoName, config('app.file_system'));
+                        $logoPath = helpers::uploadFile('posts', $request->file('logo'), $logoName, config('app.file_system'));
                     }
 
-                    $draftData['title'] = $request->title ?? $draftData['title'];
-                    $draftData['company_name'] = $request->company_name ?? ($draftData['company_name'] ?? null);
-                    $draftData['business_name'] = $request->business_name ?? ($draftData['business_name'] ?? null);
-                    $draftData['business_category'] = $request->business_category ?? ($draftData['business_category'] ?? null);
-                    $draftData['description'] = $request->description ?? $draftData['description'];
-                    $draftData['price'] = $request->price ?? $draftData['price'];
-                    $draftData['condition'] = $condition;
-                    $draftData['job_type'] = $request->has('job_type') ? $request->job_type : ($draftData['job_type'] ?? null);
-                    $draftData['service_area'] = $request->has('service_area') ? $request->service_area : ($draftData['service_area'] ?? null);
-                    $draftData['province'] = $request->province ?? $draftData['province'];
-                    $draftData['city'] = $request->city ?? $draftData['city'];
-                    $draftData['address'] = $request->address ?? $draftData['address'];
-                    $draftData['phone'] = $request->phone ?? $draftData['phone'];
-                    $draftData['whatsapp'] = $request->whatsapp ?? $draftData['whatsapp'];
-                    $draftData['email'] = $request->email ?? $draftData['email'];
-                    $draftData['website'] = $request->website ?? ($draftData['website'] ?? null);
-                    $draftData['is_app_chat'] = $request->has('is_app_chat') ? $request->boolean('is_app_chat') : $draftData['is_app_chat'];
-                    $draftData['photos'] = $uploadedPhotos;
-                    if ($request->has('business_hours')) {
-                        $draftData['business_hours'] = $request->business_hours;
-                    }
-                    if (!isset($draftData['created_at'])) {
-                        $draftData['created_at'] = now()->toIso8601String();
-                    }
+                    $draftData = [
+                        'user_id' => $user->id,
+                        'category_id' => $categoryId,
+                        'category_name' => $categoryName,
+                        'category_slug' => $categorySlug,
+                        'title' => $request->title ?? null,
+                        'company_name' => $request->company_name ?? null,
+                        'business_name' => $request->business_name ?? null,
+                        'business_category' => $request->business_category ?? null,
+                        'description' => $request->description ?? null,
+                        'price' => $request->price ?? 0.00,
+                        'condition' => $request->condition ?? null,
+                        'job_type' => $request->job_type ?? null,
+                        'service_area' => $request->service_area ?? null,
+                        'province' => $request->province ?? null,
+                        'city' => $request->city ?? null,
+                        'address' => $request->address ?? null,
+                        'phone' => $request->phone ?? null,
+                        'whatsapp' => $request->whatsapp ?? null,
+                        'email' => $request->email ?? null,
+                        'website' => $request->website ?? null,
+                        'is_app_chat' => $request->boolean('is_app_chat'),
+                        'photos' => $uploadedPhotos,
+                        'thumbnail' => $thumbnailPath,
+                        'logo' => $logoPath,
+                        'status' => 'draft',
+                        'business_hours' => $request->business_hours ?? null,
+                        'created_at' => $draftData['created_at'] ?? now()->toIso8601String(),
+                    ];
 
-                    $categorySlug = $draftData['category_slug'] ?? '';
                     if ($categorySlug === 'buy-sell') {
                         $draftData['company_name'] = null;
                         $draftData['business_name'] = null;
