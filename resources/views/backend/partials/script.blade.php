@@ -30,6 +30,7 @@
 
     <!--end::Custom Javascript-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dropify@0.2.2/dist/js/dropify.min.js"></script>
 
     <!--end::Javascript-->
     <script>

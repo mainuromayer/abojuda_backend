@@ -116,7 +116,7 @@ class ChatController extends Controller
             }
 
             // Get messages ordered by created_at asc
-            $messages = $conversation->messages()->with('sender')->orderBy('created_at', 'asc')->get();
+            $messages = $conversation->messages()->with(['sender', 'conversation.post'])->orderBy('created_at', 'asc')->get();
 
             return $this->sendResponse(MessageResource::collection($messages), 'Messages retrieved successfully.');
         } catch (Exception $e) {
@@ -191,7 +191,7 @@ class ChatController extends Controller
             $conversation->touch();
 
             // Broadcast the message to other participants
-            $message->load('sender');
+            $message->load(['sender', 'conversation.post']);
             broadcast(new MessageSent($message))->toOthers();
 
             // Send Firebase push notification to the receiver

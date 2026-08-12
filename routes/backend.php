@@ -112,6 +112,15 @@ Route::prefix('/dynamic-pages')->controller(DynamicPageController::class)->group
     Route::delete('/{id}','destroy')->name('dynamic-pages.delete');
 });
 
+//! Route for Ad management
+Route::controller(\App\Http\Controllers\Web\Backend\AdController::class)->group(function () {
+    Route::get('/ads', 'index')->name('ad.index');
+    Route::post('/ads/store', 'store')->name('ad.store');
+    Route::get('/ads/{id}/edit', 'edit')->name('ad.edit');
+    Route::post('/ads/{id}/update', 'update')->name('ad.update');
+    Route::delete('/ads/{id}/delete', 'destroy')->name('ad.delete');
+});
+
 Route::get('/migrate-uploads', function() {
     $src = storage_path('app/public/uploads');
     $dst = public_path('uploads');

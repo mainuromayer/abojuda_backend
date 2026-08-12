@@ -206,7 +206,43 @@
             </div>
             <!--end:Menu sub-->
         </div>
-        <!--end:Page Management-->
+        <!--end::Page Management-->
+
+        <!--begin::Ad Management-->
+        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('ad.*') ? 'show' : '' }}">
+            <!--begin::Menu link-->
+            <span class="menu-link">
+                <span class="menu-icon">
+                    <i class="ki-duotone ki-discount fs-2">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                </span>
+                <span class="menu-title">Ad Management</span>
+                <span class="menu-arrow"></span>
+            </span>
+            <!--end::Menu link-->
+
+            <!--begin::Menu sub-->
+            <div class="menu-sub menu-sub-accordion"
+                style="{{ request()->routeIs('ad.*') ? '' : 'display: none; overflow: hidden;' }}">
+
+                <!--begin::Ads List-->
+                <div class="menu-item mb-1">
+                    <a class="menu-link {{ request()->routeIs('ad.index') ? 'active' : '' }}"
+                        href="{{ route('ad.index') }}">
+                        <span class="menu-bullet">
+                            <span class="bullet bullet-dot"></span>
+                        </span>
+                        <span class="menu-title">All Ads</span>
+                    </a>
+                </div>
+                <!--end::Ads List-->
+
+            </div>
+            <!--end::Menu sub-->
+        </div>
+        <!--end::Ad Management-->
 
 
             <!--begin:Menu item-->

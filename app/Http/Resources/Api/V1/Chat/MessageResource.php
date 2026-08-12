@@ -16,9 +16,14 @@ class MessageResource extends JsonResource
         $userId = auth('api')->id();
         $senderName = $this->sender_id === $userId ? 'You' : ($this->sender?->name ?? 'User');
 
+        $post = $this->conversation?->post;
+
         return [
             'id' => $this->id,
             'conversation_id' => $this->conversation_id,
+            'post_id' => $this->conversation?->post_id,
+            'post_title' => $post?->title,
+            'post_thumbnail' => $this->getImageUrl($post?->thumbnail),
             'sender_id' => $this->sender_id,
             'sender_name' => $senderName,
             'message' => $this->message,

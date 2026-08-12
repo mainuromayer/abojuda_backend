@@ -22,6 +22,8 @@ $imageUrl = ($setting && $setting->favicon)
     <!--end::Global Stylesheets Bundle-->
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/css/dropify.min.css" integrity="sha512-EZSUkJWTjzDzpOoaKBWXTOysFRw453h6NNy14F00a5dlsLup00a7bSsk5W55sBQL98a8Wn4Wz4y532e8h/7j2Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dropify@0.2.2/dist/css/dropify.min.css">
     <link rel="shortcut icon" href="{{ $imageUrl ??  asset('backend/assets') ."/media/logos/favicon.ico"}}" />
 
     @stack('style')

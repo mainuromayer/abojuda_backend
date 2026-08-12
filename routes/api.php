@@ -1,18 +1,20 @@
 <?php
 
+use App\Http\Controllers\API\AdController;
 use App\Http\Controllers\API\Auth\User\AuthenticationController;
 use App\Http\Controllers\API\Auth\User\ProfileController;
 use App\Http\Controllers\API\Auth\User\SocialAuthController;
 use App\Http\Controllers\API\ChatController;
+use App\Http\Controllers\API\DynamicPageController;
 use App\Http\Controllers\API\FirebaseTokenController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\ReportController;
 use App\Http\Controllers\API\SupportController;
 use App\Http\Controllers\API\WishController;
-use App\Http\Controllers\API\DynamicPageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 
 //! Route for user
@@ -56,6 +58,9 @@ Route::prefix('v1')->controller(DynamicPageController::class)->group(function ()
     Route::get('/pages', 'index');
     Route::get('/page', 'show');
 });
+
+//! Route for ads
+Route::get('v1/ads', [AdController::class, 'index']);
 
 /**
  * Firebase Token Module

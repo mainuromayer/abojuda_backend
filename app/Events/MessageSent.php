@@ -55,9 +55,14 @@ class MessageSent implements ShouldBroadcastNow
      */
     public function broadcastWith(): array
     {
+        $post = $this->message->conversation?->post;
+
         return [
             'id' => $this->message->id,
             'conversation_id' => $this->message->conversation_id,
+            'post_id' => $this->message->conversation?->post_id,
+            'post_title' => $post?->title,
+            'post_thumbnail' => $this->getImageUrl($post?->thumbnail),
             'sender_id' => $this->message->sender_id,
             'sender_name' => $this->message->sender?->name ?? 'User',
             'message' => $this->message->message,
