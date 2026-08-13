@@ -46,6 +46,7 @@ class User extends Authenticatable implements JWTSubject
         'provider',
         'provider_id',
         'remember_token',
+        'locale',
     ];
 
     /**
