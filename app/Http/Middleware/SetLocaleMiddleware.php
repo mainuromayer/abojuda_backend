@@ -40,6 +40,16 @@ class SetLocaleMiddleware
         view()->share('currentLocale', $locale);
         view()->share('dir', $locale === 'ar' ? 'rtl' : 'ltr');
 
-        return $next($request);
+        $response = $next($request);
+
+        if ($response instanceof \Illuminate\Http\JsonResponse) {
+            $data = $response->getData(true);
+            if (is_array($data) && isset($data['message']) && is_string($data['message'])) {
+                $data['message'] = __($data['message']);
+                $response->setData($data);
+            }
+        }
+
+        return $response;
     }
 }

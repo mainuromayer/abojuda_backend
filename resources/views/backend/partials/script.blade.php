@@ -42,16 +42,16 @@
         };
 
         @if (session('success'))
-        toastr.success(@json(session('success')));
+        toastr.success(@json(__(session('success'))));
         @endif
 
         @if (session('error'))
-        toastr.error(@json(session('error')));
+        toastr.error(@json(__(session('error'))));
         @endif
 
         @if ($errors->any())
         @foreach ($errors->all() as $error)
-        toastr.error(@json($error));
+        toastr.error(@json(__($error)));
         @endforeach
         @endif
     </script>
