@@ -200,5 +200,19 @@
     "buy-sell": "شراء-بيع",
     "jobs": "وظائف",
     "business-directory": "دليل-الأعمال",
-    "services": "خدمات"
+    "services": "خدمات",
+    "Dynamic Page Create": "إنشاء صفحة ديناميكية",
+    "Dynamic Page Edit": "تعديل الصفحة الديناميكية",
+    "List of pages": "قائمة الصفحات",
+    "Enter Title": "أدخل العنوان",
+    "Set the content for the page using the rich text editor.": "حدد محتوى الصفحة باستخدام محرر النصوص.",
+    "Type your content here...": "اكتب محتواك هنا...",
+    "Are you sure?": "هل أنت متأكد؟",
+    "This action will permanently delete the page. This cannot be undone!": "هذا الإجراء سيقوم بحذف الصفحة نهائياً. لا يمكن التراجع عن هذا الإجراء!",
+    "Yes, delete it!": "نعم، احذفها!",
+    "IMAGE": "صورة",
+    "VIDEO": "فيديو",
+    "image": "صورة",
+    "video": "فيديو",
+    "Content": "المحتوى"
 }

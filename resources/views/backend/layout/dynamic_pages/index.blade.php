@@ -1,6 +1,6 @@
 @extends('backend.app')
 
-@section('title', 'Dynamic Page')
+@section('title', __('Dynamic Page'))
 
 @push('style')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
@@ -136,12 +136,12 @@
                         const id = $(this).data('id');
 
                         Swal.fire({
-                            title: 'Are you sure?',
-                            text: 'This action will permanently delete the page. This cannot be undone!',
+                            title: @json(__('Are you sure?')),
+                            text: @json(__('This action will permanently delete the page. This cannot be undone!')),
                             icon: 'warning',
                             showCancelButton: true,
-                            confirmButtonText: 'Yes, delete it!',
-                            cancelButtonText: 'Cancel',
+                            confirmButtonText: @json(__('Yes, delete it!')),
+                            cancelButtonText: @json(__('Cancel')),
                             buttonsStyling: false,
                             customClass: {
                                 confirmButton: 'btn btn-danger',
@@ -160,7 +160,7 @@
                                             $('#kt_table_users').DataTable().ajax.reload(null, false);
                                             Swal.fire({
                                                 icon: 'success',
-                                                title: 'Deleted!',
+                                                title: @json(__('Deleted!')),
                                                 text: response.message,
                                                 timer: 1500,
                                                 showConfirmButton: false
@@ -168,7 +168,7 @@
                                         } else {
                                             Swal.fire({
                                                 icon: 'error',
-                                                title: 'Error',
+                                                title: @json(__('Error')),
                                                 text: response.message,
                                             });
                                         }
@@ -176,7 +176,7 @@
                                     error: function(xhr) {
                                         Swal.fire({
                                             icon: 'error',
-                                            title: 'Error',
+                                            title: @json(__('Error')),
                                             text: xhr.responseJSON?.message || 'Failed to delete the page.',
                                         });
                                     }

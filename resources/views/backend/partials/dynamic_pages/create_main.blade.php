@@ -17,7 +17,7 @@
                             <span class="path2"></span>
                         </i>
 
-                        List of pages
+                        {{ __('List of pages') }}
                     </a>
                     <!--end::Add user-->
                 </div>
@@ -39,19 +39,19 @@
                      data-kt-scroll-wrappers="#kt_modal_add_page_scroll" data-kt-scroll-offset="300px">
                     <!--begin::Input group-->
                     <div class="fv-row mb-6">
-                        <label class="required form-label">Title</label>
-                        <input class="form-control form-control-solid" type="text" name="title" placeholder="Enter Title" value="{{ old('title') }}">
+                        <label class="required form-label">{{ __('Title') }}</label>
+                        <input class="form-control form-control-solid" type="text" name="title" placeholder="{{ __('Enter Title') }}" value="{{ old('title') }}">
                     </div>
                     <!--end::Input group-->
 
                     <!--begin::Input group-->
                     <div class="fv-row mb-6">
-                        <label class="required form-label">Content</label>
+                        <label class="required form-label">{{ __('Content') }}</label>
                         <!--begin::Editor-->
                         <textarea class="form-control" name="text" id="kt_add_page_content"></textarea>
                         <!--end::Editor-->
                         <div class="fv-plugins-message-container invalid-feedback"></div>
-                        <div class="text-muted fs-7">Set the content for the page using the rich text editor.</div>
+                        <div class="text-muted fs-7">{{ __('Set the content for the page using the rich text editor.') }}</div>
                     </div>
                     <!--end::Input group-->
 
@@ -59,10 +59,10 @@
                 <!--end::Scroll-->
                 <!--begin::Actions-->
                 <div class="text-center pt-10">
-                    <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Discard</button>
+                    <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">{{ __('Discard') }}</button>
                     <button type="submit" class="btn btn-primary" data-kt-users-modal-action="submit">
-                        <span class="indicator-label">Submit</span>
-                        <span class="indicator-progress">Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        <span class="indicator-label">{{ __('Submit') }}</span>
+                        <span class="indicator-progress">{{ __('Please wait...') }} <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
                     </button>
                 </div>
                 <!--end::Actions-->

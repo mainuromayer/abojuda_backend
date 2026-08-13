@@ -1,7 +1,7 @@
 
 @extends('backend.app')
 
-@section('title', 'Dynamic Page Create')
+@section('title', __('Dynamic Page Create'))
 
 @push('style')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
@@ -21,17 +21,17 @@
                 <div class="d-flex flex-column align-items-start justify-content-center flex-wrap me-2">
                     <!--begin::Title-->
                     <h1 class="text-dark fw-bold my-1 fs-2">
-                        Dynamic Page </h1>
+                        {{ __('Dynamic Page') }} </h1>
                     <!--end::Title-->
 
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb fw-semibold fs-base my-1">
                         <li class="breadcrumb-item text-muted">
-                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">Home </a>
+                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">{{ __('Home') }} </a>
                         </li>
 
                         <li class="breadcrumb-item text-dark">
-                            Dynamic Page Create
+                            {{ __('Dynamic Page Create') }}
                         </li>
 
                     </ul>
@@ -59,7 +59,7 @@
 
                     // Initialize Summernote editor
                     $('#kt_add_page_content').summernote({
-                        placeholder: 'Type your content here...',
+                        placeholder: @json(__('Type your content here...')),
                         tabsize: 2,
                         height: 300,
                         toolbar: [

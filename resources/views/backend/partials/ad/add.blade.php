@@ -6,7 +6,7 @@
             <!--begin::Modal header-->
             <div class="modal-header" id="kt_modal_add_ad_header">
                 <!--begin::Modal title-->
-                <h2 class="fw-bold" id="ad_modal_title">Add New Ad</h2>
+                <h2 class="fw-bold" id="ad_modal_title">{{ __('Add New Ad') }}</h2>
                 <!--end::Modal title-->
 
                 <!--begin::Close-->
@@ -36,24 +36,24 @@
                         
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">Title</label>
-                            <input type="text" name="title" id="ad_title" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Ad Title" required />
+                            <label class="required fw-semibold fs-6 mb-2">{{ __('Title') }}</label>
+                            <input type="text" name="title" id="ad_title" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="{{ __('Ad Title') }}" required />
                         </div>
                         <!--end::Input group-->
 
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">Media Type</label>
+                            <label class="required fw-semibold fs-6 mb-2">{{ __('Media Type') }}</label>
                             <select name="media_type" id="ad_media_type" class="form-select form-select-solid" required>
-                                <option value="image">Image</option>
-                                <option value="video">Video</option>
+                                <option value="image">{{ __('Image') }}</option>
+                                <option value="video">{{ __('Video') }}</option>
                             </select>
                         </div>
                         <!--end::Input group-->
 
                         <!--begin::Image Input group-->
                         <div class="fv-row mb-7 d-flex flex-column align-items-start" id="image_media_group">
-                            <label class="required fw-semibold fs-6 mb-2">Image Thumbnail</label>
+                            <label class="required fw-semibold fs-6 mb-2">{{ __('Image Thumbnail') }}</label>
                             
                             <style>
                                 .image-input-placeholder {
@@ -71,7 +71,7 @@
                                 <!--end::Preview existing icon-->
 
                                 <!--begin::Label-->
-                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change image">
+                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="{{ __('Change image') }}">
                                     <i class="ki-duotone ki-pencil fs-7">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -84,7 +84,7 @@
                                 <!--end::Label-->
 
                                 <!--begin::Cancel-->
-                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel image">
+                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="{{ __('Cancel image') }}">
                                     <i class="ki-duotone ki-cross fs-2">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -93,7 +93,7 @@
                                 <!--end::Cancel-->
 
                                 <!--begin::Remove-->
-                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove image" id="remove_ad_image_btn">
+                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="{{ __('Remove image') }}" id="remove_ad_image_btn">
                                     <i class="ki-duotone ki-cross fs-2">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -102,13 +102,13 @@
                                 <!--end::Remove-->
                             </div>
                             <!--end::Image input-->
-                            <div class="form-text mt-2">Allowed file types: png, jpg, jpeg, svg, gif, webp.</div>
+                            <div class="form-text mt-2">{{ __('Allowed file types: png, jpg, jpeg, svg, gif, webp.') }}</div>
                         </div>
                         <!--end::Image Input group-->
 
                         <!--begin::Video Input group-->
                         <div class="fv-row mb-7 d-flex flex-column align-items-start d-none" id="video_media_group">
-                            <label class="required fw-semibold fs-6 mb-2">Video File</label>
+                            <label class="required fw-semibold fs-6 mb-2">{{ __('Video File') }}</label>
                             
                             <!--begin::Video input container-->
                             <div class="image-input image-input-outline image-input-placeholder" id="ad_video_input">
@@ -119,11 +119,11 @@
                                             <span class="path1"></span>
                                             <span class="path2"></span>
                                         </i>
-                                        <div class="fs-8 text-muted">No video chosen</div>
+                                        <div class="fs-8 text-muted">{{ __('No video chosen') }}</div>
                                     </div>
                                 </div>
 
-                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-bs-toggle="tooltip" title="Upload Video">
+                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-bs-toggle="tooltip" title="{{ __('Upload Video') }}">
                                     <i class="ki-duotone ki-pencil fs-7">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -131,7 +131,7 @@
                                     <input type="file" name="media_video" id="ad_media_video" accept=".mp4, .mov, .avi, .mkv" style="display:none;" />
                                 </label>
 
-                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" id="remove_ad_video_btn" data-bs-toggle="tooltip" title="Remove video">
+                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" id="remove_ad_video_btn" data-bs-toggle="tooltip" title="{{ __('Remove video') }}">
                                     <i class="ki-duotone ki-cross fs-2">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -139,23 +139,23 @@
                                 </span>
                             </div>
                             <!--end::Video input container-->
-                            <div class="form-text mt-2">Allowed file types: mp4, mov, avi, mkv. Max size: 20MB.</div>
+                            <div class="form-text mt-2">{{ __('Allowed file types: mp4, mov, avi, mkv. Max size: 20MB.') }}</div>
                         </div>
                         <!--end::Video Input group-->
 
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
-                            <label class="fw-semibold fs-6 mb-2">Back Link</label>
+                            <label class="fw-semibold fs-6 mb-2">{{ __('Back Link') }}</label>
                             <input type="url" name="back_link" id="ad_back_link" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="https://example.com" />
                         </div>
                         <!--end::Input group-->
 
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">Status</label>
+                            <label class="required fw-semibold fs-6 mb-2">{{ __('Status') }}</label>
                             <select name="status" id="ad_status" class="form-select form-select-solid" required>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
+                                <option value="active">{{ __('Active') }}</option>
+                                <option value="inactive">{{ __('Inactive') }}</option>
                             </select>
                         </div>
                         <!--end::Input group-->
@@ -165,10 +165,10 @@
 
                     <!--begin::Actions-->
                     <div class="text-center pt-15">
-                        <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Discard</button>
+                        <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">{{ __('Discard') }}</button>
                         <button type="submit" class="btn btn-primary" id="ad_submit_btn">
-                            <span class="indicator-label">Submit</span>
-                            <span class="indicator-progress">Please wait... 
+                            <span class="indicator-label">{{ __('Submit') }}</span>
+                            <span class="indicator-progress">{{ __('Please wait...') }} 
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                             </span>
                         </button>
