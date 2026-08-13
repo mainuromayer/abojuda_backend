@@ -8,10 +8,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Profile\BlockUserRequest;
 use App\Http\Requests\Api\V1\Profile\ChangePasswordRequest;
 use App\Http\Requests\Api\V1\Profile\DeleteAccountRequest;
+use App\Http\Requests\Api\V1\Profile\SetLocaleRequest;
 use App\Http\Requests\Api\V1\Profile\UnblockUserRequest;
 use App\Http\Requests\Api\V1\Profile\UpdateRequest;
 use App\Http\Resources\Api\V1\Profile\BlockedUserResource;
 use App\Http\Resources\Api\V1\Profile\getResource;
+use App\Http\Resources\Api\V1\Profile\SetLocaleResource;
 use App\Http\Resources\Api\V1\Profile\UpdateResource;
 use App\Models\User;
 use App\Traits\ApiResponse;
@@ -315,18 +317,16 @@ class ProfileController extends Controller
     /**
      * Set user locale preference
      */
-    public function setLocale(Request $request)
+    public function setLocale(SetLocaleRequest $request)
     {
-        $validated = $request->validate([
-            'locale' => ['required', 'string', 'in:en,ar'],
-        ]);
+        $validated = $request->validated();
 
         try {
             $user = auth('api')->user();
             $user->locale = $validated['locale'];
             $user->save();
 
-            return $this->sendResponse(['locale' => $user->locale], 'Language preference updated successfully.');
+            return $this->sendResponse(new SetLocaleResource($user), 'Language preference updated successfully.');
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
