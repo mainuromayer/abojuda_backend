@@ -9,7 +9,7 @@ trait ApiResponse
     {
         $response = [
             'status' => true,
-            'message' => $message,
+            'message' => __($message),
             'code' => $code,
         ];
 
@@ -41,7 +41,7 @@ trait ApiResponse
     {
         $response = [
             'status' => false,
-            'message' => $error,
+            'message' => __($error),
             'code' => $code,
         ];
 
