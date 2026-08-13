@@ -31,8 +31,8 @@ class SetLocaleMiddleware
             if (in_array($preferredLang, ['en', 'ar'])) {
                 $locale = $preferredLang;
             }
-        } elseif (auth()->check() && auth()->user()->locale && in_array(auth()->user()->locale, ['en', 'ar'])) {
-            $locale = auth()->user()->locale;
+        } elseif (($user = auth()->user() ?: auth('api')->user()) && $user->locale && in_array($user->locale, ['en', 'ar'])) {
+            $locale = $user->locale;
         }
 
         App::setLocale($locale);
