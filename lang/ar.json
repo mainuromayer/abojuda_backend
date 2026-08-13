@@ -264,5 +264,17 @@
     "Something Went Wrong:": "حدث خطأ ما:",
     "Guest user registered successfully.": "تم تسجيل المستخدم الزائر بنجاح.",
     "Verification code has been sent to your email address.": "تم إرسال رمز التحقق إلى بريدك الإلكتروني.",
-    "Verification code has been resent to your email address.": "تم إعادة إرسال رمز التحقق إلى بريدك الإلكتروني."
+    "Verification code has been resent to your email address.": "تم إعادة إرسال رمز التحقق إلى بريدك الإلكتروني.",
+    "The OTP you entered is incorrect or has expired. Please try again.": "رمز التحقق الذي أدخلته غير صحيح أو انتهت صلاحيته. يرجى المحاولة مرة أخرى.",
+    "Your registration session has expired. Please sign up again.": "انتهت صلاحية جلسة التسجيل الخاصة بك. يرجى التسجيل مرة أخرى.",
+    "No account found with this email address.": "لم يتم العثور على حساب بهذا البريد الإلكتروني.",
+    "The OTP you entered is incorrect or has expired.": "رمز التحقق الذي أدخلته غير صحيح أو انتهت صلاحيته.",
+    "Invalid credentials. Please check your email and password.": "بيانات الاعتماد غير صالحة. يرجى التحقق من البريد الإلكتروني وكلمة المرور.",
+    "Your account has been suspended. Please contact support.": "تم تعليق حسابك. يرجى الاتصال بالدعم.",
+    "Unauthorized action. Please verify your OTP first.": "إجراء غير مصرح به. يرجى التحقق من رمز OTP الخاص بك أولاً.",
+    "Password has been reset successfully.": "تم إعادة تعيين كلمة المرور بنجاح.",
+    "This email is already registered.": "هذا البريد الإلكتروني مسجل بالفعل.",
+    "Draft updated successfully.": "تم تحديث المسودة بنجاح.",
+    "Draft created successfully.": "تم إنشاء المسودة بنجاح.",
+    "Draft retrieved successfully.": "تم استرداد المسودة بنجاح."
 }

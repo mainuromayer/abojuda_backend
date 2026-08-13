@@ -5,9 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Spatie\Translatable\HasTranslations;
+use App\Traits\AutoTranslateTranslations;
+
 class SystemNotification extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations, AutoTranslateTranslations;
+
+    public array $translatable = ['title', 'content'];
 
     protected $fillable = [
         'type',

@@ -22,6 +22,8 @@ class LanguageController extends Controller
         App::setLocale($lang);
         Cookie::queue(Cookie::make('locale', $lang, 60 * 24 * 365));
 
+        \App\Helpers\helpers::updateEnv('APP_LOCALE', $lang);
+
         if (auth()->check()) {
             $user = auth()->user();
             if (\Schema::hasColumn('users', 'locale')) {

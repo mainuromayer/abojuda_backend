@@ -75,7 +75,7 @@ class SocialAuthController extends Controller
 
             return $this->sendResponse(new SocialAuthResource($user), $isNewUser ? "User Register Successfully" : "User Login Successfully", 200, $token);
         } catch (Exception $exception) {
-            return $this->sendError("Something Went Wrong: " . $exception->getMessage(), [], 500);
+            return $this->sendError(__('Something Went Wrong:') . ' ' . $exception->getMessage(), [], 500);
         }
     }
 }

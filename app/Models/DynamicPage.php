@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\HasTranslations;
+use Spatie\Translatable\HasTranslations;
+use App\Traits\AutoTranslateTranslations;
 
 class DynamicPage extends Model
 {
-    use HasTranslations;
+    use HasTranslations, AutoTranslateTranslations;
 
     public array $translatable = ['title', 'content'];
 

@@ -108,4 +108,128 @@ class helpers
         }
     }
 
+    /**
+     * Automatically translate text to target locale using Google Translate API.
+     */
+    public static function translateText(array|string|null $text, string $targetLocale): string
+    {
+        if (is_array($text)) {
+            if (isset($text[$targetLocale]) && !empty($text[$targetLocale])) {
+                return $text[$targetLocale];
+            }
+            $fallbackText = $text['en'] ?? (reset($text) ?: '');
+            return self::translateText($fallbackText, $targetLocale);
+        }
+
+        if (empty($text) || !in_array($targetLocale, ['en', 'ar'])) {
+            return $text ?? '';
+        }
+
+        $text = trim($text);
+        if ($text === '') {
+            return '';
+        }
+
+        $cacheKey = 'auto_trans_' . $targetLocale . '_' . md5($text);
+
+        return \Illuminate\Support\Facades\Cache::rememberForever($cacheKey, function () use ($text, $targetLocale) {
+            try {
+                $client = new \GuzzleHttp\Client();
+                $response = $client->get('https://translate.googleapis.com/translate_a/single', [
+                    'query' => [
+                        'client' => 'gtx',
+                        'sl' => 'auto',
+                        'tl' => $targetLocale,
+                        'dt' => 't',
+                        'q' => $text,
+                    ],
+                    'timeout' => 5.0,
+                ]);
+
+                $data = json_decode($response->getBody(), true);
+                if (is_array($data) && isset($data[0])) {
+                    $translated = '';
+                    foreach ($data[0] as $part) {
+                        if (isset($part[0])) {
+                            $translated .= $part[0];
+                        }
+                    }
+                    return $translated ?: $text;
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('Auto translation failed for: ' . $text . ' | Error: ' . $e->getMessage());
+            }
+
+            return $text;
+        });
+    }
+
+    /**
+     * Translate single day business hour data
+     */
+    public static function translateBusinessHourDay(?array $dayData, string $targetLocale): ?array
+    {
+        if (empty($dayData) || $targetLocale !== 'ar') {
+            return $dayData;
+        }
+
+        if (isset($dayData['open']) && is_string($dayData['open'])) {
+            $dayData['open'] = self::translateText($dayData['open'], 'ar');
+        }
+        if (isset($dayData['close']) && is_string($dayData['close'])) {
+            $dayData['close'] = self::translateText($dayData['close'], 'ar');
+        }
+        if (isset($dayData['opening_hour']) && is_string($dayData['opening_hour'])) {
+            $dayData['opening_hour'] = self::translateText($dayData['opening_hour'], 'ar');
+        }
+        if (isset($dayData['closing_time']) && is_string($dayData['closing_time'])) {
+            $dayData['closing_time'] = self::translateText($dayData['closing_time'], 'ar');
+        }
+        return $dayData;
+    }
+
+    /**
+     * Translate entire business hours array
+     */
+    public static function translateBusinessHours(?array $hours, string $targetLocale): ?array
+    {
+        if (empty($hours) || $targetLocale !== 'ar') {
+            return $hours;
+        }
+
+        foreach ($hours as $day => &$data) {
+            if (is_array($data)) {
+                $data = self::translateBusinessHourDay($data, $targetLocale);
+            }
+        }
+        return $hours;
+    }
+
+    /**
+     * Update environment variable in .env file dynamically
+     */
+    public static function updateEnv(string $key, string $value): bool
+    {
+        try {
+            $envPath = base_path('.env');
+            if (!file_exists($envPath)) {
+                return false;
+            }
+
+            $content = file_get_contents($envPath);
+            $pattern = "/^{$key}=.*/m";
+
+            if (preg_match($pattern, $content)) {
+                $content = preg_replace($pattern, "{$key}={$value}", $content);
+            } else {
+                $content .= "\n{$key}={$value}";
+            }
+
+            file_put_contents($envPath, $content);
+            return true;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to update env key ' . $key . ': ' . $e->getMessage());
+            return false;
+        }
+    }
 }

@@ -13,11 +13,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Translatable\HasTranslations;
+use App\Traits\AutoTranslateTranslations;
 
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasTranslations, AutoTranslateTranslations;
+
+    public array $translatable = ['province', 'city', 'address'];
 
     /**
      * The attributes that are mass assignable.
@@ -155,5 +159,13 @@ class User extends Authenticatable implements JWTSubject
     public function firebaseTokens()
     {
         return $this->hasMany(FirebaseToken::class);
+    }
+
+    public function getNameAttribute($value)
+    {
+        if (app()->getLocale() === 'ar') {
+            return helpers::translateText($value, 'ar');
+        }
+        return $value;
     }
 }

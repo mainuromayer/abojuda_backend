@@ -7,9 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Post;
 use App\Models\User;
 
+use Spatie\Translatable\HasTranslations;
+use App\Traits\AutoTranslateTranslations;
+
 class Report extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations, AutoTranslateTranslations;
+
+    public array $translatable = ['reason', 'other_note'];
 
     protected $fillable = [
         'user_id',

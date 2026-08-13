@@ -702,9 +702,45 @@ class PostController extends Controller
         $timeAgo = null;
         if ($createdAt) {
             try {
-                $timeAgo = Carbon::parse($createdAt)->diffForHumans();
+                $timeAgo = \Carbon\Carbon::parse($createdAt)->diffForHumans();
             } catch (Exception $e) {
                 // Ignore parsing errors
+            }
+        }
+
+        // Auto-translate translatable fields for the draft response if locale is 'ar'
+        $title = $draftData['title'] ?? null;
+        $description = $draftData['description'] ?? null;
+        $companyName = $draftData['company_name'] ?? null;
+        $businessName = $draftData['business_name'] ?? null;
+        $condition = $draftData['condition'] ?? null;
+        $jobType = $draftData['job_type'] ?? null;
+                $serviceArea = $draftData['service_area'] ?? null;
+        $province = $draftData['province'] ?? null;
+        $city = $draftData['city'] ?? null;
+        $address = $draftData['address'] ?? null;
+        $businessCategory = $draftData['business_category'] ?? null;
+        $businessHours = $draftData['business_hours'] ?? null;
+
+        if (app()->getLocale() === 'ar') {
+            $title = helpers::translateText($title, 'ar');
+            $description = helpers::translateText($description, 'ar');
+            $companyName = helpers::translateText($companyName, 'ar');
+            $businessName = helpers::translateText($businessName, 'ar');
+            $jobType = helpers::translateText($jobType, 'ar');
+            $serviceArea = helpers::translateText($serviceArea, 'ar');
+            $province = helpers::translateText($province, 'ar');
+            $city = helpers::translateText($city, 'ar');
+            $address = helpers::translateText($address, 'ar');
+            $businessCategory = helpers::translateText($businessCategory, 'ar');
+            $businessHours = helpers::translateBusinessHours($businessHours, 'ar');
+
+            if (is_array($condition)) {
+                $condition = array_map(function ($item) {
+                    return helpers::translateText($item, 'ar');
+                }, $condition);
+            } elseif (is_string($condition)) {
+                $condition = helpers::translateText($condition, 'ar');
             }
         }
 
@@ -718,13 +754,13 @@ class PostController extends Controller
                 'category_slug' => $categorySlug,
                 'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
                 'photos' => $resolvedPhotos,
-                'title' => $draftData['title'] ?? null,
-                'description' => $draftData['description'] ?? null,
+                'title' => $title,
+                'description' => $description,
                 'price' => $draftData['price'] ?? null,
-                'condition' => $draftData['condition'] ?? null,
-                'province' => $draftData['province'] ?? null,
-                'city' => $draftData['city'] ?? null,
-                'address' => $draftData['address'] ?? null,
+                'condition' => $condition,
+                'province' => $province,
+                'city' => $city,
+                'address' => $address,
                 'phone' => $draftData['phone'] ?? null,
                 'whatsapp' => $draftData['whatsapp'] ?? null,
                 'email' => $draftData['email'] ?? null,
@@ -740,13 +776,13 @@ class PostController extends Controller
                 'category_name' => $categoryName,
                 'category_slug' => $categorySlug,
                 'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
-                'title' => $draftData['title'] ?? null,
-                'company_name' => $draftData['company_name'] ?? null,
-                'description' => $draftData['description'] ?? null,
-                'job_type' => $draftData['job_type'] ?? null,
-                'province' => $draftData['province'] ?? null,
-                'city' => $draftData['city'] ?? null,
-                'address' => $draftData['address'] ?? null,
+                'title' => $title,
+                'company_name' => $companyName,
+                'description' => $description,
+                'job_type' => $jobType,
+                'province' => $province,
+                'city' => $city,
+                'address' => $address,
                 'phone' => $draftData['phone'] ?? null,
                 'whatsapp' => $draftData['whatsapp'] ?? null,
                 'email' => $draftData['email'] ?? null,
@@ -762,21 +798,21 @@ class PostController extends Controller
                 'category_name' => $categoryName,
                 'category_slug' => $categorySlug,
                 'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
-                'business_name' => $draftData['business_name'] ?? null,
-                'business_category' => $draftData['business_category'] ?? null,
-                'description' => $draftData['description'] ?? null,
+                'business_name' => $businessName,
+                'business_category' => $businessCategory,
+                'description' => $description,
                 'website' => $draftData['website'] ?? null,
                 'photos' => $resolvedPhotos,
-                'province' => $draftData['province'] ?? null,
-                'city' => $draftData['city'] ?? null,
-                'address' => $draftData['address'] ?? null,
+                'province' => $province,
+                'city' => $city,
+                'address' => $address,
                 'phone' => $draftData['phone'] ?? null,
                 'whatsapp' => $draftData['whatsapp'] ?? null,
                 'email' => $draftData['email'] ?? null,
                 'is_app_chat' => (bool) ($draftData['is_app_chat'] ?? false),
                 'logo' => isset($draftData['logo']) ? $this->getImageUrl($draftData['logo']) : null,
                 'status' => $draftData['status'] ?? null,
-                'business_hours' => $draftData['business_hours'] ?? null,
+                'business_hours' => $businessHours,
             ];
         } elseif ($categorySlug === 'services') {
             return [
@@ -788,17 +824,18 @@ class PostController extends Controller
                 'category_slug' => $categorySlug,
                 'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
                 'photos' => $resolvedPhotos,
-                'title' => $draftData['title'] ?? null,
-                'description' => $draftData['description'] ?? null,
-                'service_area' => $draftData['service_area'] ?? null,
-                'province' => $draftData['province'] ?? null,
-                'city' => $draftData['city'] ?? null,
-                'address' => $draftData['address'] ?? null,
+                'title' => $title,
+                'description' => $description,
+                'service_area' => $serviceArea,
+                'province' => $province,
+                'city' => $city,
+                'address' => $address,
                 'phone' => $draftData['phone'] ?? null,
                 'whatsapp' => $draftData['whatsapp'] ?? null,
                 'email' => $draftData['email'] ?? null,
                 'is_app_chat' => (bool) ($draftData['is_app_chat'] ?? false),
                 'status' => $draftData['status'] ?? null,
+                'business_hours' => $businessHours,
             ];
         }
 
@@ -810,26 +847,27 @@ class PostController extends Controller
             'category_name' => $categoryName,
             'category_slug' => $categorySlug,
             'thumbnail' => isset($draftData['thumbnail']) ? $this->getImageUrl($draftData['thumbnail']) : null,
-            'title' => $draftData['title'] ?? null,
-            'business_name' => $draftData['business_name'] ?? null,
-            'company_name' => $draftData['company_name'] ?? null,
-            'business_category' => $draftData['business_category'] ?? null,
-            'description' => $draftData['description'] ?? null,
+            'title' => $title,
+            'business_name' => $businessName,
+            'company_name' => $companyName,
+            'business_category' => $businessCategory,
+            'description' => $description,
             'price' => $draftData['price'] ?? null,
-            'condition' => $draftData['condition'] ?? null,
-            'job_type' => $draftData['job_type'] ?? null,
-            'service_area' => $draftData['service_area'] ?? null,
+            'condition' => $condition,
+            'job_type' => $jobType,
+            'service_area' => $serviceArea,
             'website' => $draftData['website'] ?? null,
             'logo' => isset($draftData['logo']) ? $this->getImageUrl($draftData['logo']) : null,
             'photos' => $resolvedPhotos,
-            'province' => $draftData['province'] ?? null,
-            'city' => $draftData['city'] ?? null,
-            'address' => $draftData['address'] ?? null,
+            'province' => $province,
+            'city' => $city,
+            'address' => $address,
             'phone' => $draftData['phone'] ?? null,
             'whatsapp' => $draftData['whatsapp'] ?? null,
             'email' => $draftData['email'] ?? null,
             'is_app_chat' => (bool) ($draftData['is_app_chat'] ?? false),
             'status' => $draftData['status'] ?? null,
+            'business_hours' => $businessHours,
         ];
     }
 

@@ -43,7 +43,7 @@ class AuthenticationController extends Controller
 
             Mail::to($email)->send(new SendOtpMail($code));
 
-            return $this->sendResponse([], 'A verification code has been sent to your email address.'.$code, 200);
+            return $this->sendResponse([], __('A verification code has been sent to your email address.') . $code, 200);
         } catch (Exception $exception) {
             \Illuminate\Support\Facades\Log::error('Sign Up Error: ' . $exception->getMessage());
             return $this->sendError($exception->getMessage(), [], 500);
@@ -175,7 +175,7 @@ class AuthenticationController extends Controller
 
             Mail::to($email)->send(new SendOtpMail($code));
 
-            return $this->sendResponse(new ForgotPasswordResource(['email' => $email]), 'Verification code has been sent to your email address. ' . $code, 200);
+            return $this->sendResponse(new ForgotPasswordResource(['email' => $email]), __('Verification code has been sent to your email address.') . ' ' . $code, 200);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -231,7 +231,7 @@ class AuthenticationController extends Controller
 
             Mail::to($email)->send(new SendOtpMail($code));
 
-            return $this->sendResponse(new ResendOtpResource(['email' => $email, 'type' => $type]), 'Verification code has been resent to your email address. ' . $code, 200);
+            return $this->sendResponse(new ResendOtpResource(['email' => $email, 'type' => $type]), __('Verification code has been resent to your email address.') . ' ' . $code, 200);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }

@@ -326,6 +326,8 @@ class ProfileController extends Controller
             $user->locale = $validated['locale'];
             $user->save();
 
+            helpers::updateEnv('APP_LOCALE', $validated['locale']);
+
             return $this->sendResponse(new SetLocaleResource($user), 'Language preference updated successfully.');
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
