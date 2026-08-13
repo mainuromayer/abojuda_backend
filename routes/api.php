@@ -78,6 +78,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
     Route::prefix('v1/auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'index']);
         Route::post('/logout', [ProfileController::class, 'logout']);
+        Route::post('/set-locale', [ProfileController::class, 'setLocale']);
 
         Route::get('/wishes', [WishController::class, 'index']);
         Route::post('/wishes', [WishController::class, 'toggle']);

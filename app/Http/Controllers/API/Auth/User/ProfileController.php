@@ -311,4 +311,24 @@ class ProfileController extends Controller
             return $this->sendError('Failed to log out, please try again later', [], 500);
         }
     }
+
+    /**
+     * Set user locale preference
+     */
+    public function setLocale(Request $request)
+    {
+        $validated = $request->validate([
+            'locale' => ['required', 'string', 'in:en,ar'],
+        ]);
+
+        try {
+            $user = auth('api')->user();
+            $user->locale = $validated['locale'];
+            $user->save();
+
+            return $this->sendResponse(['locale' => $user->locale], 'Language preference updated successfully.');
+        } catch (Exception $exception) {
+            return $this->sendError($exception->getMessage(), [], 500);
+        }
+    }
 }
