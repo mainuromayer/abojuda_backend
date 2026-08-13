@@ -1,6 +1,6 @@
 @extends('backend.app')
 
-@section('title', 'List of Categories')
+@section('title', __('List of Categories'))
 
 @push('style')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
@@ -20,15 +20,15 @@
                 <!--begin::Info-->
                 <div class="d-flex flex-column align-items-start justify-content-center flex-wrap me-2">
                     <!--begin::Title-->
-                    <h1 class="text-dark fw-bold my-1 fs-2">List of Categories</h1>
+                    <h1 class="text-dark fw-bold my-1 fs-2">{{ __('List of Categories') }}</h1>
                     <!--end::Title-->
 
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb fw-semibold fs-base my-1">
                         <li class="breadcrumb-item text-muted">
-                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">Home</a>
+                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">{{ __('Home') }}</a>
                         </li>
-                        <li class="breadcrumb-item text-dark">Categories</li>
+                        <li class="breadcrumb-item text-dark">{{ __('Categories') }}</li>
                     </ul>
                     <!--end::Breadcrumb-->
                 </div>
@@ -53,10 +53,27 @@
 
         <script>
             $(document).ready(function() {
+                var isArabic = "{{ app()->getLocale() }}" === 'ar';
                 // Initialize DataTable
                 var table = $('#kt_table_categories').DataTable({
                     processing: true,
                     serverSide: true,
+                    language: isArabic ? {
+                        "sProcessing": "جاري التحميل...",
+                        "sLengthMenu": "أظهر _MENU_ مدخلات",
+                        "sZeroRecords": "لم يتم العثور على أية سجلات",
+                        "sEmptyTable": "لا توجد بيانات متاحة في الجدول",
+                        "sInfo": "إظهار _START_ إلى _END_ من أصل _TOTAL_ مدخل",
+                        "sInfoEmpty": "يعرض 0 إلى 0 من أصل 0 سجل",
+                        "sInfoFiltered": "(منتقاة من مجموع _MAX_ مُدخل)",
+                        "sSearch": "ابحث:",
+                        "oPaginate": {
+                            "sFirst": "الأول",
+                            "sPrevious": "السابق",
+                            "sNext": "التالي",
+                            "sLast": "الأخير"
+                        }
+                    } : {},
                     ajax: {
                         url: "{{ route('category.index') }}",
                         type: "GET",
@@ -79,6 +96,28 @@
                         if (typeof KTMenu !== 'undefined') {
                             KTMenu.createInstances();
                         }
+                        if (isArabic) {
+                            $('.dataTables_info, .pagination, .dataTables_length label').each(function() {
+                                var $this = $(this);
+                                $this.contents().each(function() {
+                                    if (this.nodeType === 3) {
+                                        this.nodeValue = this.nodeValue.replace(/[0-9]/g, function(d) {
+                                            return ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'][d];
+                                        });
+                                    }
+                                });
+                                $this.find('option, a, span').each(function() {
+                                    var node = this;
+                                    for (var i = 0; i < node.childNodes.length; i++) {
+                                        if (node.childNodes[i].nodeType === 3) {
+                                            node.childNodes[i].nodeValue = node.childNodes[i].nodeValue.replace(/[0-9]/g, function(d) {
+                                                return ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'][d];
+                                            });
+                                        }
+                                    }
+                                });
+                            });
+                        }
                     }
                 });
 
@@ -96,8 +135,8 @@
                     var blankImage = "{{ asset('backend/assets/media/svg/files/blank-image.svg') }}";
                     $('#category_icon_wrapper').css('background-image', 'url(' + blankImage + ')');
                     $('#category_icon_image_input').removeClass('image-input-changed').addClass('image-input-empty');
-                    $('#category_modal_title').text('Add Category');
-                    $('#category_submit_btn').find('.indicator-label').text('Submit');
+                    $('#category_modal_title').text("{{ __('Add Category') }}");
+                    $('#category_submit_btn').find('.indicator-label').text("{{ __('Submit') }}");
                     $('#kt_modal_add_category').modal('show');
                 });
 
@@ -128,8 +167,8 @@
                                 $('#category_icon_image_input').removeClass('image-input-changed').addClass('image-input-empty');
                             }
 
-                            $('#category_modal_title').text('Edit Category');
-                            $('#category_submit_btn').find('.indicator-label').text('Save Changes');
+                            $('#category_modal_title').text("{{ __('Edit Category') }}");
+                            $('#category_submit_btn').find('.indicator-label').text("{{ __('Save Changes') }}");
                             $('#kt_modal_add_category').modal('show');
                         },
                         error: function(xhr) {
@@ -198,12 +237,12 @@
                     var id = $(this).data('id');
 
                     Swal.fire({
-                        text: "Are you sure you want to delete this category?",
+                        text: "{{ __('Are you sure you want to delete this category?') }}",
                         icon: "warning",
                         showCancelButton: true,
                         buttonsStyling: false,
-                        confirmButtonText: "Yes, delete!",
-                        cancelButtonText: "No, cancel",
+                        confirmButtonText: "{{ __('Yes, delete!') }}",
+                        cancelButtonText: "{{ __('No, cancel') }}",
                         customClass: {
                             confirmButton: "btn fw-bold btn-danger",
                             cancelButton: "btn fw-bold btn-active-light-primary"

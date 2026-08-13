@@ -151,3 +151,30 @@
   color: var(--bs-primary-active) !important;
 }
 
+/*rtl:begin:ignore*/
+/* RTL Layout Overrides (Applied ONLY in Arabic mode) */
+html[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Text alignment & Table overrides for RTL */
+html[dir="rtl"] .text-end {
+    text-align: left !important;
+}
+
+html[dir="rtl"] .text-start {
+    text-align: right !important;
+}
+
+html[dir="rtl"] table.dataTable {
+    text-align: right !important;
+}
+
+html[dir="rtl"] table.dataTable th,
+html[dir="rtl"] table.dataTable td {
+    text-align: right !important;
+}
+/*rtl:end:ignore*/
+
+

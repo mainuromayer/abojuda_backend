@@ -23,7 +23,7 @@
                             <span class="path4"></span>
                         </i>
                     </span>
-                    <span class="menu-title">Dashboards</span>
+                    <span class="menu-title">{{ __('Dashboard') }}</span>
                 </a>
             </div>
             <!--end:Menu item-->
@@ -32,7 +32,7 @@
             <!--begin:Menu item-->
             <div class="menu-item pt-5">
                 <div class="menu-content">
-                    <span class="fw-bold text-muted text-uppercase fs-7">Site Management</span>
+                    <span class="fw-bold text-muted text-uppercase fs-7">{{ __('Site Management') }}</span>
                 </div>
             </div><!--end:Menu item-->
 
@@ -46,7 +46,7 @@
                             <span class="path2"></span>
                         </i>
                     </span>
-                    <span class="menu-title">User Management</span>
+                    <span class="menu-title">{{ __('User Management') }}</span>
                     @php
                         $pendingUsersCount = \App\Models\User::where('status', 'pending_delete')->count();
                     @endphp
@@ -68,7 +68,7 @@
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Users List</span>
+                            <span class="menu-title">{{ __('Users List') }}</span>
                         </a>
                     </div>
                     <!--end:Users List-->
@@ -89,7 +89,7 @@
                             <span class="path2"></span>
                         </i>
                     </span>
-                    <span class="menu-title">Category Management</span>
+                    <span class="menu-title">{{ __('Category Management') }}</span>
                     <span class="menu-arrow"></span>
                 </span>
                 <!--end:Menu link-->
@@ -105,7 +105,7 @@
                             <span class="menu-bullet">
                                 <span class="bullet bullet-dot"></span>
                             </span>
-                            <span class="menu-title">Categories List</span>
+                            <span class="menu-title">{{ __('Categories List') }}</span>
                         </a>
                     </div>
                     <!--end:Categories List-->
@@ -124,7 +124,7 @@
                         <span class="path1"></span><span class="path2"></span>
                     </i>
                 </span>
-                <span class="menu-title">Post Management</span>
+                <span class="menu-title">{{ __('Post Management') }}</span>
                 @php
                     $pendingCount = \App\Models\Post::where('status', 'pending')->count();
                 @endphp
@@ -146,7 +146,7 @@
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
                         </span>
-                        <span class="menu-title">All Posts</span>
+                        <span class="menu-title">{{ __('All Posts') }}</span>
                     </a>
                 </div>
                 <!--end:Posts List-->
@@ -170,7 +170,7 @@
                         <span class="path5"></span>
                     </i>
                 </span>
-                <span class="menu-title">Dynamic Page</span>
+                <span class="menu-title">{{ __('Dynamic Page') }}</span>
                 <span class="menu-arrow"></span>
             </span>
             <!--end:Menu link-->
@@ -186,7 +186,7 @@
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
                         </span>
-                        <span class="menu-title">All Pages</span>
+                        <span class="menu-title">{{ __('All Pages') }}</span>
                     </a>
                 </div>
                 <!--end:Pages List-->
@@ -198,7 +198,7 @@
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
                         </span>
-                        <span class="menu-title">Create Page</span>
+                        <span class="menu-title">{{ __('Create Page') }}</span>
                     </a>
                 </div>
                 <!--end:Create Page-->
@@ -218,7 +218,7 @@
                         <span class="path2"></span>
                     </i>
                 </span>
-                <span class="menu-title">Ad Management</span>
+                <span class="menu-title">{{ __('Ad Management') }}</span>
                 <span class="menu-arrow"></span>
             </span>
             <!--end::Menu link-->
@@ -234,7 +234,7 @@
                         <span class="menu-bullet">
                             <span class="bullet bullet-dot"></span>
                         </span>
-                        <span class="menu-title">All Ads</span>
+                        <span class="menu-title">{{ __('All Ads') }}</span>
                     </a>
                 </div>
                 <!--end::Ads List-->
@@ -248,7 +248,7 @@
             <!--begin:Menu item-->
             <div class="menu-item pt-5">
                 <div class="menu-content">
-                    <span class="fw-bold text-muted text-uppercase fs-7">Setting Management</span>
+                    <span class="fw-bold text-muted text-uppercase fs-7">{{ __('Setting Management') }}</span>
                 </div>
             </div><!--end:Menu item-->
 
@@ -261,7 +261,7 @@
                     <span class="menu-icon">
                         <i class="fa-solid fa-gear fs-2"></i>
                     </span>
-                    <span class="menu-title">Setting</span>
+                    <span class="menu-title">{{ __('Setting') }}</span>
                     <span class="menu-arrow"></span>
                 </span>
                 <!--end:Menu link-->
@@ -273,7 +273,7 @@
                         <a class="menu-link {{ request()->routeIs('profile.edit') ? 'active menu-active-bg' : '' }}"
                             href="{{ route('profile.edit') }}">
                             <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                            <span class="menu-title">My Profile</span>
+                            <span class="menu-title">{{ __('My Profile') }}</span>
                         </a>
                     </div>
                     <!--end:Menu item-->
@@ -283,7 +283,7 @@
                         <a class="menu-link {{ request()->routeIs('setting.index') ? 'active menu-active-bg' : '' }}"
                             href="{{ route('setting.index') }}">
                             <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                            <span class="menu-title">Account Setting</span>
+                            <span class="menu-title">{{ __('Account Setting') }}</span>
                         </a>
                     </div>
                     <!--end:Menu item-->
@@ -293,7 +293,7 @@
                         <a class="menu-link {{ request()->routeIs('smtp.index') ? 'active menu-active-bg' : '' }}"
                             href="{{ route('smtp.index') }}">
                             <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                            <span class="menu-title">Smtp Setting</span>
+                            <span class="menu-title">{{ __('Smtp Setting') }}</span>
                         </a>
                     </div>
                     <!--end:Menu item-->

@@ -25,10 +25,17 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocaleMiddleware::class,
+        ]);
+        $middleware->api(append: [
+            \App\Http\Middleware\SetLocaleMiddleware::class,
+        ]);
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'jwt.verify' => JWTMiddleware::class,
             'block.guest' => BlockGuest::class,
+            'setlocale' => \App\Http\Middleware\SetLocaleMiddleware::class,
         ]);
         $middleware->validateCsrfTokens(except: [
             '/broadcasting/*',

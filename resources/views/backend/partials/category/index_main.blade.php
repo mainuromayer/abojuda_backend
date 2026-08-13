@@ -11,7 +11,7 @@
                         <span class="path1"></span>
                         <span class="path2"></span>
                     </i> 
-                    <input type="text" data-kt-category-table-filter="search" class="form-control form-control-solid w-250px ps-13" placeholder="Search category">
+                    <input type="text" data-kt-category-table-filter="search" class="form-control form-control-solid w-250px ps-13" placeholder="{{ __('Search category') }}">
                 </div>
                 <!--end::Search-->
             </div>
@@ -23,7 +23,7 @@
                 <div class="d-flex justify-content-end" data-kt-category-table-toolbar="base">
                     <!--begin::Add category-->
                     <button type="button" class="btn btn-primary" id="open_add_category_modal_btn">
-                        <i class="ki-duotone ki-plus fs-2"></i> Add Category
+                        <i class="ki-duotone ki-plus fs-2"></i> {{ __('Add Category') }}
                     </button>
                     <!--end::Add category-->
                 </div>
@@ -45,13 +45,13 @@
                     <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer" id="kt_table_categories">
                         <thead>
                             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                <th class="min-w-80px">Icon</th>
-                                <th class="min-w-150px">Category Name</th>
-                                <th class="min-w-120px">Slug</th>
-                                <th class="min-w-200px">Description</th>
-                                <th class="min-w-100px">Status</th>
-                                <th class="min-w-150px">Created At</th>
-                                <th class="text-end min-w-100px">Actions</th>
+                                <th class="min-w-80px">{{ __('Icon') }}</th>
+                                <th class="min-w-150px">{{ __('Category Name') }}</th>
+                                <th class="min-w-120px">{{ __('Slug') }}</th>
+                                <th class="min-w-200px">{{ __('Description') }}</th>
+                                <th class="min-w-100px">{{ __('Status') }}</th>
+                                <th class="min-w-150px">{{ __('Created At') }}</th>
+                                <th class="text-end min-w-100px">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-600 fw-semibold">

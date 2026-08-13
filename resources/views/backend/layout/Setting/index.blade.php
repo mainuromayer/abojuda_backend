@@ -12,17 +12,17 @@
                 <div class="d-flex flex-column align-items-start justify-content-center flex-wrap me-2">
                     <!--begin::Title-->
                     <h1 class="text-dark fw-bold my-1 fs-2">
-                        Account Setting </h1>
+                        {{ __('Account Settings') }} </h1>
                     <!--end::Title-->
 
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb fw-semibold fs-base my-1">
                         <li class="breadcrumb-item text-muted">
-                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">Home </a>
+                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">{{ __('Home') }} </a>
                         </li>
 
                         <li class="breadcrumb-item text-dark">
-                            Account Setting
+                            {{ __('Account Settings') }}
                         </li>
 
                     </ul>
@@ -44,7 +44,7 @@
                     <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_settings_profile_details" aria-expanded="true" aria-controls="kt_account_settings_profile_details">
                         <!--begin::Card title-->
                         <div class="card-title m-0">
-                            <h3 class="fw-bold m-0">Account Details</h3>
+                            <h3 class="fw-bold m-0">{{ __('Account Details') }}</h3>
                         </div>
                         <!--end::Card title-->
                     </div>
@@ -62,14 +62,14 @@
                                 <div class="d-flex flex-column flex-md-row gap-5 mb-6">
                                     <!-- Title -->
                                     <div class="fv-row flex-row-fluid">
-                                        <label class="required form-label">System Title</label>
-                                        <input class="form-control form-control-solid" type="text" name="title" placeholder="Enter system title" value="{{ old('title', $setting->system_title ?? '') }}">
+                                        <label class="required form-label">{{ __('System Title') }}</label>
+                                        <input class="form-control form-control-solid" type="text" name="title" placeholder="{{ __('Enter system title') }}" value="{{ old('title', $setting->system_title ?? '') }}">
                                     </div>
 
                                     <!-- Copyright -->
                                     <div class="fv-row flex-row-fluid">
-                                        <label class="required form-label">Copyright Text</label>
-                                        <input class="form-control form-control-solid" type="text" name="copyright" placeholder="Enter copyright" value="{{ old('copyright', $setting->copyright_text ?? '') }}">
+                                        <label class="required form-label">{{ __('Copyright Text') }}</label>
+                                        <input class="form-control form-control-solid" type="text" name="copyright" placeholder="{{ __('Enter copyright') }}" value="{{ old('copyright', $setting->copyright_text ?? '') }}">
                                     </div>
                                 </div>
 
@@ -77,17 +77,17 @@
                                 <!-- 2nd Row: logo & favicon -->
                                 <div class="d-flex flex-column flex-md-row gap-5 mb-6">
                                     <x-backend.setting.image-upload
-                                        title="Logo"
+                                        :title="__('Logo')"
                                         name="logo"
                                         :imageUrl="$setting?->logo"
-                                        description="Set the logo image. Only *.png, *.jpg and *.jpeg image files are accepted"
+                                        :description="__('Set the logo image. Only *.png, *.jpg and *.jpeg image files are accepted')"
                                     />
 
                                     <x-backend.setting.image-upload
-                                        title="Favicon"
+                                        :title="__('Favicon')"
                                         name="favicon"
                                         :imageUrl="$setting?->favicon"
-                                        description="Set the Favicon image. Only *.png, *.jpg and *.jpeg image files are accepted"
+                                        :description="__('Set the Favicon image. Only *.png, *.jpg and *.jpeg image files are accepted')"
                                     />
                                 </div>
 
@@ -97,8 +97,8 @@
 
                             <!--begin::Actions-->
                             <div class="card-footer d-flex justify-content-end py-6 px-9">
-                                <button type="reset" class="btn btn-light btn-active-light-primary me-2">Discard</button>
-                                <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit">Save Changes</button>
+                                <button type="reset" class="btn btn-light btn-active-light-primary me-2">{{ __('Discard') }}</button>
+                                <button type="submit" class="btn btn-primary" id="kt_account_profile_details_submit">{{ __('Save Changes') }}</button>
                             </div>
                             <!--end::Actions-->
                             <input type="hidden"></form>

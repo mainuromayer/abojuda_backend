@@ -60,6 +60,14 @@ $imageUrl = ($setting && $setting->logo)
                 @include('backend.partials.notification')
                 <!--end::Notifications-->
 
+                <!--begin::Language Switcher-->
+                <div class="d-flex align-items-center ms-1 ms-lg-3">
+                    <button type="button" class="btn btn-icon btn-custom btn-active-light btn-active-color-primary w-30px h-30px w-md-40px h-md-40px fw-bold text-uppercase" data-bs-toggle="modal" data-bs-target="#kt_modal_language_settings" title="{{ __('Language Settings') }}">
+                        <span class="badge badge-light-primary fw-bold fs-7">{{ strtoupper(app()->getLocale()) }}</span>
+                    </button>
+                </div>
+                <!--end::Language Switcher-->
+
                 <!--begin::Theme mode-->
                 @include('backend.partials.theme_mode')
                 <!--end::Theme mode-->
@@ -75,3 +83,5 @@ $imageUrl = ($setting && $setting->logo)
     <!--end::Container-->
 </div>
 <!--end::Header-->
+
+@include('backend.partials.language_modal')

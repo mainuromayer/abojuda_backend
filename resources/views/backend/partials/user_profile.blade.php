@@ -45,7 +45,7 @@ if ($user->avatar){
         <!--begin::Menu item-->
         <div class="menu-item px-5">
             <a href="{{ route('profile.edit') }}" class="menu-link px-5">
-                My Profile
+                {{ __('My Profile') }}
             </a>
         </div>
         <!--end::Menu item-->
@@ -57,7 +57,7 @@ if ($user->avatar){
         <!--begin::Menu item-->
         <div class="menu-item px-5 my-1">
             <a href="{{ route('setting.index') }}" class="menu-link px-5">
-                Account Settings
+                {{ __('Account Settings') }}
             </a>
         </div>
         <!--end::Menu item-->
@@ -66,8 +66,8 @@ if ($user->avatar){
         <div class="menu-item px-5">
             <form action="{{ route('logout') }}" method="post">
                 @csrf
-                <button type="submit" class="menu-link px-5 border-0">
-                    Sign Out
+                <button type="submit" class="menu-link px-5 border-0 bg-transparent text-start w-100">
+                    {{ __('Sign Out') }}
                 </button>
             </form>
         </div>

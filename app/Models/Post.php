@@ -10,10 +10,13 @@ use App\Models\User;
 use App\Models\Wish;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasTranslations;
 
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations;
+
+    public array $translatable = ['title', 'description', 'company_name', 'business_name'];
 
     protected $fillable = [
         'user_id',

@@ -7,11 +7,13 @@
             <div class="card-title">
                 <!--begin::Search-->
                 <div class="d-flex align-items-center position-relative my-1">
-                    <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
+                    <i class="ki-duotone ki-magnifier fs-3 position-absolute {{ app()->getLocale() == 'ar' ? 'me-5 end-0' : 'ms-5 start-0' }}">
                         <span class="path1"></span>
                         <span class="path2"></span>
                     </i> 
-                    <input type="text" data-kt-ad-table-filter="search" class="form-control form-control-solid w-250px ps-13" placeholder="Search ads">
+                    <input type="text" data-kt-ad-table-filter="search" 
+                        class="form-control form-control-solid w-100 w-sm-250px {{ app()->getLocale() == 'ar' ? 'pe-13 ps-5' : 'ps-13 pe-5' }}" 
+                        placeholder="{{ __('Search ads...') }}">
                 </div>
                 <!--end::Search-->
             </div>
@@ -23,7 +25,7 @@
                 <div class="d-flex justify-content-end" data-kt-ad-table-toolbar="base">
                     <!--begin::Add ad-->
                     <button type="button" class="btn btn-primary" id="open_add_ad_modal_btn">
-                        <i class="ki-duotone ki-plus fs-2"></i> Add New Ad
+                        <i class="ki-duotone ki-plus fs-2"></i> {{ __('Add New Ad') }}
                     </button>
                     <!--end::Add ad-->
                 </div>
@@ -45,13 +47,13 @@
                     <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer" id="kt_table_ads">
                         <thead>
                             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                <th class="min-w-80px">Media</th>
-                                <th class="min-w-150px">Title</th>
-                                <th class="min-w-100px">Type</th>
-                                <th class="min-w-200px">Back Link</th>
-                                <th class="min-w-100px">Status</th>
-                                <th class="min-w-150px">Created At</th>
-                                <th class="text-end min-w-100px">Actions</th>
+                                <th class="min-w-80px">{{ __('Media') }}</th>
+                                <th class="min-w-150px">{{ __('Title') }}</th>
+                                <th class="min-w-100px">{{ __('Type') }}</th>
+                                <th class="min-w-200px">{{ __('Back Link') }}</th>
+                                <th class="min-w-100px">{{ __('Status') }}</th>
+                                <th class="min-w-150px">{{ __('Created At') }}</th>
+                                <th class="text-end min-w-100px">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-600 fw-semibold">

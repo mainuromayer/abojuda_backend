@@ -6,7 +6,7 @@
             <!--begin::Modal header-->
             <div class="modal-header" id="kt_modal_add_category_header">
                 <!--begin::Modal title-->
-                <h2 class="fw-bold" id="category_modal_title">Add Category</h2>
+                <h2 class="fw-bold" id="category_modal_title">{{ __('Add Category') }}</h2>
                 <!--end::Modal title-->
 
                 <!--begin::Close-->
@@ -36,14 +36,14 @@
                         
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">Category Name</label>
-                            <input type="text" name="name" id="category_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Category Name" required />
+                            <label class="required fw-semibold fs-6 mb-2">{{ __('Category Name') }}</label>
+                            <input type="text" name="name" id="category_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="{{ __('Category Name') }}" required />
                         </div>
                         <!--end::Input group-->
 
                         <!--begin::Input group-->
                         <div class="fv-row mb-7 d-flex flex-column align-items-start">
-                            <label class="fw-semibold fs-6 mb-2">Category Icon</label>
+                            <label class="fw-semibold fs-6 mb-2">{{ __('Category Icon') }}</label>
                             
                             <style>
                                 .image-input-placeholder {
@@ -61,7 +61,7 @@
                                 <!--end::Preview existing icon-->
 
                                 <!--begin::Label-->
-                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change icon">
+                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="{{ __('Change icon') }}">
                                     <i class="ki-duotone ki-pencil fs-7">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -74,7 +74,7 @@
                                 <!--end::Label-->
 
                                 <!--begin::Cancel-->
-                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel icon">
+                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="{{ __('Cancel icon') }}">
                                     <i class="ki-duotone ki-cross fs-2">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -83,7 +83,7 @@
                                 <!--end::Cancel-->
 
                                 <!--begin::Remove-->
-                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove icon" id="remove_category_icon_btn">
+                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="{{ __('Remove icon') }}" id="remove_category_icon_btn">
                                     <i class="ki-duotone ki-cross fs-2">
                                         <span class="path1"></span>
                                         <span class="path2"></span>
@@ -92,23 +92,23 @@
                                 <!--end::Remove-->
                             </div>
                             <!--end::Image input-->
-                            <div class="form-text mt-2">Allowed file types: png, jpg, jpeg, svg.</div>
+                            <div class="form-text mt-2">{{ __('Allowed file types: png, jpg, jpeg, svg.') }}</div>
                         </div>
                         <!--end::Input group-->
 
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
-                            <label class="fw-semibold fs-6 mb-2">Short Description</label>
-                            <textarea name="shot_desc" id="category_description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Enter short description..." rows="3"></textarea>
+                            <label class="fw-semibold fs-6 mb-2">{{ __('Short Description') }}</label>
+                            <textarea name="shot_desc" id="category_description" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="{{ __('Enter short description...') }}" rows="3"></textarea>
                         </div>
                         <!--end::Input group-->
 
                         <!--begin::Input group-->
                         <div class="fv-row mb-7">
-                            <label class="required fw-semibold fs-6 mb-2">Status</label>
+                            <label class="required fw-semibold fs-6 mb-2">{{ __('Status') }}</label>
                             <select name="status" id="category_status" class="form-select form-select-solid" required>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
+                                <option value="active">{{ __('Active') }}</option>
+                                <option value="inactive">{{ __('Inactive') }}</option>
                             </select>
                         </div>
                         <!--end::Input group-->
@@ -118,10 +118,10 @@
 
                     <!--begin::Actions-->
                     <div class="text-center pt-15">
-                        <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Discard</button>
+                        <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">{{ __('Discard') }}</button>
                         <button type="submit" class="btn btn-primary" id="category_submit_btn">
-                            <span class="indicator-label">Submit</span>
-                            <span class="indicator-progress">Please wait... 
+                            <span class="indicator-label">{{ __('Submit') }}</span>
+                            <span class="indicator-progress">{{ __('Please wait...') }} 
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                             </span>
                         </button>

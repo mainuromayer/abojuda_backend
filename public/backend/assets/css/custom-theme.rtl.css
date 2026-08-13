@@ -1,0 +1,177 @@
+/* Custom Theme Styling Overrides */
+:root,
+[data-bs-theme=light] {
+  --bs-primary: #2a8b37;
+  --bs-primary-rgb: 42, 139, 55;
+  --bs-primary-active: #062552;
+  --bs-primary-active-rgb: 6, 37, 82;
+  --bs-primary-light: #f0fdf4; /* Very light green tint */
+  --bs-link-color: #2a8b37;
+  --bs-link-color-rgb: 42, 139, 55;
+  --bs-link-hover-color: #062552;
+  --bs-link-hover-color-rgb: 6, 37, 82;
+  --bs-text-primary: #2a8b37;
+  --bs-component-active-bg: #2a8b37;
+  --bs-component-hover-color: #2a8b37;
+  --bs-component-checked-bg: #2a8b37;
+  --bs-menu-link-color-hover: #2a8b37;
+  --bs-menu-link-color-show: #2a8b37;
+  --bs-menu-link-color-here: #2a8b37;
+  --bs-menu-link-color-active: #2a8b37;
+  --bs-ribbon-label-bg: #2a8b37;
+  --bs-primary-bg-subtle: #f0fdf4;
+  --bs-primary-border-subtle: #bbf7d0; /* Soft light green border */
+  --bs-primary-text-emphasis: #062552;
+  --bs-focus-ring-color: rgba(42, 139, 55, 0.25);
+}
+
+[data-bs-theme=dark] {
+  --bs-primary: #2a8b37;
+  --bs-primary-rgb: 42, 139, 55;
+  --bs-primary-active: #062552;
+  --bs-primary-active-rgb: 6, 37, 82;
+  --bs-primary-light: #162a1c; /* Darker green tint for dark mode */
+  --bs-link-color: #2a8b37;
+  --bs-link-color-rgb: 42, 139, 55;
+  --bs-link-hover-color: #55c765; /* Lighter green hover in dark mode */
+  --bs-link-hover-color-rgb: 85, 199, 101;
+  --bs-text-primary: #2a8b37;
+  --bs-component-active-bg: #2a8b37;
+  --bs-component-hover-color: #2a8b37;
+  --bs-component-checked-bg: #2a8b37;
+  --bs-primary-bg-subtle: #0d1e14;
+  --bs-primary-border-subtle: #163e24;
+  --bs-primary-text-emphasis: #55c765;
+  --bs-focus-ring-color: rgba(42, 139, 55, 0.25);
+}
+
+/* Hardcoded class overrides to ensure standard Bootstrap/Metronic elements match */
+.btn-primary {
+  --bs-btn-bg: var(--bs-primary) !important;
+  --bs-btn-border-color: var(--bs-primary) !important;
+  --bs-btn-hover-bg: var(--bs-primary-active) !important;
+  --bs-btn-hover-border-color: var(--bs-primary-active) !important;
+  --bs-btn-active-bg: var(--bs-primary-active) !important;
+  --bs-btn-active-border-color: var(--bs-primary-active) !important;
+  --bs-btn-disabled-bg: var(--bs-primary) !important;
+  --bs-btn-disabled-border-color: var(--bs-primary) !important;
+  color: #ffffff !important;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--bs-primary) !important;
+  --bs-btn-border-color: var(--bs-primary) !important;
+  --bs-btn-hover-bg: var(--bs-primary-active) !important;
+  --bs-btn-hover-border-color: var(--bs-primary-active) !important;
+  --bs-btn-hover-color: #ffffff !important;
+  --bs-btn-active-bg: var(--bs-primary-active) !important;
+  --bs-btn-active-border-color: var(--bs-primary-active) !important;
+  --bs-btn-active-color: #ffffff !important;
+}
+
+.btn-light-primary {
+  color: var(--bs-primary) !important;
+  background-color: var(--bs-primary-light) !important;
+}
+
+.btn-light-primary:hover,
+.btn-light-primary:active,
+.btn-light-primary.show,
+.btn-light-primary.active {
+  color: #ffffff !important;
+  background-color: var(--bs-primary) !important;
+}
+
+.btn-active-light-primary:active, 
+.btn-active-light-primary.active, 
+.show > .btn-active-light-primary.dropdown-toggle,
+.btn-active-light-primary:hover {
+  color: #062552 !important;
+  background-color: var(--bs-primary) !important;
+}
+
+.btn-active-color-primary:active, 
+.btn-active-color-primary.active, 
+.btn-active-color-primary:hover:not(.btn-active) {
+  color: var(--bs-primary) !important;
+}
+
+.text-primary {
+  color: var(--bs-primary) !important;
+}
+
+.text-hover-primary:hover {
+  color: var(--bs-primary-active) !important;
+}
+
+.bg-primary {
+  background-color: var(--bs-primary) !important;
+}
+
+.bg-light-primary {
+  background-color: var(--bs-primary-light) !important;
+}
+
+.border-primary {
+  border-color: var(--bs-primary) !important;
+}
+
+.form-check-input:checked {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+}
+
+.form-check-input[type=checkbox]:indeterminate {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+}
+
+.page-item.active .page-link {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: #ffffff !important;
+}
+
+.badge-primary {
+  background-color: var(--bs-primary) !important;
+  color: #ffffff !important;
+}
+
+.badge-light-primary {
+  color: var(--bs-primary) !important;
+  background-color: var(--bs-primary-light) !important;
+}
+
+.link-primary {
+  color: var(--bs-primary) !important;
+}
+
+.link-primary:hover,
+.link-primary:focus {
+  color: var(--bs-primary-active) !important;
+}
+/* RTL Layout Overrides (Applied ONLY in Arabic mode) */
+html[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Text alignment & Table overrides for RTL */
+html[dir="rtl"] .text-end {
+    text-align: left !important;
+}
+
+html[dir="rtl"] .text-start {
+    text-align: right !important;
+}
+
+html[dir="rtl"] table.dataTable {
+    text-align: right !important;
+}
+
+html[dir="rtl"] table.dataTable th,
+html[dir="rtl"] table.dataTable td {
+    text-align: right !important;
+}
+
+

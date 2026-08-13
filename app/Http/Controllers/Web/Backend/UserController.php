@@ -55,23 +55,38 @@ class UserController extends Controller
                         </div>
                     </div>';
                 })
-                ->addColumn('joined_date', fn($row) => $row->created_at ? $row->created_at->format('d M Y, h:i a') : '')
+                ->addColumn('joined_date', function($row) {
+                    if (!$row->created_at) return '';
+                    $dateStr = $row->created_at->format('d M Y, h:i a');
+                    if (app()->getLocale() === 'ar') {
+                        return str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $dateStr);
+                    }
+                    return $dateStr;
+                })
+                ->addColumn('role', function($row) {
+                    $roleVal = $row->role instanceof \App\Enum\Role ? $row->role->value : (string)$row->role;
+                    return __($roleVal);
+                })
                 ->addColumn('reports', function ($row) {
                     $count = $row->reports_against_count ?? 0;
                     if ($count > 0) {
-                        return '<button class="btn btn-sm btn-light-danger view-user-reports-btn" data-id="' . $row->id . '" data-name="' . htmlspecialchars($row->name) . '">' . $count . ' Report(s)</button>';
+                        $countText = app()->getLocale() == 'ar'
+                            ? str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $count)
+                            : $count;
+                        $label = app()->getLocale() == 'ar' ? 'بلاغ (' . $countText . ')' : $count . ' Report(s)';
+                        return '<button class="btn btn-sm btn-light-danger view-user-reports-btn" data-id="' . $row->id . '" data-name="' . htmlspecialchars($row->name) . '">' . $label . '</button>';
                     }
-                    return '<span class="badge badge-light-secondary">No Reports</span>';
+                    return '<span class="badge badge-light-secondary">' . __('No Reports') . '</span>';
                 })
                 ->addColumn('actions', function ($row) {
                     $approveRejectButtons = '';
                     if ($row->status === 'pending_delete') {
                         $approveRejectButtons = '
                             <div class="menu-item px-3">
-                                <a href="#" class="menu-link px-3 approve-delete-btn" data-id="' . $row->id . '">Approve Delete</a>
+                                <a href="#" class="menu-link px-3 approve-delete-btn" data-id="' . $row->id . '">' . __('Approve Delete') . '</a>
                             </div>
                             <div class="menu-item px-3">
-                                <a href="#" class="menu-link px-3 reject-delete-btn" data-id="' . $row->id . '">Reject Delete</a>
+                                <a href="#" class="menu-link px-3 reject-delete-btn" data-id="' . $row->id . '">' . __('Reject Delete') . '</a>
                             </div>
                         ';
                     }
@@ -79,13 +94,13 @@ class UserController extends Controller
                     if ($row->status === 'suspended') {
                         $suspendButton = '
                             <div class="menu-item px-3">
-                                <a href="#" class="menu-link px-3 dt-suspend-btn text-success" data-id="' . $row->id . '" data-action="unsuspend">Unsuspend</a>
+                                <a href="#" class="menu-link px-3 dt-suspend-btn text-success" data-id="' . $row->id . '" data-action="unsuspend">' . __('Unsuspend') . '</a>
                             </div>
                         ';
                     } else {
                         $suspendButton = '
                             <div class="menu-item px-3">
-                                <a href="#" class="menu-link px-3 dt-suspend-btn text-danger" data-id="' . $row->id . '" data-action="suspend">Suspend</a>
+                                <a href="#" class="menu-link px-3 dt-suspend-btn text-danger" data-id="' . $row->id . '" data-action="suspend">' . __('Suspend') . '</a>
                             </div>
                         ';
                     }
@@ -93,7 +108,7 @@ class UserController extends Controller
                             <div class="d-flex justify-content-end">
                                 <a href="#" class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm"
                                    data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                                    Actions
+                                    ' . __('Actions') . '
                                     <i class="ki-duotone ki-down fs-5 ms-1"></i>
                                 </a>
                                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
@@ -101,11 +116,11 @@ class UserController extends Controller
                                     ' . $approveRejectButtons . '
                                     ' . $suspendButton . '
                                     <div class="menu-item px-3">
-                                        <a href="#" data-id="' . $row->id . '" class="menu-link edit-user-btn px-3">Edit</a>
+                                        <a href="#" data-id="' . $row->id . '" class="menu-link edit-user-btn px-3">' . __('Edit') . '</a>
                                     </div>
                                     ' . ($row->status !== 'pending_delete' ? '
                                     <div class="menu-item px-3">
-                                        <a href="#" class="menu-link px-3 delete-user-btn" data-id="' . $row->id . '">Delete</a>
+                                        <a href="#" class="menu-link px-3 delete-user-btn" data-id="' . $row->id . '">' . __('Delete') . '</a>
                                     </div>
                                     ' : '') . '
                                 </div>

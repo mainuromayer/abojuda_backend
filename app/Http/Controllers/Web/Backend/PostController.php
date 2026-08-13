@@ -39,14 +39,20 @@ class PostController extends Controller
                 })
                 ->addColumn('title', function ($row) {
                     $name = $row->title ?? $row->business_name ?? '-';
-                    $category = $row->category->name ?? '-';
+                    $rawCategory = $row->category->name ?? '-';
+                    $category = __($rawCategory);
                     return '<div><span class="fw-bold">' . e($name) . '</span><br><small class="text-muted">' . e($category) . '</small></div>';
                 })
                 ->addColumn('user', function ($row) {
                     return $row->user->name ?? '-';
                 })
                 ->addColumn('price', function ($row) {
-                    return $row->price > 0 ? '$' . number_format($row->price, 2) : '-';
+                    if (!$row->price || $row->price <= 0) return '-';
+                    $formattedPrice = '$' . number_format($row->price, 2);
+                    if (app()->getLocale() === 'ar') {
+                        return str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $formattedPrice);
+                    }
+                    return $formattedPrice;
                 })
                 ->addColumn('status', function ($row) {
                     $classes = [
@@ -55,8 +61,9 @@ class PostController extends Controller
                         'rejected' => 'badge-light-danger',
                         'draft'   => 'badge-light-secondary',
                     ];
-                    $class = $classes[$row->status] ?? 'badge-light-secondary';
-                    return '<span class="badge ' . $class . ' text-uppercase">' . $row->status . '</span>';
+                    $statusKey = strtolower($row->status ?? '');
+                    $class = $classes[$statusKey] ?? 'badge-light-secondary';
+                    return '<span class="badge ' . $class . ' text-uppercase">' . __($statusKey) . '</span>';
                 })
                 ->addColumn('featured', function ($row) {
                     $checked = $row->is_featured ? 'checked' : '';
@@ -67,34 +74,43 @@ class PostController extends Controller
                 ->addColumn('reports', function ($row) {
                     $count = $row->reports_count ?? 0;
                     if ($count > 0) {
-                        return '<button class="btn btn-sm btn-light-danger view-post-reports-btn" data-id="' . $row->id . '" data-title="' . htmlspecialchars($row->title ?? $row->business_name ?? '') . '">' . $count . ' Report(s)</button>';
+                        $countText = app()->getLocale() == 'ar'
+                            ? str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $count)
+                            : $count;
+                        $label = app()->getLocale() == 'ar' ? 'بلاغ (' . $countText . ')' : $count . ' Report(s)';
+                        return '<button class="btn btn-sm btn-light-danger view-post-reports-btn" data-id="' . $row->id . '" data-title="' . htmlspecialchars($row->title ?? $row->business_name ?? '') . '">' . $label . '</button>';
                     }
-                    return '<span class="badge badge-light-secondary">No Reports</span>';
+                    return '<span class="badge badge-light-secondary">' . __('No Reports') . '</span>';
                 })
                 ->addColumn('created_at', function ($row) {
-                    return $row->created_at ? $row->created_at->format('d M Y, h:i a') : '-';
+                    if (!$row->created_at) return '-';
+                    $dateStr = $row->created_at->format('d M Y, h:i a');
+                    if (app()->getLocale() === 'ar') {
+                        return str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $dateStr);
+                    }
+                    return $dateStr;
                 })
                 ->addColumn('actions', function ($row) {
                     return '
                         <div class="d-flex justify-content-end">
                             <a href="#" class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm"
                                data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                                Actions
+                                ' . __('Actions') . '
                                 <i class="ki-duotone ki-down fs-5 ms-1"></i>
                             </a>
                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-150px py-4"
                                  data-kt-menu="true">
                                 <div class="menu-item px-3">
-                                    <a href="' . route('post.show', $row->id) . '" class="menu-link px-3">View</a>
+                                    <a href="' . route('post.show', $row->id) . '" class="menu-link px-3">' . __('View') . '</a>
                                 </div>
                                 <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3 approve-post-btn" data-id="' . $row->id . '">Approve</a>
+                                    <a href="#" class="menu-link px-3 approve-post-btn" data-id="' . $row->id . '">' . __('Approve') . '</a>
                                 </div>
                                 <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3 reject-post-btn" data-id="' . $row->id . '">Reject</a>
+                                    <a href="#" class="menu-link px-3 reject-post-btn" data-id="' . $row->id . '">' . __('Reject') . '</a>
                                 </div>
                                 <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3 text-danger delete-post-btn" data-id="' . $row->id . '">Delete</a>
+                                    <a href="#" class="menu-link px-3 text-danger delete-post-btn" data-id="' . $row->id . '">' . __('Delete') . '</a>
                                 </div>
                             </div>
                         </div>';

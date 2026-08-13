@@ -21,10 +21,10 @@
             style="background-image: url({{ asset('backend/assets/media/misc/menu-header-bg.jpg') }})">
             <!--begin::Title-->
             <h3 class="text-white fw-semibold px-9 mt-10 mb-6 d-flex align-items-center justify-content-between w-100">
-                <span>Notifications <span class="fs-8 opacity-75 ps-3" id="unread_count_text">{{ $unreadCount }} unread</span></span>
+                <span>{{ __('Notifications') }} <span class="fs-8 opacity-75 ps-3" id="unread_count_text">{{ $unreadCount }} {{ __('unread') }}</span></span>
                 <div class="d-flex align-items-center gap-2">
-                    <a href="#" class="fs-9 text-white opacity-75 opacity-state-100 text-hover-primary text-decoration-underline" id="mark_all_notifications_read_btn" style="{{ $unreadCount > 0 ? '' : 'display: none;' }}">Mark all as read</a>
-                    <a href="#" class="fs-9 text-white opacity-75 opacity-state-100 text-hover-danger text-decoration-underline" id="clear_all_notifications_btn" style="{{ count($notifications) > 0 ? '' : 'display: none;' }}">Clear all</a>
+                    <a href="#" class="fs-9 text-white opacity-75 opacity-state-100 text-hover-primary text-decoration-underline" id="mark_all_notifications_read_btn" style="{{ $unreadCount > 0 ? '' : 'display: none;' }}">{{ __('Mark all as read') }}</a>
+                    <a href="#" class="fs-9 text-white opacity-75 opacity-state-100 text-hover-danger text-decoration-underline" id="clear_all_notifications_btn" style="{{ count($notifications) > 0 ? '' : 'display: none;' }}">{{ __('Clear all') }}</a>
                 </div>
             </h3>
             <!--end::Title-->
@@ -33,7 +33,7 @@
             <ul class="nav nav-line-tabs nav-line-tabs-2x nav-stretch fw-semibold px-9" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link text-white opacity-75 opacity-state-100 pb-4 active" data-bs-toggle="tab"
-                        href="#kt_topbar_notifications_1" aria-selected="false" tabindex="-1" role="tab">Alerts</a>
+                        href="#kt_topbar_notifications_1" aria-selected="false" tabindex="-1" role="tab">{{ __('Alerts') }}</a>
                 </li>
             </ul>
             <!--end::Tabs-->

@@ -3,360 +3,119 @@
     data-kt-menu-trigger="auto" data-kt-menu-permanent="true" data-kt-menu-placement="bottom-start">
 
     <!--begin::Tablet and mobile search toggle-->
-    <div data-kt-search-element="toggle" class="search-toggle-mobile d-flex d-lg-none align-items-center">
-        <div class="d-flex ">
-            <i class="ki-duotone ki-magnifier fs-1 "><span class="path1"></span><span class="path2"></span></i>
+    <div data-kt-search-element="toggle" class="search-toggle-mobile d-flex d-lg-none align-items-center cursor-pointer">
+        <div class="d-flex btn btn-icon btn-custom btn-active-light btn-active-color-primary w-30px h-30px w-md-40px h-md-40px">
+            <i class="ki-duotone ki-magnifier fs-2"><span class="path1"></span><span class="path2"></span></i>
         </div>
     </div>
     <!--end::Tablet and mobile search toggle-->
 
-    <!--begin::Form(use d-none d-lg-block classes for responsive search)-->
-    <form data-kt-search-element="form" class="d-none d-lg-block w-100 position-relative mb-5 mb-lg-0"
-        autocomplete="off">
-        <!--begin::Hidden input(Added to disable form autocomplete)-->
+    <!--begin::Form-->
+    <form data-kt-search-element="form" class="d-none d-lg-block w-100 position-relative mb-5 mb-lg-0" autocomplete="off">
         <input type="hidden" />
-        <!--end::Hidden input-->
 
         <!--begin::Icon-->
-        <i class="ki-duotone ki-magnifier search-icon fs-2 text-gray-500 position-absolute top-50 translate-middle-y ms-5">
+        <i class="ki-duotone ki-magnifier search-icon fs-2 text-gray-500 position-absolute top-50 translate-middle-y {{ app()->getLocale() == 'ar' ? 'me-5 end-0' : 'ms-5 start-0' }}">
             <span class="path1"></span>
             <span class="path2"></span>
         </i>
         <!--end::Icon-->
 
         <!--begin::Input-->
-        <input type="text" class="search-input form-control form-control-solid  ps-13" name="search" value=""
-            placeholder="Search..." data-kt-search-element="input" />
+        <input type="text" class="search-input form-control form-control-solid {{ app()->getLocale() == 'ar' ? 'pe-13 ps-5' : 'ps-13 pe-5' }}"
+            name="search" id="global_search_input" value="" placeholder="{{ __('Search...') }}" data-kt-search-element="input" />
         <!--end::Input-->
 
         <!--begin::Spinner-->
-        <span class="search-spinner  position-absolute top-50 end-0 translate-middle-y lh-0 d-none me-5"
-            data-kt-search-element="spinner">
+        <span class="search-spinner position-absolute top-50 {{ app()->getLocale() == 'ar' ? 'start-0 ms-5' : 'end-0 me-5' }} translate-middle-y lh-0 d-none" id="global_search_spinner">
             <span class="spinner-border h-15px w-15px align-middle text-gray-400"></span>
         </span>
         <!--end::Spinner-->
-
-        <!--begin::Reset-->
-        <span class="search-reset  btn btn-flush btn-active-color-primary position-absolute top-50 end-0 translate-middle-y lh-0 d-none me-4"
-            data-kt-search-element="clear">
-            <i class="ki-duotone ki-cross fs-2 fs-lg-1 me-0">
-                <span class="path1"></span>
-                <span class="path2"></span>
-            </i>
-        </span>
-        <!--end::Reset-->
     </form>
     <!--end::Form-->
+
     <!--begin::Menu-->
-    <div data-kt-search-element="content"
-        class="menu menu-sub menu-sub-dropdown py-7 px-7 overflow-hidden w-300px w-md-350px">
+    <div data-kt-search-element="content" class="menu menu-sub menu-sub-dropdown py-5 px-5 overflow-hidden w-300px w-md-350px">
         <!--begin::Wrapper-->
         <div data-kt-search-element="wrapper">
-            <!--begin::Recently viewed-->
-            <div data-kt-search-element="results" class="d-none">
-                <!--begin::Items-->
-                <div class="scroll-y mh-200px mh-lg-350px">
-                    <!--begin::Category title-->
-                    <h3 class="fs-5 text-muted m-0 pt-5 pb-5" data-kt-search-element="category-title">
-                        Projects </h3>
-                    <!--end::Category title-->
-
-                    <!--begin::Item-->
-                    <a href="#" class="d-flex text-dark text-hover-primary align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-notepad fs-2 text-primary">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                    <span class="path3"></span>
-                                    <span class="path4"></span>
-                                    <span class="path5"></span>
-                                </i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <span class="fs-6 fw-semibold">Si-Fi Project by AU
-                                Themes</span>
-                            <span class="fs-7 fw-semibold text-muted">#45670</span>
-                        </div>
-                        <!--end::Title-->
-                    </a>
-                    <!--end::Item-->
-
-
-
-                    <!--begin::Item-->
-                    <a href="#" class="d-flex text-dark text-hover-primary align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-frame fs-2 text-primary"><span class="path1"></span><span
-                                        class="path2"></span><span class="path3"></span><span
-                                        class="path4"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <span class="fs-6 fw-semibold">Shopix Mobile App
-                                Planning</span>
-                            <span class="fs-7 fw-semibold text-muted">#45690</span>
-                        </div>
-                        <!--end::Title-->
-                    </a>
-                    <!--end::Item-->
-
-
-
-                    <!--begin::Item-->
-                    <a href="#" class="d-flex text-dark text-hover-primary align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-message-text-2 fs-2 text-primary"><span
-                                        class="path1"></span><span class="path2"></span><span
-                                        class="path3"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <span class="fs-6 fw-semibold">Finance Monitoring SAAS
-                                Discussion</span>
-                            <span class="fs-7 fw-semibold text-muted">#21090</span>
-                        </div>
-                        <!--end::Title-->
-                    </a>
-                    <!--end::Item-->
-
-
-
-                    <!--begin::Item-->
-                    <a href="#" class="d-flex text-dark text-hover-primary align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-profile-circle fs-2 text-primary"><span
-                                        class="path1"></span><span class="path2"></span><span
-                                        class="path3"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <span class="fs-6 fw-semibold">Dashboard Analitics
-                                Launch</span>
-                            <span class="fs-7 fw-semibold text-muted">#34560</span>
-                        </div>
-                        <!--end::Title-->
-                    </a>
-                    <!--end::Item-->
-
-
+            <!--begin::Results-->
+            <div id="global_search_results_container" class="scroll-y mh-250px mh-lg-350px">
+                <div class="text-center text-muted fs-7 py-4" id="global_search_initial_text">
+                    {{ __('Type at least 2 characters to search...') }}
                 </div>
-                <!--end::Items-->
             </div>
-            <!--end::Recently viewed-->
-            <!--begin::Recently viewed-->
-            <div class="" data-kt-search-element="main">
-                <!--begin::Heading-->
-                <div class="d-flex flex-stack fw-semibold mb-4">
-                    <!--begin::Label-->
-                    <span class="text-muted fs-6 me-2">Recently Searched:</span>
-                    <!--end::Label-->
-
-                    <!--begin::Toolbar-->
-                    <div class="d-flex" data-kt-search-element="toolbar">
-                        <!--begin::Preferences toggle-->
-                        <div data-kt-search-element="preferences-show"
-                            class="btn btn-icon w-20px btn-sm btn-active-color-primary me-2" data-bs-toggle="tooltip" title="Show search preferences">
-                            <i class="ki-duotone ki-setting-2 fs-2"><span class="path1"></span><span
-                                    class="path2"></span></i>
-                        </div>
-                        <!--end::Preferences toggle-->
-                    </div>
-                    <!--end::Toolbar-->
-                </div>
-                <!--end::Heading-->
-
-                <!--begin::Items-->
-                <div class="scroll-y mh-200px mh-lg-325px">
-                    <!--begin::Item-->
-                    <div class="d-flex align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-laptop fs-2 text-primary"><span class="path1"></span><span
-                                        class="path2"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-semibold">BoomApp
-                                by Keenthemes</a>
-                            <span class="fs-7 text-muted fw-semibold">#45789</span>
-                        </div>
-                        <!--end::Title-->
-                    </div>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <div class="d-flex align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-chart-simple fs-2 text-primary"><span
-                                        class="path1"></span><span class="path2"></span><span
-                                        class="path3"></span><span class="path4"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-semibold">"Kept
-                                API Project Meeting</a>
-                            <span class="fs-7 text-muted fw-semibold">#84050</span>
-                        </div>
-                        <!--end::Title-->
-                    </div>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <div class="d-flex align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-chart fs-2 text-primary"><span class="path1"></span><span
-                                        class="path2"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-semibold">"KPI
-                                Monitoring App Launch</a>
-                            <span class="fs-7 text-muted fw-semibold">#84250</span>
-                        </div>
-                        <!--end::Title-->
-                    </div>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <div class="d-flex align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-chart-line-down fs-2 text-primary"><span
-                                        class="path1"></span><span class="path2"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-semibold">Project
-                                Reference FAQ</a>
-                            <span class="fs-7 text-muted fw-semibold">#67945</span>
-                        </div>
-                        <!--end::Title-->
-                    </div>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <div class="d-flex align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-sms fs-2 text-primary"><span class="path1"></span><span
-                                        class="path2"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-semibold">"FitPro
-                                App Development</a>
-                            <span class="fs-7 text-muted fw-semibold">#84250</span>
-                        </div>
-                        <!--end::Title-->
-                    </div>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <div class="d-flex align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-bank fs-2 text-primary"><span class="path1"></span><span
-                                        class="path2"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-semibold">Shopix
-                                Mobile App</a>
-                            <span class="fs-7 text-muted fw-semibold">#45690</span>
-                        </div>
-                        <!--end::Title-->
-                    </div>
-                    <!--end::Item-->
-                    <!--begin::Item-->
-                    <div class="d-flex align-items-center mb-5">
-                        <!--begin::Symbol-->
-                        <div class="symbol symbol-40px me-4">
-                            <span class="symbol-label bg-light">
-                                <i class="ki-duotone ki-chart-line-down fs-2 text-primary"><span
-                                        class="path1"></span><span class="path2"></span></i>
-                            </span>
-                        </div>
-                        <!--end::Symbol-->
-
-                        <!--begin::Title-->
-                        <div class="d-flex flex-column">
-                            <a href="#" class="fs-6 text-gray-800 text-hover-primary fw-semibold">"Landing
-                                UI Design" Launch</a>
-                            <span class="fs-7 text-muted fw-semibold">#24005</span>
-                        </div>
-                        <!--end::Title-->
-                    </div>
-                    <!--end::Item-->
-                </div>
-                <!--end::Items-->
-            </div>
-            <!--end::Recently viewed-->
-            <!--begin::Empty-->
-            <div data-kt-search-element="empty" class="text-center d-none">
-                <!--begin::Icon-->
-                <div class="pt-10 pb-10">
-                    <i class="ki-duotone ki-search-list fs-4x opacity-50">
-                        <span class="path1"></span>
-                        <span class="path2"></span>
-                        <span class="path3"></span>
-                    </i>
-                </div>
-                <!--end::Icon-->
-
-                <!--begin::Message-->
-                <div class="pb-15 fw-semibold">
-                    <h3 class="text-gray-600 fs-5 mb-2">No result found</h3>
-                    <div class="text-muted fs-7">Please try again with a different
-                        query</div>
-                </div>
-                <!--end::Message-->
-            </div>
-            <!--end::Empty-->
+            <!--end::Results-->
         </div>
         <!--end::Wrapper-->
-
     </div>
     <!--end::Menu-->
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('global_search_input');
+        const spinner = document.getElementById('global_search_spinner');
+        const container = document.getElementById('global_search_results_container');
+        let searchTimeout = null;
+
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+
+            if (searchTimeout) clearTimeout(searchTimeout);
+
+            if (query.length < 2) {
+                container.innerHTML = '<div class="text-center text-muted fs-7 py-4">' + "{{ __('Type at least 2 characters to search...') }}" + '</div>';
+                return;
+            }
+
+            if (spinner) spinner.classList.remove('d-none');
+
+            searchTimeout = setTimeout(function() {
+                fetch("{{ route('global.search') }}?query=" + encodeURIComponent(query), {
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json"
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (spinner) spinner.classList.add('d-none');
+
+                    if (!data.results || data.results.length === 0) {
+                        container.innerHTML = `
+                            <div class="text-center py-6">
+                                <i class="ki-duotone ki-search-list fs-3x text-gray-400 mb-3"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+                                <div class="fw-bold text-gray-600 fs-6">${"{{ __('No result found') }}"}</div>
+                            </div>`;
+                        return;
+                    }
+
+                    let html = '<div class="d-flex flex-column gap-2">';
+                    data.results.forEach(item => {
+                        html += `
+                            <a href="${item.url}" class="d-flex align-items-center p-3 rounded-2 bg-hover-light text-dark text-hover-primary transition-all">
+                                <div class="symbol symbol-35px me-3">
+                                    <span class="symbol-label bg-light-primary text-primary">
+                                        <i class="ki-duotone ${item.icon} fs-3 text-primary"><span class="path1"></span><span class="path2"></span></i>
+                                    </span>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold fs-6 text-gray-800">${item.title}</span>
+                                    <span class="fs-7 text-muted">${item.type} ${item.sub ? '• ' + item.sub : ''}</span>
+                                </div>
+                            </a>`;
+                    });
+                    html += '</div>';
+
+                    container.innerHTML = html;
+                })
+                .catch(err => {
+                    if (spinner) spinner.classList.add('d-none');
+                    container.innerHTML = '<div class="text-center text-danger fs-7 py-4">' + "{{ __('Search error occurred.') }}" + '</div>';
+                });
+            }, 300);
+        });
+    });
+</script>

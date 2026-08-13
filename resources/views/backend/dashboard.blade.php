@@ -1,6 +1,15 @@
 @extends('backend.app')
 
-@section('title', 'Admin Dashboard')
+@section('title', __('Dashboard'))
+
+@php
+    function formatNumber($num) {
+        if (app()->getLocale() == 'ar') {
+            return str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], (string)$num);
+        }
+        return $num;
+    }
+@endphp
 
 @section('content')
     <!--begin::Content-->
@@ -11,15 +20,15 @@
                 <!--begin::Info-->
                 <div class="d-flex flex-column align-items-start justify-content-center flex-wrap me-2">
                     <!--begin::Title-->
-                    <h1 class="text-dark fw-bold my-1 fs-2">Dashboard</h1>
+                    <h1 class="text-dark fw-bold my-1 fs-2">{{ __('Dashboard') }}</h1>
                     <!--end::Title-->
 
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb fw-semibold fs-base my-1">
                         <li class="breadcrumb-item text-muted">
-                            <a href="" class="text-muted text-hover-primary">Home</a>
+                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">{{ __('Home') }}</a>
                         </li>
-                        <li class="breadcrumb-item text-dark">Metrics Overview</li>
+                        <li class="breadcrumb-item text-dark">{{ __('Metrics Overview') }}</li>
                     </ul>
                     <!--end::Breadcrumb-->
                 </div>
@@ -43,8 +52,8 @@
                                     <i class="fa-solid fa-users fs-2x text-primary"></i>
                                 </div>
                                 <div class="d-flex flex-column mb-2">
-                                    <span class="fs-2hx fw-bold text-gray-800 lh-1 mb-1">{{ $metrics['total_users'] }}</span>
-                                    <span class="fs-6 fw-semibold text-gray-400">Total Registered Users</span>
+                                    <span class="fs-2hx fw-bold text-gray-800 lh-1 mb-1">{{ formatNumber($metrics['total_users']) }}</span>
+                                    <span class="fs-6 fw-semibold text-gray-400">{{ __('Total Registered Users') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -59,21 +68,21 @@
                                     <i class="fa-solid fa-rectangle-ad fs-2x text-success"></i>
                                 </div>
                                 <div class="d-flex flex-column mb-2 w-100">
-                                    <span class="fs-2hx fw-bold text-gray-800 lh-1 mb-1">{{ $metrics['total_posts'] }}</span>
-                                    <span class="fs-6 fw-semibold text-gray-400">Total Listings / Posts</span>
+                                    <span class="fs-2hx fw-bold text-gray-800 lh-1 mb-1">{{ formatNumber($metrics['total_posts']) }}</span>
+                                    <span class="fs-6 fw-semibold text-gray-400">{{ __('Total Listings / Posts') }}</span>
                                     
                                     <div class="d-flex flex-column mt-3 gap-1 fs-7 fw-semibold text-gray-600 w-100">
                                         <div class="d-flex justify-content-between">
-                                            <span>Active</span>
-                                            <span class="badge badge-light-success fs-9">{{ $metrics['active_posts'] }}</span>
+                                            <span>{{ __('Active') }}</span>
+                                            <span class="badge badge-light-success fs-9">{{ formatNumber($metrics['active_posts']) }}</span>
                                         </div>
                                         <div class="d-flex justify-content-between">
-                                            <span>Pending</span>
-                                            <span class="badge badge-light-warning fs-9">{{ $metrics['pending_posts'] }}</span>
+                                            <span>{{ __('Pending') }}</span>
+                                            <span class="badge badge-light-warning fs-9">{{ formatNumber($metrics['pending_posts']) }}</span>
                                         </div>
                                         <div class="d-flex justify-content-between">
-                                            <span>Rejected</span>
-                                            <span class="badge badge-light-danger fs-9">{{ $metrics['rejected_posts'] }}</span>
+                                            <span>{{ __('Rejected') }}</span>
+                                            <span class="badge badge-light-danger fs-9">{{ formatNumber($metrics['rejected_posts']) }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -90,8 +99,8 @@
                                     <i class="fa-solid fa-list fs-2x text-warning"></i>
                                 </div>
                                 <div class="d-flex flex-column mb-2">
-                                    <span class="fs-2hx fw-bold text-gray-800 lh-1 mb-1">{{ $metrics['total_categories'] }}</span>
-                                    <span class="fs-6 fw-semibold text-gray-400">Listing Categories</span>
+                                    <span class="fs-2hx fw-bold text-gray-800 lh-1 mb-1">{{ formatNumber($metrics['total_categories']) }}</span>
+                                    <span class="fs-6 fw-semibold text-gray-400">{{ __('Listing Categories') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -106,17 +115,17 @@
                                     <i class="fa-solid fa-triangle-exclamation fs-2x text-danger"></i>
                                 </div>
                                 <div class="d-flex flex-column mb-2 w-100">
-                                    <span class="fs-2hx fw-bold text-gray-800 lh-1 mb-1">{{ $metrics['total_reports'] }}</span>
-                                    <span class="fs-6 fw-semibold text-gray-400">Abuse Reports</span>
+                                    <span class="fs-2hx fw-bold text-gray-800 lh-1 mb-1">{{ formatNumber($metrics['total_reports']) }}</span>
+                                    <span class="fs-6 fw-semibold text-gray-400">{{ __('Abuse Reports') }}</span>
                                     
                                     <div class="d-flex flex-column mt-3 gap-1 fs-7 fw-semibold text-gray-600 w-100">
                                         <div class="d-flex justify-content-between">
-                                            <span>Unread Reports</span>
-                                            <span class="badge badge-light-danger fs-9">{{ $metrics['unread_reports'] }}</span>
+                                            <span>{{ __('Unread Reports') }}</span>
+                                            <span class="badge badge-light-danger fs-9">{{ formatNumber($metrics['unread_reports']) }}</span>
                                         </div>
                                         <div class="d-flex justify-content-between">
-                                            <span>Support Requests</span>
-                                            <span class="badge badge-light-primary fs-9">{{ $metrics['total_supports'] }}</span>
+                                            <span>{{ __('Support Requests') }}</span>
+                                            <span class="badge badge-light-primary fs-9">{{ formatNumber($metrics['total_supports']) }}</span>
                                         </div>
                                     </div>
                                 </div>

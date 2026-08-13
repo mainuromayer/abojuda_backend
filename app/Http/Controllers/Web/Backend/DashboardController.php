@@ -31,4 +31,62 @@ class DashboardController extends Controller
 
         return view('backend.dashboard', compact('metrics'));
     }
+
+    public function globalSearch(Request $request)
+    {
+        $query = trim($request->input('query'));
+        if (strlen($query) < 2) {
+            return response()->json(['results' => []]);
+        }
+
+        $results = [];
+
+        // Search Categories
+        $categories = Category::where('name', 'LIKE', "%{$query}%")
+            ->orWhere('shot_desc', 'LIKE', "%{$query}%")
+            ->take(5)->get();
+
+        foreach ($categories as $cat) {
+            $results[] = [
+                'type' => __('Categories'),
+                'title' => __($cat->name),
+                'url' => route('category.index'),
+                'icon' => 'ki-element-plus',
+                'sub' => $cat->shot_desc ? __($cat->shot_desc) : __('Category')
+            ];
+        }
+
+        // Search Posts
+        $posts = Post::where('title', 'LIKE', "%{$query}%")
+            ->orWhere('description', 'LIKE', "%{$query}%")
+            ->take(5)->get();
+
+        foreach ($posts as $post) {
+            $results[] = [
+                'type' => __('Posts'),
+                'title' => __($post->title),
+                'url' => route('post.show', $post->id),
+                'icon' => 'ki-abstract-26',
+                'sub' => $post->created_at ? $post->created_at->format('d M Y') : ''
+            ];
+        }
+
+        // Search Users
+        $users = User::where('first_name', 'LIKE', "%{$query}%")
+            ->orWhere('last_name', 'LIKE', "%{$query}%")
+            ->orWhere('email', 'LIKE', "%{$query}%")
+            ->take(5)->get();
+
+        foreach ($users as $user) {
+            $results[] = [
+                'type' => __('Users'),
+                'title' => trim($user->first_name . ' ' . $user->last_name) ?: $user->email,
+                'url' => route('user.show', $user->id),
+                'icon' => 'ki-profile-circle',
+                'sub' => $user->email
+            ];
+        }
+
+        return response()->json(['results' => $results]);
+    }
 }

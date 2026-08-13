@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" direction="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" style="direction: {{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <!--begin::Head-->
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 
@@ -56,7 +56,9 @@
 <!--begin::Body-->
 
 <body id="kt_body"
-    class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled aside-fixed aside-default-enabled">
+    class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled aside-fixed aside-default-enabled"
+    direction="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}"
+    style="direction: {{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
     <!--begin::Theme mode setup on page load-->
     <script>
         var defaultThemeMode = "light";
@@ -95,7 +97,7 @@
             <div id="kt_aside" class="aside aside-default  aside-hoverable " data-kt-drawer="true"
                 data-kt-drawer-name="aside" data-kt-drawer-activate="{default: true, lg: false}"
                 data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'200px', '300px': '250px'}"
-                data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_aside_toggle">
+                data-kt-drawer-direction="{{ app()->getLocale() == 'ar' ? 'end' : 'start' }}" data-kt-drawer-toggle="#kt_aside_toggle">
 
                 <!--begin::Brand-->
                 @include('backend.partials.brand_logo')

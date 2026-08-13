@@ -14,12 +14,12 @@
     <div class="toolbar" id="kt_toolbar">
         <div class="container-fluid d-flex flex-stack flex-wrap flex-sm-nowrap">
             <div class="d-flex flex-column align-items-start justify-content-center flex-wrap me-2">
-                <h1 class="text-dark fw-bold my-1 fs-2">Post Management</h1>
+                <h1 class="text-dark fw-bold my-1 fs-2">{{ __('Post Management') }}</h1>
                 <ul class="breadcrumb fw-semibold fs-base my-1">
                     <li class="breadcrumb-item text-muted">
-                        <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">Home</a>
+                        <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">{{ __('Home') }}</a>
                     </li>
-                    <li class="breadcrumb-item text-dark">Posts</li>
+                    <li class="breadcrumb-item text-dark">{{ __('Posts') }}</li>
                 </ul>
             </div>
         </div>
@@ -31,26 +31,26 @@
                 <div class="card-header border-0 pt-6">
                     <div class="card-title">
                         <div class="d-flex align-items-center position-relative my-1">
-                            <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-5">
+                            <i class="ki-duotone ki-magnifier fs-3 position-absolute {{ app()->getLocale() == 'ar' ? 'me-5 end-0' : 'ms-5 start-0' }}">
                                 <span class="path1"></span><span class="path2"></span>
                             </i>
                             <input type="text" data-kt-post-table-filter="search"
-                                class="form-control form-control-solid w-250px ps-13"
-                                placeholder="Search posts..." />
+                                class="form-control form-control-solid w-100 w-sm-250px {{ app()->getLocale() == 'ar' ? 'pe-13 ps-5' : 'ps-13 pe-5' }}"
+                                placeholder="{{ __('Search posts...') }}" />
                         </div>
                     </div>
                     <div class="card-toolbar">
                         <select id="category_filter" class="form-select form-select-solid w-150px me-3">
-                            <option value="">All Categories</option>
+                            <option value="">{{ __('All Categories') }}</option>
                             @foreach($categories as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                <option value="{{ $cat->id }}">{{ __($cat->name) }}</option>
                             @endforeach
                         </select>
                         <select id="status_filter" class="form-select form-select-solid w-150px me-3">
-                            <option value="">All Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="active">Active</option>
-                            <option value="rejected">Rejected</option>
+                            <option value="">{{ __('All Status') }}</option>
+                            <option value="pending">{{ __('Pending') }}</option>
+                            <option value="active">{{ __('Active') }}</option>
+                            <option value="rejected">{{ __('Rejected') }}</option>
                         </select>
                     </div>
                 </div>
@@ -64,15 +64,15 @@
                         <thead>
                             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                 <th>#</th>
-                                <th>Thumbnail</th>
-                                <th>Title / Category</th>
-                                <th>User</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Featured</th>
-                                <th>Reports</th>
-                                <th>Created At</th>
-                                <th class="text-end">Actions</th>
+                                <th>{{ __('Thumbnail') }}</th>
+                                <th>{{ __('Title / Category') }}</th>
+                                <th>{{ __('User') }}</th>
+                                <th>{{ __('Price') }}</th>
+                                <th>{{ __('Status') }}</th>
+                                <th>{{ __('Featured') }}</th>
+                                <th>{{ __('Reports') }}</th>
+                                <th>{{ __('Created At') }}</th>
+                                <th class="text-end">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-600 fw-semibold"></tbody>
@@ -88,10 +88,28 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
 <script>
+const isArabic = "{{ app()->getLocale() }}" === 'ar';
+
 $(document).ready(function () {
     var table = $('#kt_table_posts').DataTable({
         processing: true,
         serverSide: true,
+        language: isArabic ? {
+            "sProcessing": "جاري التحميل...",
+            "sLengthMenu": "أظهر _MENU_ مدخلات",
+            "sZeroRecords": "لم يتم العثور على أية سجلات",
+            "sEmptyTable": "لا توجد بيانات متاحة في الجدول",
+            "sInfo": "إظهار _START_ إلى _END_ من أصل _TOTAL_ مدخل",
+            "sInfoEmpty": "يعرض ٠ إلى ٠ من أصل ٠ سجل",
+            "sInfoFiltered": "(منتقاة من مجموع _MAX_ مُدخل)",
+            "sSearch": "ابحث:",
+            "oPaginate": {
+                "sFirst": "الأول",
+                "sPrevious": "السابق",
+                "sNext": "التالي",
+                "sLast": "الأخير"
+            }
+        } : {},
         ajax: {
             url: "{{ route('post.index') }}",
             type: "GET",
@@ -114,6 +132,28 @@ $(document).ready(function () {
         ],
         drawCallback: function () {
             if (typeof KTMenu !== 'undefined') KTMenu.createInstances();
+            if (isArabic) {
+                $('.dataTables_info, .pagination, .dataTables_length label').each(function() {
+                    var $this = $(this);
+                    $this.contents().each(function() {
+                        if (this.nodeType === 3) {
+                            this.nodeValue = this.nodeValue.replace(/[0-9]/g, function(d) {
+                                return ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'][d];
+                            });
+                        }
+                    });
+                    $this.find('option, a, span').each(function() {
+                        var node = this;
+                        for (var i = 0; i < node.childNodes.length; i++) {
+                            if (node.childNodes[i].nodeType === 3) {
+                                node.childNodes[i].nodeValue = node.childNodes[i].nodeValue.replace(/[0-9]/g, function(d) {
+                                    return ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'][d];
+                                });
+                            }
+                        }
+                    });
+                });
+            }
         }
     });
 

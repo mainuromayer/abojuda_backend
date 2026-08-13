@@ -1,6 +1,6 @@
 @extends('backend.app')
 
-@section('title', 'SMTP Details')
+@section('title', __('SMTP Details'))
 
 @section('content')
     <!--begin::Content-->
@@ -12,17 +12,17 @@
                 <div class="d-flex flex-column align-items-start justify-content-center flex-wrap me-2">
                     <!--begin::Title-->
                     <h1 class="text-dark fw-bold my-1 fs-2">
-                        SMTP Details </h1>
+                        {{ __('SMTP Details') }} </h1>
                     <!--end::Title-->
 
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb fw-semibold fs-base my-1">
                         <li class="breadcrumb-item text-muted">
-                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">Home </a>
+                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">{{ __('Home') }} </a>
                         </li>
 
                         <li class="breadcrumb-item text-dark">
-                            SMTP Details
+                            {{ __('SMTP Details') }}
                         </li>
 
                     </ul>
@@ -44,7 +44,7 @@
                     <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_settings_profile_details" aria-expanded="true" aria-controls="kt_account_settings_profile_details">
                         <!--begin::Card title-->
                         <div class="card-title m-0">
-                            <h3 class="fw-bold m-0">SMTP Details</h3>
+                            <h3 class="fw-bold m-0">{{ __('SMTP Details') }}</h3>
                         </div>
                         <!--end::Card title-->
                     </div>

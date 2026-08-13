@@ -1,5 +1,8 @@
 <?php
     $current_year = now()->format('Y');
+    if (app()->getLocale() == 'ar') {
+        $current_year = str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $current_year);
+    }
     $system_copyright = \App\Models\Setting::first();
 ?>
 <div class="footer py-4 d-flex flex-lg-column " id="kt_footer">

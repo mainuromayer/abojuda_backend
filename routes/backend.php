@@ -5,6 +5,7 @@
 use App\Http\Controllers\Web\Backend\CategoryController;
 use App\Http\Controllers\Web\Backend\DashboardController;
 use App\Http\Controllers\Web\Backend\DynamicPageController;
+use App\Http\Controllers\Web\Backend\LanguageController;
 use App\Http\Controllers\Web\Backend\PermissionController;
 use App\Http\Controllers\Web\Backend\PostController;
 use App\Http\Controllers\Web\Backend\ProfileController;
@@ -15,6 +16,10 @@ use App\Http\Controllers\Web\Backend\UserRoleManagementController;
 
 //! dashboard
 Route::get('/dashboard',[DashboardController::class,'index'])->name('dashboard');
+Route::get('/global-search', [DashboardController::class, 'globalSearch'])->name('global.search');
+
+//! language switch
+Route::match(['get', 'post'], '/language/switch/{locale?}', [LanguageController::class, 'switchLanguage'])->name('language.switch');
 
 Route::controller(PostController::class)->group(function () {
     Route::get('/posts', 'index')->name('post.index');

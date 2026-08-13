@@ -40,19 +40,19 @@ class DynamicPageController extends Controller
                         <div class="d-flex justify-content-end">
                             <a href="#" class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm"
                                data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                                Actions
+                                ' . __('Actions') . '
                                 <i class="ki-duotone ki-down fs-5 ms-1"></i>
                             </a>
                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
                                  data-kt-menu="true">
                                 <div class="menu-item px-3">
-                                    <a href="' . $showUrl . '" class="menu-link px-3 view-page-btn">View</a>
+                                    <a href="' . $showUrl . '" class="menu-link px-3 view-page-btn">' . __('View') . '</a>
                                 </div>
                                 <div class="menu-item px-3">
-                                    <a href="' . $editUrl . '" class="menu-link px-3 edit-page-btn">Edit</a>
+                                    <a href="' . $editUrl . '" class="menu-link px-3 edit-page-btn">' . __('Edit') . '</a>
                                 </div>
                                 <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3 delete-page-btn" data-id="' . $row->id . '">Delete</a>
+                                    <a href="#" class="menu-link px-3 delete-page-btn" data-id="' . $row->id . '">' . __('Delete') . '</a>
                                 </div>
                             </div>
                         </div>';

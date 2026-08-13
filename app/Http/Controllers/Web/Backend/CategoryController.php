@@ -28,36 +28,42 @@ class CategoryController extends Controller
                     return '<img src="' . $iconUrl . '" class="w-40px h-40px object-fit-cover rounded" alt="icon">';
                 })
                 ->addColumn('name', function ($row) {
-                    return $row->name;
+                    return __($row->name);
                 })
                 ->addColumn('slug', function ($row) {
-                    return $row->slug ?? '-';
+                    return $row->slug ? __($row->slug) : '-';
                 })
                 ->addColumn('description', function ($row) {
-                    return $row->shot_desc ?? '-';
+                    return $row->shot_desc ? __($row->shot_desc) : '-';
                 })
                 ->addColumn('status', function ($row) {
                     $badgeClass = $row->status === 'active' ? 'badge-light-success' : 'badge-light-danger';
-                    return '<span class="badge ' . $badgeClass . ' text-uppercase">' . $row->status . '</span>';
+                    return '<span class="badge ' . $badgeClass . ' text-uppercase">' . __(ucfirst($row->status)) . '</span>';
                 })
                 ->addColumn('created_at', function ($row) {
-                    return $row->created_at ? $row->created_at->format('d M Y, h:i a') : '-';
+                    if (!$row->created_at) {
+                        return '-';
+                    }
+                    if (app()->getLocale() === 'ar') {
+                        return $row->created_at->locale('ar')->isoFormat('D MMMM YYYY، hh:mm a');
+                    }
+                    return $row->created_at->format('d M Y, h:i a');
                 })
                 ->addColumn('actions', function ($row) {
                     return '
                         <div class="d-flex justify-content-end">
                             <a href="#" class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm"
                                data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                                Actions
+                                ' . __('Actions') . '
                                 <i class="ki-duotone ki-down fs-5 ms-1"></i>
                             </a>
                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
                                  data-kt-menu="true">
                                 <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3 edit-category-btn" data-id="' . $row->id . '">Edit</a>
+                                    <a href="#" class="menu-link px-3 edit-category-btn" data-id="' . $row->id . '">' . __('Edit') . '</a>
                                 </div>
                                 <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3 delete-category-btn" data-id="' . $row->id . '">Delete</a>
+                                    <a href="#" class="menu-link px-3 delete-category-btn" data-id="' . $row->id . '">' . __('Delete') . '</a>
                                 </div>
                             </div>
                         </div>';
@@ -116,6 +122,8 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
         $category->icon_url = $category->icon ? $this->getImageUrl($category->icon) : null;
+        $category->name = __($category->name);
+        $category->shot_desc = $category->shot_desc ? __($category->shot_desc) : null;
         return response()->json(['category' => $category]);
     }
 

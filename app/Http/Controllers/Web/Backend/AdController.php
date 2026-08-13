@@ -39,7 +39,7 @@ class AdController extends Controller
                 })
                 ->addColumn('media_type', function ($row) {
                     $badgeClass = $row->media_type === 'video' ? 'badge-light-warning' : 'badge-light-info';
-                    return '<span class="badge ' . $badgeClass . ' text-uppercase">' . e($row->media_type) . '</span>';
+                    return '<span class="badge ' . $badgeClass . ' text-uppercase">' . __($row->media_type) . '</span>';
                 })
                 ->addColumn('back_link', function ($row) {
                     if (!$row->back_link) {
@@ -49,26 +49,31 @@ class AdController extends Controller
                 })
                 ->addColumn('status', function ($row) {
                     $badgeClass = $row->status === 'active' ? 'badge-light-success' : 'badge-light-danger';
-                    return '<span class="badge ' . $badgeClass . ' text-uppercase">' . e($row->status) . '</span>';
+                    return '<span class="badge ' . $badgeClass . ' text-uppercase">' . __($row->status) . '</span>';
                 })
                 ->addColumn('created_at', function ($row) {
-                    return $row->created_at ? $row->created_at->format('d M Y, h:i a') : '-';
+                    if (!$row->created_at) return '-';
+                    $dateStr = $row->created_at->format('d M Y, h:i a');
+                    if (app()->getLocale() === 'ar') {
+                        return str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $dateStr);
+                    }
+                    return $dateStr;
                 })
                 ->addColumn('actions', function ($row) {
                     return '
                         <div class="d-flex justify-content-end">
                             <a href="#" class="btn btn-light btn-active-light-primary btn-flex btn-center btn-sm"
                                data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                                Actions
+                                ' . __('Actions') . '
                                 <i class="ki-duotone ki-down fs-5 ms-1"></i>
                             </a>
                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
                                  data-kt-menu="true">
                                 <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3 edit-ad-btn" data-id="' . $row->id . '">Edit</a>
+                                    <a href="#" class="menu-link px-3 edit-ad-btn" data-id="' . $row->id . '">' . __('Edit') . '</a>
                                 </div>
                                 <div class="menu-item px-3">
-                                    <a href="#" class="menu-link px-3 delete-ad-btn" data-id="' . $row->id . '">Delete</a>
+                                    <a href="#" class="menu-link px-3 delete-ad-btn" data-id="' . $row->id . '">' . __('Delete') . '</a>
                                 </div>
                             </div>
                         </div>';

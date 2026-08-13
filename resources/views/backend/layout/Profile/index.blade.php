@@ -12,17 +12,17 @@
                 <div class="d-flex flex-column align-items-start justify-content-center flex-wrap me-2">
                     <!--begin::Title-->
                     <h1 class="text-dark fw-bold my-1 fs-2">
-                        Profile </h1>
+                        {{ __('Profile') }} </h1>
                     <!--end::Title-->
 
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb fw-semibold fs-base my-1">
                         <li class="breadcrumb-item text-muted">
-                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">Home </a>
+                            <a href="{{ route('dashboard') }}" class="text-muted text-hover-primary">{{ __('Home') }} </a>
                         </li>
 
                         <li class="breadcrumb-item text-dark">
-                            Profile
+                            {{ __('Profile') }}
                         </li>
 
                     </ul>
@@ -48,7 +48,7 @@
                             <!--begin::Card header-->
                             <div class="card-header border-0 ">
                                 <div class="card-title">
-                                    <h3 class="fw-bold m-0">Overview</h3>
+                                    <h3 class="fw-bold m-0">{{ __('Overview') }}</h3>
                                 </div>
                             </div>
                             <!--end::Card header-->
@@ -67,10 +67,10 @@
 
                                             <!--begin::Profile-->
                                             <div class="d-flex flex-column">
-                                                <div class="fs-2 fw-bold mb-1">{{ $user?->first_name .' '. $user?->last_name }}</div>
+                                                <div class="fs-2 fw-bold mb-1">{{ $user?->name ?? ($user?->first_name .' '. $user?->last_name) }}</div>
                                                 <a href="#" class="text-gray-400 text-hover-primary fs-6 fw-semibold mb-5">{{ $user?->email }}</a>
                                                 <div class="badge badge-light-success text-success fw-bold fs-7 me-auto mb-3 px-4 py-3">
-                                                    {{ $user?->role }}</div>
+                                                    {{ __($user?->role instanceof \App\Enum\Role ? $user?->role->value : (string)$user?->role) }}</div>
                                             </div>
                                             <!--end::Profile-->
                                         </div>
@@ -86,7 +86,7 @@
                             <!--begin::Card header-->
                             <div class="card-header border-0">
                                 <div class="card-title m-0">
-                                    <h3 class="fw-bold m-0">Sign-in Method</h3>
+                                    <h3 class="fw-bold m-0">{{ __('Sign-in Method') }}</h3>
                                 </div>
                             </div>
                             <!--end::Card header-->
@@ -99,7 +99,7 @@
                                     <div class="d-flex flex-wrap align-items-center">
                                         <!--begin::Label-->
                                         <div id="kt_signin_email">
-                                            <div class="fs-6 fw-bold mb-1">Email Address</div>
+                                            <div class="fs-6 fw-bold mb-1">{{ __('Email Address') }}</div>
                                             <div class="fw-semibold text-gray-600">{{ $user?->email }}</div>
                                         </div>
                                         <!--end::Label-->
@@ -110,7 +110,7 @@
 
                                         <!--begin::Action-->
                                         <div id="kt_signin_email_button" class="ms-auto">
-                                            <button class="btn btn-light btn-active-light-primary">Change Email</button>
+                                            <button class="btn btn-light btn-active-light-primary">{{ __('Change Email') }}</button>
                                         </div>
                                         <!--end::Action-->
                                     </div>
@@ -136,7 +136,7 @@
                             <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_settings_profile_details" aria-expanded="true" aria-controls="kt_account_settings_profile_details">
                                 <!--begin::Card title-->
                                 <div class="card-title m-0">
-                                    <h3 class="fw-bold m-0">Profile Details</h3>
+                                    <h3 class="fw-bold m-0">{{ __('Profile Details') }}</h3>
                                 </div>
                                 <!--end::Card title-->
                             </div>
