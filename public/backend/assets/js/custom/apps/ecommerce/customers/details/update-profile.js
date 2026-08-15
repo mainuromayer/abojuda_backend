@@ -58,10 +58,10 @@ var KTEcommerceUpdateProfile = function () {
 							submitButton.removeAttribute('data-kt-indicator');
 							
 							Swal.fire({
-								text: "Your profile has been saved!",
+								text: "{{ __('Your profile has been saved!') }}",
 								icon: "success",
 								buttonsStyling: false,
-								confirmButtonText: "Ok, got it!",
+								confirmButtonText: "{{ __('Ok, got it!') }}",
 								customClass: {
 									confirmButton: "btn btn-primary"
 								}
@@ -74,10 +74,10 @@ var KTEcommerceUpdateProfile = function () {
 						}, 2000);   						
 					} else {
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
+							text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 							icon: "error",
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: "{{ __('Ok, got it!') }}",
 							customClass: {
 								confirmButton: "btn btn-primary"
 							}

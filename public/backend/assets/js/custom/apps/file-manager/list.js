@@ -128,12 +128,12 @@ var KTFileManagerList = function () {
 
                 // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
                 Swal.fire({
-                    text: "Are you sure you want to delete " + fileName + "?",
+                    text: "{{ __('Are you sure you want to delete') }} " + fileName + "?",
                     icon: "warning",
                     showCancelButton: true,
                     buttonsStyling: false,
-                    confirmButtonText: "Yes, delete!",
-                    cancelButtonText: "No, cancel",
+                    confirmButtonText: "{{ __('Yes, delete!') }}",
+                    cancelButtonText: "{{ __('No, cancel') }}",
                     customClass: {
                         confirmButton: "btn fw-bold btn-danger",
                         cancelButton: "btn fw-bold btn-active-light-primary"
@@ -141,10 +141,10 @@ var KTFileManagerList = function () {
                 }).then(function (result) {
                     if (result.value) {
                         Swal.fire({
-                            text: "You have deleted " + fileName + "!.",
+                            text: "{{ __('You have deleted ') }}" + fileName + "!.",
                             icon: "success",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             }
@@ -154,10 +154,10 @@ var KTFileManagerList = function () {
                         });
                     } else if (result.dismiss === 'cancel') {
                         Swal.fire({
-                            text: customerName + " was not deleted.",
+                            text:  fileName + " {{ __('was not deleted.') }}",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             }
@@ -195,12 +195,12 @@ var KTFileManagerList = function () {
         deleteSelected.addEventListener('click', function () {
             // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
             Swal.fire({
-                text: "Are you sure you want to delete selected files or folders?",
+                text: "{{ __('Are you sure you want to delete selected files or folders?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, delete!",
-                cancelButtonText: "No, cancel",
+                confirmButtonText: "{{ __('Yes, delete!') }}",
+                cancelButtonText: "{{ __('No, cancel') }}",
                 customClass: {
                     confirmButton: "btn fw-bold btn-danger",
                     cancelButton: "btn fw-bold btn-active-light-primary"
@@ -208,10 +208,10 @@ var KTFileManagerList = function () {
             }).then(function (result) {
                 if (result.value) {
                     Swal.fire({
-                        text: "You have deleted all selected  files or folders!.",
+                        text: "{{ __('You have deleted all selected  files or folders!') }}",
                         icon: "success",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn fw-bold btn-primary",
                         }
@@ -229,10 +229,10 @@ var KTFileManagerList = function () {
                     });
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Selected  files or folders was not deleted.",
+                        text: "{{ __('Selected  files or folders was not deleted.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn fw-bold btn-primary",
                         }
@@ -310,7 +310,7 @@ var KTFileManagerList = function () {
                         'new_folder_name': {
                             validators: {
                                 notEmpty: {
-                                    message: 'Folder name is required'
+                                    message: "{{ __('Folder name is required') }}"
                                 }
                             }
                         },
@@ -435,7 +435,7 @@ var KTFileManagerList = function () {
                         "hideMethod": "fadeOut"
                     };
 
-                    toastr.error('Cancelled new folder creation');
+                    toastr.error("{{ __('Cancelled new folder creation') }}");
                     resetNewFolder();
                 }, 1000);
             });
@@ -470,10 +470,10 @@ var KTFileManagerList = function () {
         // Stop renaming if there's an input existing
         if (table.querySelectorAll('#kt_file_manager_rename_input').length > 0) {
             Swal.fire({
-                text: "Unsaved input detected. Please save or cancel the current item",
+                text: "{{ __('Unsaved input detected. Please save or cancel the current item') }}",
                 icon: "warning",
                 buttonsStyling: false,
-                confirmButtonText: "Ok, got it!",
+                confirmButtonText: "{{ __('Ok, got it!') }}",
                 customClass: {
                     confirmButton: "btn fw-bold btn-danger"
                 }
@@ -508,7 +508,7 @@ var KTFileManagerList = function () {
                     'rename_folder_name': {
                         validators: {
                             notEmpty: {
-                                message: 'Name is required'
+                                message: "{{ __('Name is required') }}"
                             }
                         }
                     },
@@ -537,12 +537,12 @@ var KTFileManagerList = function () {
                     if (status == 'Valid') {
                         // Pop up confirmation
                         Swal.fire({
-                            text: "Are you sure you want to rename " + nameValue + "?",
+                            text: "{{ __('Are you sure you want to rename ') }}" + nameValue + "?",
                             icon: "warning",
                             showCancelButton: true,
                             buttonsStyling: false,
-                            confirmButtonText: "Yes, rename it!",
-                            cancelButtonText: "No, cancel",
+                            confirmButtonText: "{{ __('Yes, rename it!') }}",
+                            cancelButtonText: "{{ __('No, cancel') }}",
                             customClass: {
                                 confirmButton: "btn fw-bold btn-danger",
                                 cancelButton: "btn fw-bold btn-active-light-primary"
@@ -550,10 +550,10 @@ var KTFileManagerList = function () {
                         }).then(function (result) {
                             if (result.value) {
                                 Swal.fire({
-                                    text: "You have renamed " + nameValue + "!.",
+                                    text: "{{ __('You have renamed ') }}" + nameValue + "!.",
                                     icon: "success",
                                     buttonsStyling: false,
-                                    confirmButtonText: "Ok, got it!",
+                                    confirmButtonText: "{{ __('Ok, got it!') }}",
                                     customClass: {
                                         confirmButton: "btn fw-bold btn-primary",
                                     }
@@ -572,10 +572,10 @@ var KTFileManagerList = function () {
                                 });
                             } else if (result.dismiss === 'cancel') {
                                 Swal.fire({
-                                    text: nameValue + " was not renamed.",
+                                    text: nameValue + " {{ __('was not renamed.') }}",
                                     icon: "error",
                                     buttonsStyling: false,
-                                    confirmButtonText: "Ok, got it!",
+                                    confirmButtonText: "{{ __('Ok, got it!') }}",
                                     customClass: {
                                         confirmButton: "btn fw-bold btn-primary",
                                     }
@@ -625,7 +625,7 @@ var KTFileManagerList = function () {
                     "hideMethod": "fadeOut"
                 };
 
-                toastr.error('Cancelled rename function');
+                toastr.error("{{ __('Cancelled rename function') }}");
             }, 1000);
         });
     }
@@ -719,12 +719,12 @@ var KTFileManagerList = function () {
         // Setup the button for remove all files
         dropzone.querySelector(".dropzone-remove-all").addEventListener('click', function () {
             Swal.fire({
-                text: "Are you sure you would like to remove all files?",
+                text: "{{ __('Are you sure you would like to remove all files?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, remove it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, remove it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -736,10 +736,10 @@ var KTFileManagerList = function () {
                     myDropzone.removeAllFiles(true);
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your files was not removed!.",
+                        text: "{{ __('Your files was not removed!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
@@ -842,12 +842,12 @@ var KTFileManagerList = function () {
                         setTimeout(function () {
 
                             Swal.fire({
-                                text: "Are you sure you would like to move to this folder",
+                                text: "{{ __('Are you sure you would like to move to this folder') }}",
                                 icon: "warning",
                                 showCancelButton: true,
                                 buttonsStyling: false,
-                                confirmButtonText: "Yes, move it!",
-                                cancelButtonText: "No, return",
+                                confirmButtonText: "{{ __('Yes, move it!') }}",
+                                cancelButtonText: "{{ __('No, return') }}",
                                 customClass: {
                                     confirmButton: "btn btn-primary",
                                     cancelButton: "btn btn-active-light"
@@ -874,15 +874,15 @@ var KTFileManagerList = function () {
                                         "hideMethod": "fadeOut"
                                     };
 
-                                    toastr.success('1 item has been moved.');
+                                    toastr.success("{{ __('1 item has been moved.') }}");
 
                                     saveButton.removeAttribute("data-kt-indicator");
                                 } else {
                                     Swal.fire({
-                                        text: "Your action has been cancelled!.",
+                                        text: "{{ __('Your action has been cancelled!.') }}",
                                         icon: "error",
                                         buttonsStyling: false,
-                                        confirmButtonText: "Ok, got it!",
+                                        confirmButtonText: "{{ __('Ok, got it!') }}",
                                         customClass: {
                                             confirmButton: "btn btn-primary",
                                         }

@@ -53,10 +53,10 @@ var KTCreateAccount = function () {
 						KTUtil.scrollTop();
 					} else {
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
+							text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 							icon: "error",
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: "{{ __('Ok, got it!') }}",
 							customClass: {
 								confirmButton: "btn btn-light"
 							}
@@ -111,10 +111,10 @@ var KTCreateAccount = function () {
 					}, 2000);
 				} else {
 					Swal.fire({
-						text: "Sorry, looks like there are some errors detected, please try again.",
+						text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 						icon: "error",
 						buttonsStyling: false,
-						confirmButtonText: "Ok, got it!",
+						confirmButtonText: "{{ __('Ok, got it!') }}",
 						customClass: {
 							confirmButton: "btn btn-light"
 						}
@@ -154,7 +154,7 @@ var KTCreateAccount = function () {
 					account_type: {
 						validators: {
 							notEmpty: {
-								message: 'Account type is required'
+								message: "{{ __('Account type is required') }}"
 							}
 						}
 					}
@@ -178,21 +178,21 @@ var KTCreateAccount = function () {
 					'account_team_size': {
 						validators: {
 							notEmpty: {
-								message: 'Time size is required'
+								message: "{{ __('Time size is required') }}"
 							}
 						}
 					},
 					'account_name': {
 						validators: {
 							notEmpty: {
-								message: 'Account name is required'
+								message: "{{ __('Account name is required') }}"
 							}
 						}
 					},
 					'account_plan': {
 						validators: {
 							notEmpty: {
-								message: 'Account plan is required'
+								message: "{{ __('Account plan is required') }}"
 							}
 						}
 					}
@@ -217,31 +217,31 @@ var KTCreateAccount = function () {
 					'business_name': {
 						validators: {
 							notEmpty: {
-								message: 'Busines name is required'
+								message: "{{ __('Busines name is required') }}"
 							}
 						}
 					},
 					'business_descriptor': {
 						validators: {
 							notEmpty: {
-								message: 'Busines descriptor is required'
+								message: "{{ __('Busines descriptor is required') }}"
 							}
 						}
 					},
 					'business_type': {
 						validators: {
 							notEmpty: {
-								message: 'Busines type is required'
+								message: "{{ __('Busines type is required') }}"
 							}
 						}
 					},
 					'business_email': {
 						validators: {
 							notEmpty: {
-								message: 'Busines email is required'
+								message: "{{ __('Busines email is required') }}"
 							},
 							emailAddress: {
-								message: 'The value is not a valid email address'
+								message: "{{ __('The value is not a valid email address') }}"
 							}
 						}
 					}
@@ -266,46 +266,46 @@ var KTCreateAccount = function () {
 					'card_name': {
 						validators: {
 							notEmpty: {
-								message: 'Name on card is required'
+								message: "{{ __('Name on card is required') }}"
 							}
 						}
 					},
 					'card_number': {
 						validators: {
 							notEmpty: {
-								message: 'Card member is required'
+								message: "{{ __('Card member is required') }}"
 							},
                             creditCard: {
-                                message: 'Card number is not valid'
+                                message: "{{ __('Card number is not valid') }}"
                             }
 						}
 					},
 					'card_expiry_month': {
 						validators: {
 							notEmpty: {
-								message: 'Month is required'
+								message: "{{ __('Month is required') }}"
 							}
 						}
 					},
 					'card_expiry_year': {
 						validators: {
 							notEmpty: {
-								message: 'Year is required'
+								message: "{{ __('Year is required') }}"
 							}
 						}
 					},
 					'card_cvv': {
 						validators: {
 							notEmpty: {
-								message: 'CVV is required'
+								message: "{{ __('CVV is required') }}"
 							},
 							digits: {
-								message: 'CVV must contain only digits'
+								message: "{{ __('CVV must contain only digits') }}"
 							},
 							stringLength: {
 								min: 3,
 								max: 4,
-								message: 'CVV must contain 3 to 4 digits only'
+								message: "{{ __('CVV must contain 3 to 4 digits only') }}"
 							}
 						}
 					}

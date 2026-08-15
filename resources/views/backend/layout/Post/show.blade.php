@@ -636,8 +636,9 @@ $(document).ready(function () {
     $(document).on('click', '.reject-btn', function () {
         var id = $(this).data('id');
         Swal.fire({
-            text: 'Reject this post?', icon: 'warning',
-            showCancelButton: true, confirmButtonText: 'Yes, reject!',
+            text: "{{ __('Reject this post?') }}", icon: 'warning',
+            showCancelButton: true, confirmButtonText: "{{ __('Yes, reject!') }}",
+            cancelButtonText: "{{ __('Cancel') }}",
             buttonsStyling: false,
             customClass: { confirmButton: 'btn btn-danger', cancelButton: 'btn btn-light ms-2' }
         }).then(function (result) {
@@ -654,8 +655,9 @@ $(document).ready(function () {
     $(document).on('click', '.delete-post-btn', function () {
         var id = $(this).data('id');
         Swal.fire({
-            text: 'Are you sure you want to delete this post?', icon: 'warning',
-            showCancelButton: true, confirmButtonText: 'Yes, delete!',
+            text: "{{ __('Are you sure you want to delete this post?') }}", icon: 'warning',
+            showCancelButton: true, confirmButtonText: "{{ __('Yes, delete!') }}",
+            cancelButtonText: "{{ __('No, cancel') }}",
             buttonsStyling: false,
             customClass: { confirmButton: 'btn btn-danger', cancelButton: 'btn btn-light ms-2' }
         }).then(function (result) {
@@ -679,14 +681,15 @@ $(document).ready(function () {
         var id = $(this).data('user-id');
         var action = $(this).data('action');
         
-        var textMsg = action === 'unsuspend' ? 'Are you sure you want to unsuspend the owner of this post?' : 'Are you sure you want to suspend the owner of this post?';
-        var confirmBtnText = action === 'unsuspend' ? 'Yes, unsuspend user!' : 'Yes, suspend user!';
+        var textMsg = action === 'unsuspend' ? "{{ __('Are you sure you want to unsuspend the owner of this post?') }}" : "{{ __('Are you sure you want to suspend the owner of this post?') }}";
+        var confirmBtnText = action === 'unsuspend' ? "{{ __('Yes, unsuspend user!') }}" : "{{ __('Yes, suspend user!') }}";
         var confirmBtnClass = action === 'unsuspend' ? 'btn btn-success' : 'btn btn-danger';
         var ajaxUrl = action === 'unsuspend' ? '/admin/user/' + id + '/unsuspend' : '/admin/user/' + id + '/suspend';
 
         Swal.fire({
             text: textMsg, icon: 'warning',
             showCancelButton: true, confirmButtonText: confirmBtnText,
+            cancelButtonText: "{{ __('Cancel') }}",
             buttonsStyling: false,
             customClass: { confirmButton: confirmBtnClass, cancelButton: 'btn btn-light ms-2' }
         }).then(function (result) {
@@ -809,12 +812,13 @@ $(document).ready(function () {
         let row = $('#show_report_row_' + reportId);
 
         Swal.fire({
-            title: 'Delete Report',
-            text: 'Are you sure you want to delete this report?',
+            title: "{{ __('Delete Report') }}",
+            text: "{{ __('Are you sure you want to delete this report?') }}",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
+            confirmButtonText: "{{ __('Yes, delete it!') }}",
+            cancelButtonText: "{{ __('Cancel') }}"
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -823,7 +827,7 @@ $(document).ready(function () {
                     data: { _token: '{{ csrf_token() }}' },
                     success: function (res) {
                         if (res.success) {
-                            Swal.fire('Deleted!', res.message, 'success');
+                            Swal.fire("{{ __('Deleted!') }}", res.message, 'success');
                             row.fadeOut(300, function() {
                                 $(this).remove();
                                 if ($('.select-show-report-checkbox').length === 0) {
@@ -850,12 +854,13 @@ $(document).ready(function () {
         if (selectedIds.length === 0) return;
 
         Swal.fire({
-            title: 'Delete Selected Reports',
-            text: `Are you sure you want to delete ${selectedIds.length} selected reports?`,
+            title: "{{ __('Delete Selected Reports') }}",
+            text: "{{ __('Are you sure you want to delete the selected reports?') }}",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete them!'
+            confirmButtonText: "{{ __('Yes, delete them!') }}",
+            cancelButtonText: "{{ __('Cancel') }}"
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
@@ -864,7 +869,7 @@ $(document).ready(function () {
                     data: { _token: '{{ csrf_token() }}', ids: selectedIds },
                     success: function (res) {
                         if (res.success) {
-                            Swal.fire('Deleted!', res.message, 'success');
+                            Swal.fire("{{ __('Deleted!') }}", res.message, 'success');
                             selectedIds.forEach(function(id) {
                                 $('#show_report_row_' + id).fadeOut(300, function() {
                                     $(this).remove();

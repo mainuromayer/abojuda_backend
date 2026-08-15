@@ -11,12 +11,12 @@ var KTUsersViewMain = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like sign out all sessions?",
+                text: "{{ __('Are you sure you would like sign out all sessions?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, sign out!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, sign out!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -24,20 +24,20 @@ var KTUsersViewMain = function () {
             }).then(function (result) {
                 if (result.value) {
                     Swal.fire({
-                        text: "You have signed out all sessions!.",
+                        text: "{{ __('You have signed out all sessions!.') }}",
                         icon: "success",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
                     });
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your sessions are still preserved!.",
+                        text: "{{ __('Your sessions are still preserved!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
@@ -59,12 +59,12 @@ var KTUsersViewMain = function () {
                 const deviceName = button.closest('tr').querySelectorAll('td')[1].innerText;
 
                 Swal.fire({
-                    text: "Are you sure you would like sign out " + deviceName + "?",
+                    text: "{{ __('Are you sure you would like sign out ')}}" + deviceName + "?",
                     icon: "warning",
                     showCancelButton: true,
                     buttonsStyling: false,
-                    confirmButtonText: "Yes, sign out!",
-                    cancelButtonText: "No, return",
+                    confirmButtonText: "{{ __('Yes, sign out!') }}",
+                    cancelButtonText: "{{ __('No, return') }}",
                     customClass: {
                         confirmButton: "btn btn-primary",
                         cancelButton: "btn btn-active-light"
@@ -72,10 +72,10 @@ var KTUsersViewMain = function () {
                 }).then(function (result) {
                     if (result.value) {
                         Swal.fire({
-                            text: "You have signed out " + deviceName + "!.",
+                            text: "{{ __('You have signed out')}} " + deviceName + "!.",
                             icon: "success",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary",
                             }
@@ -87,7 +87,7 @@ var KTUsersViewMain = function () {
                             text: deviceName + "'s session is still preserved!.",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary",
                             }
@@ -108,12 +108,12 @@ var KTUsersViewMain = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like remove this two-step authentication?",
+                text: "{{ __('Are you sure you would like remove this two-step authentication?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, remove it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, remove it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -121,20 +121,20 @@ var KTUsersViewMain = function () {
             }).then(function (result) {
                 if (result.value) {
                     Swal.fire({
-                        text: "You have removed this two-step authentication!.",
+                        text: "{{ __('You have removed this two-step authentication!.') }}",
                         icon: "success",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
                     });
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your two-step authentication is still valid!.",
+                        text: "{{ __('Your two-step authentication is still valid!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
@@ -171,10 +171,10 @@ var KTUsersViewMain = function () {
 
                 // Show popup confirmation 
                 Swal.fire({
-                    text: "Form has been successfully submitted!",
+                    text: "{{ __('Form has been successfully submitted!') }}",
                     icon: "success",
                     buttonsStyling: false,
-                    confirmButtonText: "Ok, got it!",
+                    confirmButtonText: "{{ __('Ok, got it!') }}",
                     customClass: {
                         confirmButton: "btn btn-primary"
                     }
@@ -188,12 +188,12 @@ var KTUsersViewMain = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like to cancel?",
+                text: "{{ __('Are you sure you would like to cancel?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, cancel it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, cancel it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -203,10 +203,10 @@ var KTUsersViewMain = function () {
                     form.reset(); // Reset form				
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your form has not been cancelled!.",
+                        text: "{{ __('Your form has not been cancelled!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }

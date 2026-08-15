@@ -234,13 +234,14 @@
 
                     // SweetAlert confirmation
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "This action cannot be undone!",
+                        title: "{{ __('Are you sure?') }}",
+                        text: "{{ __('This action cannot be undone!') }}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#d33',
                         cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, delete it!'
+                        confirmButtonText: "{{ __('Yes, delete it!') }}",
+                        cancelButtonText: "{{ __('Cancel') }}"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // Dynamically create the delete URL using route helper
@@ -252,25 +253,25 @@
                                 data: {
                                     _token: '{{ csrf_token() }}'
                                 },
-                                success: function (response) {
-                                    // Show success message
-                                    Swal.fire(
-                                        'Deleted!',
-                                        response.message,
-                                        'success'
-                                    );
+                                 success: function (response) {
+                                     // Show success message
+                                     Swal.fire(
+                                         "{{ __('Deleted!') }}",
+                                         response.message,
+                                         'success'
+                                     );
 
-                                    // Refresh the DataTable
-                                    $('#kt_table_users').DataTable().ajax.reload();
-                                },
-                                error: function (xhr) {
-                                    // Show error message
-                                    Swal.fire(
-                                        'Error!',
-                                        xhr.responseJSON?.message || 'Something went wrong.',
-                                        'error'
-                                    );
-                                }
+                                     // Refresh the DataTable
+                                     $('#kt_table_users').DataTable().ajax.reload();
+                                 },
+                                 error: function (xhr) {
+                                     // Show error message
+                                     Swal.fire(
+                                         "{{ __('Error!') }}",
+                                         xhr.responseJSON?.message || "{{ __('Something went wrong.') }}",
+                                         'error'
+                                     );
+                                 }
                             });
                         }
                     });

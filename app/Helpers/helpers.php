@@ -232,4 +232,21 @@ class helpers
             return false;
         }
     }
+
+    /**
+     * Translate date string to Arabic
+     */
+    public static function translateDate($date, string $format = 'h:i a, Y M d'): string
+    {
+        if (!$date) {
+            return '';
+        }
+
+        if (app()->getLocale() === 'ar') {
+            $dateStr = $date->locale('ar')->translatedFormat($format);
+            return str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $dateStr);
+        }
+
+        return $date->format($format);
+    }
 }

@@ -44,12 +44,12 @@ var KTAccountSettingsDeactivateAccount = function () {
                 if (status == 'Valid') {
 
                     swal.fire({
-                        text: "Are you sure you would like to deactivate your account?",
+                        text: "{{ __('Are you sure you would like to deactivate your account?') }}",
                         icon: "warning",
                         buttonsStyling: false,
                         showDenyButton: true,
-                        confirmButtonText: "Yes",
-                        denyButtonText: 'No',
+                        confirmButtonText: "{{ __('Yes') }}",
+                        denyButtonText: "{{ __('No') }}",
                         customClass: {
                             confirmButton: "btn btn-light-primary",
                             denyButton: "btn btn-danger"
@@ -57,9 +57,9 @@ var KTAccountSettingsDeactivateAccount = function () {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             Swal.fire({
-                                text: 'Your account has been deactivated.', 
+                                text: "{{ __('Your account has been deactivated.') }}", 
                                 icon: 'success',
-                                confirmButtonText: "Ok",
+                                confirmButtonText: "{{ __('Ok') }}",
                                 buttonsStyling: false,
                                 customClass: {
                                     confirmButton: "btn btn-light-primary"
@@ -67,9 +67,9 @@ var KTAccountSettingsDeactivateAccount = function () {
                             })
                         } else if (result.isDenied) {
                             Swal.fire({
-                                text: 'Account not deactivated.', 
+                                text: "{{ __('Account not deactivated.') }}", 
                                 icon: 'info',
-                                confirmButtonText: "Ok",
+                                confirmButtonText: "{{ __('Ok') }}",
                                 buttonsStyling: false,
                                 customClass: {
                                     confirmButton: "btn btn-light-primary"
@@ -80,10 +80,10 @@ var KTAccountSettingsDeactivateAccount = function () {
 
                 } else {
                     swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-light-primary"
                         }

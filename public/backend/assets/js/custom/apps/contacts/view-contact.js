@@ -21,8 +21,8 @@ var KTAppContactView = function () {
                 icon: "warning",
                 buttonsStyling: false,
                 showCancelButton: true,
-                confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, delete it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-danger",
                     cancelButton: "btn btn-active-light"
@@ -30,10 +30,10 @@ var KTAppContactView = function () {
             }).then(function (result) {
                 if (result.value) {
                     Swal.fire({
-                        text: "Contact has been deleted!",
+                        text: "{{ __('Contact has been deleted!') }}",
                         icon: "success",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary"
                         }
@@ -45,10 +45,10 @@ var KTAppContactView = function () {
                     });
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Contact has not been deleted!.",
+                        text: "{{ __('Contact has not been deleted!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }

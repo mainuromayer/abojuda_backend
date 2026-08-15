@@ -54,10 +54,10 @@ var KTModalTopUpWallet = function () {
 					} else {
 						// Show error message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
+							text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 							icon: "error",
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: "{{ __('Ok, got it!') }}",
 							customClass: {
 								confirmButton: "btn btn-light"
 							}
@@ -144,7 +144,7 @@ var KTModalTopUpWallet = function () {
 					top_up_amount: {
 						validators: {
 							notEmpty: {
-								message: 'Top up amount is required'
+								message: "{{ __('Top up amount is required') }}"
 							}
 						}
 					}
@@ -168,7 +168,7 @@ var KTModalTopUpWallet = function () {
 					payment_methods: {
 						validators: {
 							notEmpty: {
-								message: 'Payment method is required'
+								message: "{{ __('Payment method is required') }}"
 							}
 						}
 					}
@@ -192,7 +192,7 @@ var KTModalTopUpWallet = function () {
 					top_up_password: {
 						validators: {
 							notEmpty: {
-								message: 'Password is required'
+								message: "{{ __('Password is required') }}"
 							}
 						}
 					}
@@ -220,12 +220,12 @@ var KTModalTopUpWallet = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like to cancel?",
+                text: "{{ __('Are you sure you would like to cancel?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, cancel it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, cancel it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -236,10 +236,10 @@ var KTModalTopUpWallet = function () {
                     modal.hide(); // Hide modal				
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your form has not been cancelled!.",
+                        text: "{{ __('Your form has not been cancelled!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }

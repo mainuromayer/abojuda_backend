@@ -19,12 +19,12 @@ var KTCustomerViewPaymentMethod = function () {
 
                 // Popup confirmation
                 Swal.fire({
-                    text: "Are you sure you would like to delete this card?",
+                    text: "{{ __('Are you sure you would like to delete this card?') }}",
                     icon: "warning",
                     showCancelButton: true,
                     buttonsStyling: false,
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "No, return",
+                    confirmButtonText: "{{ __('Yes, delete it!') }}",
+                    cancelButtonText: "{{ __('No, return') }}",
                     customClass: {
                         confirmButton: "btn btn-primary",
                         cancelButton: "btn btn-active-light"
@@ -35,10 +35,10 @@ var KTCustomerViewPaymentMethod = function () {
                         modal.hide(); // Hide modal				
                     } else if (result.dismiss === 'cancel') {
                         Swal.fire({
-                            text: "Your card was not deleted!.",
+                            text: "{{ __('Your card was not deleted!.') }}",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary",
                             }
@@ -59,12 +59,12 @@ var KTCustomerViewPaymentMethod = function () {
 
             // Popup confirmation
             Swal.fire({
-                text: "Are you sure you would like to set this card as primary?",
+                text: "{{ __('Are you sure you would like to set this card as primary?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, set it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, set it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -72,20 +72,20 @@ var KTCustomerViewPaymentMethod = function () {
             }).then(function (result) {
                 if (result.value) {
                     Swal.fire({
-                        text: "Your card was set to primary!.",
+                        text: "{{ __('Your card was set to primary!.') }}",
                         icon: "success",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
                     });
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your card was not set to primary!.",
+                        text: "{{ __('Your card was not set to primary!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }

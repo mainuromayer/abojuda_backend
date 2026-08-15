@@ -100,10 +100,10 @@ var KTSignupFreeTrial = function() {
 
                         // Show message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                         Swal.fire({
-                            text: "You have successfully registered!",
+                            text: "{{ __('You have successfully registered!') }}",
                             icon: "success",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary"
                             }
@@ -123,10 +123,10 @@ var KTSignupFreeTrial = function() {
                 } else {
                     // Show error popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                     Swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary"
                         }

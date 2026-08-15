@@ -65,10 +65,10 @@ var KTProjectSettings = function () {
                 if (status == 'Valid') {
 
                     swal.fire({
-                        text: "Thank you! You've updated your project settings",
+                        text: "{{ __('Thank you! You\'ve updated your project settings') }}",
                         icon: "success",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn fw-bold btn-light-primary"
                         }
@@ -76,10 +76,10 @@ var KTProjectSettings = function () {
 
                 } else {
                     swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn fw-bold btn-light-primary"
                         }

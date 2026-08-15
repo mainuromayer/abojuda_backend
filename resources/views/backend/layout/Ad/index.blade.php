@@ -294,12 +294,12 @@
                     var id = $(this).data('id');
 
                     Swal.fire({
-                        text: "Are you sure you want to delete this ad?",
+                        text: "{{ __('Are you sure you want to delete this ad?') }}",
                         icon: "warning",
                         showCancelButton: true,
                         buttonsStyling: false,
-                        confirmButtonText: "Yes, delete!",
-                        cancelButtonText: "No, cancel",
+                        confirmButtonText: "{{ __('Yes, delete!') }}",
+                        cancelButtonText: "{{ __('No, cancel') }}",
                         customClass: {
                             confirmButton: "btn fw-bold btn-danger",
                             cancelButton: "btn fw-bold btn-active-light-primary"

@@ -52,8 +52,8 @@ var KTCustomerViewPaymentTable = function () {
                     icon: "warning",
                     showCancelButton: true,
                     buttonsStyling: false,
-                    confirmButtonText: "Yes, delete!",
-                    cancelButtonText: "No, cancel",
+                    confirmButtonText: "{{ __('Yes, delete!') }}",
+                    cancelButtonText: "{{ __('No, cancel') }}",
                     customClass: {
                         confirmButton: "btn fw-bold btn-danger",
                         cancelButton: "btn fw-bold btn-active-light-primary"
@@ -61,10 +61,10 @@ var KTCustomerViewPaymentTable = function () {
                 }).then(function (result) {
                     if (result.value) {
                         Swal.fire({
-                            text: "You have deleted " + invoiceNumber + "!.",
+                            text: "{{ __('You have deleted ')}}" + invoiceNumber + "!.",
                             icon: "success",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             }
@@ -77,10 +77,10 @@ var KTCustomerViewPaymentTable = function () {
                         });
                     } else if (result.dismiss === 'cancel') {
                         Swal.fire({
-                            text: customerName + " was not deleted.",
+                            text: customerName + " {{ __('was not deleted.') }}",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             }

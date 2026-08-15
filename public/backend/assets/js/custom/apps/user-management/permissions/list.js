@@ -54,12 +54,12 @@ var KTUsersPermissionsList = function () {
 
                 // SweetAlert2 pop up --- official docs reference: https://sweetalert2.github.io/
                 Swal.fire({
-                    text: "Are you sure you want to delete " + permissionName + "?",
+                    text: "{{ __('Are you sure you want to delete') }} " + permissionName + "?",
                     icon: "warning",
                     showCancelButton: true,
                     buttonsStyling: false,
-                    confirmButtonText: "Yes, delete!",
-                    cancelButtonText: "No, cancel",
+                    confirmButtonText: "{{ __('Yes, delete!') }}",
+                    cancelButtonText: "{{ __('No, cancel') }}",
                     customClass: {
                         confirmButton: "btn fw-bold btn-danger",
                         cancelButton: "btn fw-bold btn-active-light-primary"
@@ -67,10 +67,10 @@ var KTUsersPermissionsList = function () {
                 }).then(function (result) {
                     if (result.value) {
                         Swal.fire({
-                            text: "You have deleted " + permissionName + "!.",
+                            text: "{{ __('You have deleted') }} " + permissionName + "!.",
                             icon: "success",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             }
@@ -80,10 +80,10 @@ var KTUsersPermissionsList = function () {
                         });
                     } else if (result.dismiss === 'cancel') {
                         Swal.fire({
-                            text: customerName + " was not deleted.",
+                            text: permissionName + " {{ __('was not deleted.') }}",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn fw-bold btn-primary",
                             }

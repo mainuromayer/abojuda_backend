@@ -56,12 +56,7 @@ class UserController extends Controller
                     </div>';
                 })
                 ->addColumn('joined_date', function($row) {
-                    if (!$row->created_at) return '';
-                    $dateStr = $row->created_at->format('d M Y, h:i a');
-                    if (app()->getLocale() === 'ar') {
-                        return str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $dateStr);
-                    }
-                    return $dateStr;
+                    return helpers::translateDate($row->created_at, 'h:i a, Y M d');
                 })
                 ->addColumn('role', function($row) {
                     $roleVal = $row->role instanceof \App\Enum\Role ? $row->role->value : (string)$row->role;

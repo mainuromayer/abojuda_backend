@@ -87,12 +87,12 @@ var KTUsersAddSchedule = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like to cancel?",
+                text: "{{ __('Are you sure you would like to cancel?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, cancel it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, cancel it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -103,10 +103,10 @@ var KTUsersAddSchedule = function () {
                     modal.hide(); // Hide modal				
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your form has not been cancelled!.",
+                        text: "{{ __('Your form has not been cancelled!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
@@ -121,12 +121,12 @@ var KTUsersAddSchedule = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like to cancel?",
+                text: "{{ __('Are you sure you would like to cancel?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, cancel it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, cancel it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -137,10 +137,10 @@ var KTUsersAddSchedule = function () {
                     modal.hide(); // Hide modal				
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your form has not been cancelled!.",
+                        text: "{{ __('Your form has not been cancelled!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
@@ -177,10 +177,10 @@ var KTUsersAddSchedule = function () {
 							
 							// Show popup confirmation 
 							Swal.fire({
-								text: "Form has been successfully submitted!",
+								text: "{{ __('Form has been successfully submitted!') }}",
 								icon: "success",
 								buttonsStyling: false,
-								confirmButtonText: "Ok, got it!",
+								confirmButtonText: "{{ __('Ok, got it!') }}",
 								customClass: {
 									confirmButton: "btn btn-primary"
 								}
@@ -195,10 +195,10 @@ var KTUsersAddSchedule = function () {
 					} else {
 						// Show popup warning. For more info check the plugin's official documentation: https://sweetalert2.github.io/
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
+							text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 							icon: "error",
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: "{{ __('Ok, got it!') }}",
 							customClass: {
 								confirmButton: "btn btn-primary"
 							}

@@ -537,11 +537,11 @@ var KTApp = function () {
             if (confirm) {
                 // Show message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                 Swal.fire({
-                    text: confirmMessage ? confirmMessage : "Are you sure to remove ?",
+                    text: confirmMessage ? confirmMessage : "{{__('Are you sure to remove ?') }}",
                     icon: "warning",
                     buttonsStyling: false,
-                    confirmButtonText: "Confirm",
-                    denyButtonText: "Cancel",
+                    confirmButtonText: "{{ __('Confirm') }}",
+                    denyButtonText: "{{ __('Cancel') }}",
                     customClass: {
                         confirmButton: "btn btn-primary",
                         denyButton: "btn btn-danger"

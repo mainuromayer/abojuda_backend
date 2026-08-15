@@ -56,12 +56,12 @@ var KTModalUpgradePlan = function () {
             var el = this;
 
             swal.fire({
-                text: "Are you sure you would like to upgrade to selected plan ?",
+                text: "{{ __('Are you sure you would like to upgrade to selected plan?') }}",
                 icon: "warning",
                 buttonsStyling: false,
                 showDenyButton: true,
-                confirmButtonText: "Yes",
-                denyButtonText: 'No',
+                confirmButtonText: "{{ __('Yes') }}",
+                denyButtonText: "{{ __('No') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     denyButton: "btn btn-light-danger"
@@ -73,9 +73,9 @@ var KTModalUpgradePlan = function () {
 
                     setTimeout(function() {
                         Swal.fire({
-                            text: 'Your subscription plan has been successfully upgraded', 
+                            text: "{{ __('Your subscription plan has been successfully upgraded') }}", 
                             icon: 'success',
-                            confirmButtonText: "Ok",
+                            confirmButtonText: "{{ __('Ok') }}",
                             buttonsStyling: false,
                             customClass: {
                                 confirmButton: "btn btn-light-primary"

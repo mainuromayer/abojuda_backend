@@ -76,6 +76,10 @@
                     // Add Page
                     $('#add-page-form').on('submit', function(e) {
                         e.preventDefault();
+
+                        // Sync Summernote content to textarea
+                        $('#kt_add_page_content').val($('#kt_add_page_content').summernote('code'));
+
                         var formData = new FormData(this);
 
                         $.ajax({

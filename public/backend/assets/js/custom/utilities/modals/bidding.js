@@ -87,10 +87,10 @@ var KTModalBidding = function () {
 
                             // Show popup confirmation 
                             Swal.fire({
-                                text: "Form has been successfully submitted!",
+                                text: "{{ __('Form has been successfully submitted!') }}",
                                 icon: "success",
                                 buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
+                                confirmButtonText: "{{ __('Ok, got it!') }}",
                                 customClass: {
                                     confirmButton: "btn btn-primary"
                                 }
@@ -103,10 +103,10 @@ var KTModalBidding = function () {
                     } else {
                         // Show popup error 
                         Swal.fire({
-                            text: "Oops! There are some error(s) detected.",
+                            text: "{{ __('Oops! There are some error(s) detected.') }}",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary"
                             }
@@ -207,12 +207,12 @@ var KTModalBidding = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like to cancel?",
+                text: "{{ __('Are you sure you would like to cancel?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, cancel it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, cancel it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -223,10 +223,10 @@ var KTModalBidding = function () {
                     modal.hide(); // Hide modal				
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your form has not been cancelled!.",
+                        text: "{{ __('Your form has not been cancelled!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }

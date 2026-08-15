@@ -54,10 +54,10 @@ var KTCreateApp = function () {
 					} else {
 						// Show error message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
+							text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 							icon: "error",
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: "{{ __('Ok, got it!') }}",
 							customClass: {
 								confirmButton: "btn btn-light"
 							}
@@ -111,10 +111,10 @@ var KTCreateApp = function () {
 					}, 2000);
 				} else {
 					Swal.fire({
-						text: "Sorry, looks like there are some errors detected, please try again.",
+						text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 						icon: "error",
 						buttonsStyling: false,
-						confirmButtonText: "Ok, got it!",
+						confirmButtonText: "{{ __('Ok, got it!') }}",
 						customClass: {
 							confirmButton: "btn btn-light"
 						}
@@ -151,14 +151,14 @@ var KTCreateApp = function () {
 					name: {
 						validators: {
 							notEmpty: {
-								message: 'App name is required'
+								message: '{{ __("App name is required") }}'
 							}
 						}
 					},
 					category: {
 						validators: {
 							notEmpty: {
-								message: 'Category is required'
+								message: '{{ __("Category is required") }}'
 							}
 						}
 					}
@@ -182,7 +182,7 @@ var KTCreateApp = function () {
 					framework: {
 						validators: {
 							notEmpty: {
-								message: 'Framework is required'
+								message: '{{ __("Framework is required") }}'
 							}
 						}
 					}
@@ -207,14 +207,14 @@ var KTCreateApp = function () {
 					dbname: {
 						validators: {
 							notEmpty: {
-								message: 'Database name is required'
+								message: '{{ __("Database name is required") }}'
 							}
 						}
 					},
 					dbengine: {
 						validators: {
 							notEmpty: {
-								message: 'Database engine is required'
+								message: '{{ __("Database engine is required") }}'
 							}
 						}
 					}
@@ -239,46 +239,46 @@ var KTCreateApp = function () {
 					'card_name': {
 						validators: {
 							notEmpty: {
-								message: 'Name on card is required'
+								message: '{{ __("Name on card is required") }}'
 							}
 						}
 					},
 					'card_number': {
 						validators: {
 							notEmpty: {
-								message: 'Card member is required'
+								message: '{{ __("Card member is required") }}'
 							},
                             creditCard: {
-                                message: 'Card number is not valid'
+                                message: '{{ __("Card number is not valid") }}'
                             }
 						}
 					},
 					'card_expiry_month': {
 						validators: {
 							notEmpty: {
-								message: 'Month is required'
+								message: '{{ __("Month is required") }}'
 							}
 						}
 					},
 					'card_expiry_year': {
 						validators: {
 							notEmpty: {
-								message: 'Year is required'
+								message: '{{ __("Year is required") }}'
 							}
 						}
 					},
 					'card_cvv': {
 						validators: {
 							notEmpty: {
-								message: 'CVV is required'
+								message: '{{ __("CVV is required") }}'
 							},
 							digits: {
-								message: 'CVV must contain only digits'
+								message: '{{ __("CVV must contain only digits") }}'
 							},
 							stringLength: {
 								min: 3,
 								max: 4,
-								message: 'CVV must contain 3 to 4 digits only'
+								message: '{{ __("CVV must contain 3 to 4 digits only") }}'
 							}
 						}
 					}

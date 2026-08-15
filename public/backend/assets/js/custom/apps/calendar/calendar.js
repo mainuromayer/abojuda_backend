@@ -373,10 +373,10 @@ var KTAppCalendar = function () {
 
                             // Show popup confirmation 
                             Swal.fire({
-                                text: "New event added to calendar!",
+                                text: "{{ __('New event added to calendar!') }}",
                                 icon: "success",
                                 buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
+                                confirmButtonText: "{{ __('Ok, got it!') }}",
                                 customClass: {
                                     confirmButton: "btn btn-primary"
                                 }
@@ -427,10 +427,10 @@ var KTAppCalendar = function () {
                     } else {
                         // Show popup warning 
                         Swal.fire({
-                            text: "Sorry, looks like there are some errors detected, please try again.",
+                            text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary"
                             }
@@ -492,10 +492,10 @@ var KTAppCalendar = function () {
 
                             // Show popup confirmation 
                             Swal.fire({
-                                text: "New event added to calendar!",
+                                text: "{{ __('New event added to calendar!') }}",
                                 icon: "success",
                                 buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
+                                confirmButtonText: "{{ __('Ok, got it!') }}",
                                 customClass: {
                                     confirmButton: "btn btn-primary"
                                 }
@@ -549,10 +549,10 @@ var KTAppCalendar = function () {
                     } else {
                         // Show popup warning 
                         Swal.fire({
-                            text: "Sorry, looks like there are some errors detected, please try again.",
+                            text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary"
                             }
@@ -598,12 +598,12 @@ var KTAppCalendar = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like to delete this event?",
+                text: "{{ __('Are you sure you would like to delete this event?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, delete it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -615,10 +615,10 @@ var KTAppCalendar = function () {
                     viewModal.hide(); // Hide modal				
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your event was not deleted!.",
+                        text: "{{ __('Your event was not deleted!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
@@ -645,12 +645,12 @@ var KTAppCalendar = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like to cancel?",
+                text: "{{ __('Are you sure you would like to cancel?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, cancel it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, cancel it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -661,10 +661,10 @@ var KTAppCalendar = function () {
                     modal.hide(); // Hide modal				
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your form has not been cancelled!.",
+                        text: "{{ __('Your form has not been cancelled!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }
@@ -681,12 +681,12 @@ var KTAppCalendar = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like to cancel?",
+                text: "{{ __('Are you sure you would like to cancel?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, cancel it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, cancel it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"
@@ -697,10 +697,10 @@ var KTAppCalendar = function () {
                     modal.hide(); // Hide modal				
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
-                        text: "Your form has not been cancelled!.",
+                        text: "{{ __('Your form has not been cancelled!.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary",
                         }

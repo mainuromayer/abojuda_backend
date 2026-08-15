@@ -54,10 +54,10 @@ var KTCreateCampaign = function () {
 					} else {
 						// Show error message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
+							text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 							icon: "error",
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: "{{ __('Ok, got it!') }}",
 							customClass: {
 								confirmButton: "btn btn-light"
 							}
@@ -168,39 +168,39 @@ var KTCreateCampaign = function () {
 			},
 			enforceWhitelist: true,
 			whitelist: [
-				{ value: 'Argentina', code: 'AR' },
-				{ value: 'Australia', code: 'AU', searchBy: 'beach, sub-tropical' },
-				{ value: 'Austria', code: 'AT' },
-				{ value: 'Brazil', code: 'BR' },
-				{ value: 'China', code: 'CN' },
-				{ value: 'Egypt', code: 'EG' },
-				{ value: 'Finland', code: 'FI' },
-				{ value: 'France', code: 'FR' },
-				{ value: 'Germany', code: 'DE' },
-				{ value: 'Hong Kong', code: 'HK' },
-				{ value: 'Hungary', code: 'HU' },
-				{ value: 'Iceland', code: 'IS' },
-				{ value: 'India', code: 'IN' },
-				{ value: 'Indonesia', code: 'ID' },
-				{ value: 'Italy', code: 'IT' },
-				{ value: 'Jamaica', code: 'JM' },
-				{ value: 'Japan', code: 'JP' },
-				{ value: 'Jersey', code: 'JE' },
-				{ value: 'Luxembourg', code: 'LU' },
-				{ value: 'Mexico', code: 'MX' },
-				{ value: 'Netherlands', code: 'NL' },
-				{ value: 'New Zealand', code: 'NZ' },
-				{ value: 'Norway', code: 'NO' },
-				{ value: 'Philippines', code: 'PH' },
-				{ value: 'Singapore', code: 'SG' },
-				{ value: 'South Korea', code: 'KR' },
-				{ value: 'Sweden', code: 'SE' },
-				{ value: 'Switzerland', code: 'CH' },
-				{ value: 'Thailand', code: 'TH' },
-				{ value: 'Ukraine', code: 'UA' },
-				{ value: 'United Kingdom', code: 'GB' },
-				{ value: 'United States', code: 'US' },
-				{ value: 'Vietnam', code: 'VN' }
+				{ value: "{{ __('Argentina') }}", code: 'AR' },
+				{ value: "{{ __('Australia') }}", code: 'AU', searchBy: 'beach, sub-tropical' },
+				{ value: "{{ __('Austria') }}", code: 'AT' },
+				{ value: "{{ __('Brazil') }}", code: 'BR' },
+				{ value: "{{ __('China') }}", code: 'CN' },
+				{ value: "{{ __('Egypt') }}", code: 'EG' },
+				{ value: "{{ __('Finland') }}", code: 'FI' },
+				{ value: "{{ __('France') }}", code: 'FR' },
+				{ value: "{{ __('Germany') }}", code: 'DE' },
+				{ value: "{{ __('Hong Kong') }}", code: 'HK' },
+				{ value: "{{ __('Hungary') }}", code: 'HU' },
+				{ value: "{{ __('Iceland') }}", code: 'IS' },
+				{ value: "{{ __('India') }}", code: 'IN' },
+				{ value: "{{ __('Indonesia') }}", code: 'ID' },
+				{ value: "{{ __('Italy') }}", code: 'IT' },
+				{ value: "{{ __('Jamaica') }}", code: 'JM' },
+				{ value: "{{ __('Japan') }}", code: 'JP' },
+				{ value: "{{ __('Jersey') }}", code: 'JE' },
+				{ value: "{{ __('Luxembourg') }}", code: 'LU' },
+				{ value: "{{ __('Mexico') }}", code: 'MX' },
+				{ value: "{{ __('Netherlands') }}", code: 'NL' },
+				{ value: "{{ __('New Zealand') }}", code: 'NZ' },
+				{ value: "{{ __('Norway') }}", code: 'NO' },
+				{ value: "{{ __('Philippines') }}", code: 'PH' },
+				{ value: "{{ __('Singapore') }}", code: 'SG' },
+				{ value: "{{ __('South Korea') }}", code: 'KR' },
+				{ value: "{{ __('Sweden') }}", code: 'SE' },
+				{ value: "{{ __('Switzerland') }}", code: 'CH' },
+				{ value: "{{ __('Thailand') }}", code: 'TH' },
+				{ value: "{{ __('Ukraine') }}", code: 'UA' },
+				{ value: "{{ __('United Kingdom') }}", code: 'GB' },
+				{ value: "{{ __('United States') }}", code: 'US' },
+				{ value: "{{ __('Vietnam') }}", code: 'VN' }
 			],
 			dropdown: {
 				enabled: 1, // suggest tags after a single character input
@@ -296,7 +296,7 @@ var KTCreateCampaign = function () {
 					campaign_name: {
 						validators: {
 							notEmpty: {
-								message: 'App name is required'
+								message: '{{ __("App name is required") }}'
 							}
 						}
 					},
@@ -305,7 +305,7 @@ var KTCreateCampaign = function () {
 							file: {
 								extension: 'png,jpg,jpeg',
 								type: 'image/jpeg,image/png',
-								message: 'Please choose a png, jpg or jpeg files only',
+								message: '{{ __("Please choose a png, jpg or jpeg files only") }}',
 							},
 						}
 					}

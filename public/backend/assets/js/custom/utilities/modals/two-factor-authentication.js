@@ -95,10 +95,10 @@ var KTModalTwoFactorAuthentication = function () {
 							
 							// Show success message. For more info check the plugin's official documentation: https://sweetalert2.github.io/
 							Swal.fire({
-								text: "Mobile number has been successfully submitted!",
+								text: "{{ __('Mobile number has been successfully submitted!') }}",
 								icon: "success",
 								buttonsStyling: false,
-								confirmButtonText: "Ok, got it!",
+								confirmButtonText: "{{ __('Ok, got it!') }}",
 								customClass: {
 									confirmButton: "btn btn-primary"
 								}
@@ -114,10 +114,10 @@ var KTModalTwoFactorAuthentication = function () {
 					} else {
 						// Show error message.
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
+							text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 							icon: "error",
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: "{{ __('Ok, got it!') }}",
 							customClass: {
 								confirmButton: "btn btn-primary"
 							}
@@ -146,7 +146,7 @@ var KTModalTwoFactorAuthentication = function () {
 					'code': {
 						validators: {
 							notEmpty: {
-								message: 'Code is required'
+								message: "{{ __('Code is required') }}"
 							}
 						}
 					}
@@ -185,10 +185,10 @@ var KTModalTwoFactorAuthentication = function () {
 							
 							// Show success message.
 							Swal.fire({
-								text: "Code has been successfully submitted!",
+								text: "{{ __('Code has been successfully submitted!') }}",
 								icon: "success",
 								buttonsStyling: false,
-								confirmButtonText: "Ok, got it!",
+								confirmButtonText: "{{ __('Ok, got it!') }}",
 								customClass: {
 									confirmButton: "btn btn-primary"
 								}
@@ -204,10 +204,10 @@ var KTModalTwoFactorAuthentication = function () {
 					} else {
 						// Show error message.
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
+							text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 							icon: "error",
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: "{{ __('Ok, got it!') }}",
 							customClass: {
 								confirmButton: "btn btn-primary"
 							}

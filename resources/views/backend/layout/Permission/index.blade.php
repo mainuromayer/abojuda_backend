@@ -126,20 +126,20 @@
                             },
                             success: function (response) {
                                 if (response.success) {
-                                    Swal.fire('Success!', response.message, 'success');
+                                    Swal.fire("{{ __('Success!') }}", response.message, 'success');
                                     $('#role-modal').modal('hide'); // Use Bootstrap's method to hide modal
                                     // Refresh the DataTable
                                     $('#kt_table_users').DataTable().ajax.reload();
                                 } else {
-                                    Swal.fire('Error!', response.message, 'error');
+                                    Swal.fire("{{ __('Error!') }}", response.message, 'error');
                                 }
                             },
                             error: function () {
-                                Swal.fire('Error!', 'Something went wrong, please try again.', 'error');
+                                Swal.fire("{{ __('Error!') }}", "{{ __('Something went wrong, please try again.') }}", 'error');
                             }
                         });
                     } else {
-                        Swal.fire('Error!', 'Please select a role.', 'error');
+                        Swal.fire("{{ __('Error!') }}", "{{ __('Please select a role.') }}", 'error');
                     }
                 });
 
@@ -149,13 +149,14 @@
                     let roleId = $(this).data('role');
 
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "This will remove the role from the user!",
+                        title: "{{ __('Are you sure?') }}",
+                        text: "{{ __('This will remove the role from the user!') }}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#d33',
                         cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, remove it!'
+                        confirmButtonText: "{{ __('Yes, remove it!') }}",
+                        cancelButtonText: "{{ __('Cancel') }}"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
@@ -167,26 +168,22 @@
                                 },
                                 success: function (response) {
                                     if (response.success) {
-                                        Swal.fire('Removed!', response.message, 'success');
+                                        Swal.fire("{{ __('Removed!') }}", response.message, 'success');
                                         // Refresh the DataTable
                                         $('#kt_table_users').DataTable().ajax.reload();
                                     } else {
-                                        Swal.fire('Error!', response.message, 'error');
+                                        Swal.fire("{{ __('Error!') }}", response.message, 'error');
                                     }
                                 },
                                 error: function () {
-                                    Swal.fire('Error!', 'Something went wrong, please try again.', 'error');
+                                    Swal.fire("{{ __('Error!') }}", "{{ __('Something went wrong, please try again.') }}", 'error');
                                 }
                             });
                         }
                     });
-                });
             </script>
     @endpush
 @endsection
-
-
-
 
 
 

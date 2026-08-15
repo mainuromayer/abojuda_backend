@@ -63,7 +63,7 @@ var KTModalSelectLocation = function () {
                     html: '<div class="mb-2">Your selected - <b>"' + selectedlocation + '"</b>.</div>' + 'Click on the "Apply" button to select this location.',
                     icon: "success",
                     buttonsStyling: false,
-                    confirmButtonText: "Ok, got it!",
+                    confirmButtonText: "{{ __('Ok, got it!') }}",
                     customClass: {
                         confirmButton: "btn btn-primary"
                     }

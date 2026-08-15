@@ -15,12 +15,12 @@ var KTUsersAddAuthApp = function () {
             e.preventDefault();
 
             Swal.fire({
-                text: "Are you sure you would like to close?",
+                text: "{{ __('Are you sure you would like to close?') }}",
                 icon: "warning",
                 showCancelButton: true,
                 buttonsStyling: false,
-                confirmButtonText: "Yes, close it!",
-                cancelButtonText: "No, return",
+                confirmButtonText: "{{ __('Yes, close it!') }}",
+                cancelButtonText: "{{ __('No, return') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     cancelButton: "btn btn-active-light"

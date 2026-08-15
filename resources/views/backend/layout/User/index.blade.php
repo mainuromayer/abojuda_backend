@@ -298,13 +298,14 @@
                     let userId = $(this).data('id');
 
                     Swal.fire({
-                        title: 'Approve Deletion?',
-                        text: "Approve user account deletion request. This will delete user posts, wishes, reports and account permanently/soft-deleted.",
+                        title: "{{ __('Approve Deletion?') }}",
+                        text: "{{ __('Approve user account deletion request. This will delete user posts, wishes, reports and account permanently/soft-deleted.') }}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#d33',
                         cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, Approve!'
+                        confirmButtonText: "{{ __('Yes, Approve!') }}",
+                        cancelButtonText: "{{ __('Cancel') }}"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             let approveUrl = "{{ route('user.approve-delete', ['id' => '___id___']) }}".replace('___id___', userId);
@@ -315,11 +316,11 @@
                                     _token: '{{ csrf_token() }}'
                                 },
                                 success: function (response) {
-                                    Swal.fire('Success!', response.message, 'success');
+                                    Swal.fire("{{ __('Success!') }}", response.message, 'success');
                                     $('#kt_table_users').DataTable().ajax.reload();
                                 },
                                 error: function (xhr) {
-                                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
+                                    Swal.fire("{{ __('Error!') }}", xhr.responseJSON?.message || "{{ __('Something went wrong.') }}", 'error');
                                 }
                             });
                         }
@@ -332,13 +333,14 @@
                     let userId = $(this).data('id');
 
                     Swal.fire({
-                        title: 'Reject Deletion?',
-                        text: "Reject user account deletion request. User status will be restored to Active.",
+                        title: "{{ __('Reject Deletion?') }}",
+                        text: "{{ __('Reject user account deletion request. User status will be restored to Active.') }}",
                         icon: 'info',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, Reject Request!'
+                        confirmButtonText: "{{ __('Yes, Reject Request!') }}",
+                        cancelButtonText: "{{ __('Cancel') }}"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             let rejectUrl = "{{ route('user.reject-delete', ['id' => '___id___']) }}".replace('___id___', userId);
@@ -349,11 +351,11 @@
                                     _token: '{{ csrf_token() }}'
                                 },
                                 success: function (response) {
-                                    Swal.fire('Success!', response.message, 'success');
+                                    Swal.fire("{{ __('Success!') }}", response.message, 'success');
                                     $('#kt_table_users').DataTable().ajax.reload();
                                 },
                                 error: function (xhr) {
-                                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
+                                    Swal.fire("{{ __('Error!') }}", xhr.responseJSON?.message || "{{ __('Something went wrong.') }}", 'error');
                                 }
                             });
                         }
@@ -366,13 +368,14 @@
                     let userId = $(this).data('id');
 
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: "This action cannot be undone!",
+                        title: "{{ __('Are you sure?') }}",
+                        text: "{{ __('This action cannot be undone!') }}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#d33',
                         cancelButtonColor: '#3085d6',
-                        confirmButtonText: 'Yes, delete it!'
+                        confirmButtonText: "{{ __('Yes, delete it!') }}",
+                        cancelButtonText: "{{ __('Cancel') }}"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             let deleteUrl = "{{ route('user.delete', ['id' => '___id___']) }}".replace('___id___',
@@ -568,9 +571,9 @@
                     let userId = $(this).attr('data-user-id');
                     let action = $(this).attr('data-action');
                     
-                    let titleText = action === 'unsuspend' ? 'Are you sure?' : 'Are you sure?';
-                    let descText = action === 'unsuspend' ? 'This will restore user account access. They will be able to log in and use all features.' : 'This will suspend this user account. They will not be able to log in or use the app, but their ID and profile will remain.';
-                    let confirmText = action === 'unsuspend' ? 'Yes, unsuspend user!' : 'Yes, suspend user!';
+                    let titleText = action === 'unsuspend' ? "{{ __('Are you sure?') }}" : "{{ __('Are you sure?') }}";
+                    let descText = action === 'unsuspend' ? "{{ __('This will restore user account access. They will be able to log in and use all features.') }}" : "{{ __('This will suspend this user account. They will not be able to log in or use the app, but their ID and profile will remain.') }}";
+                    let confirmText = action === 'unsuspend' ? "{{ __('Yes, unsuspend user!') }}" : "{{ __('Yes, suspend user!') }}";
                     let ajaxUrl = action === 'unsuspend' ? "{{ route('user.unsuspend', ['id' => '___id___']) }}".replace('___id___', userId) : "{{ route('user.suspend', ['id' => '___id___']) }}".replace('___id___', userId);
 
                     Swal.fire({
@@ -580,7 +583,8 @@
                         showCancelButton: true,
                         confirmButtonColor: action === 'unsuspend' ? '#28a745' : '#d33',
                         cancelButtonColor: '#3085d6',
-                        confirmButtonText: confirmText
+                        confirmButtonText: confirmText,
+                        cancelButtonText: "{{ __('Cancel') }}"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
@@ -591,15 +595,15 @@
                                 },
                                 success: function (response) {
                                     if (response.status === 'success') {
-                                        Swal.fire(action === 'unsuspend' ? 'Unsuspended!' : 'Suspended!', response.message, 'success');
+                                        Swal.fire(action === 'unsuspend' ? "{{ __('Unsuspended!') }}" : "{{ __('Suspended!') }}", response.message, 'success');
                                         $('#kt_modal_user_reports').modal('hide');
                                         $('#kt_table_users').DataTable().ajax.reload();
                                     } else {
-                                        Swal.fire('Error!', response.message, 'error');
+                                        Swal.fire("{{ __('Error!') }}", response.message, 'error');
                                     }
                                 },
                                 error: function (xhr) {
-                                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
+                                    Swal.fire("{{ __('Error!') }}", xhr.responseJSON?.message || "{{ __('Something went wrong.') }}", 'error');
                                 }
                             });
                         }
@@ -676,12 +680,13 @@
                     let row = $('#report_row_' + reportId);
 
                     Swal.fire({
-                        title: 'Delete Report',
-                        text: 'Are you sure you want to delete this report?',
+                        title: "{{ __('Delete Report') }}",
+                        text: "{{ __('Are you sure you want to delete this report?') }}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
+                        confirmButtonText: "{{ __('Yes, delete it!') }}",
+                        cancelButtonText: "{{ __('Cancel') }}"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
@@ -692,7 +697,7 @@
                                 },
                                 success: function(res) {
                                     if (res.success) {
-                                        Swal.fire('Deleted!', res.message, 'success');
+                                        Swal.fire("{{ __('Deleted!') }}", res.message, 'success');
                                         row.fadeOut(300, function() { 
                                             $(this).remove(); 
                                             if ($('.select-report-checkbox').length === 0) {
@@ -721,12 +726,13 @@
                     if (selectedIds.length === 0) return;
 
                     Swal.fire({
-                        title: 'Delete Selected Reports',
-                        text: `Are you sure you want to delete ${selectedIds.length} selected reports?`,
+                        title: "{{ __('Delete Selected Reports') }}",
+                        text: "{{ __('Are you sure you want to delete the selected reports?') }}",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete them!'
+                        confirmButtonText: "{{ __('Yes, delete them!') }}",
+                        cancelButtonText: "{{ __('Cancel') }}"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
@@ -738,7 +744,7 @@
                                 },
                                 success: function(res) {
                                     if (res.success) {
-                                        Swal.fire('Deleted!', res.message, 'success');
+                                        Swal.fire("{{ __('Deleted!') }}", res.message, 'success');
                                         selectedIds.forEach(function(id) {
                                             $('#report_row_' + id).fadeOut(300, function() {
                                                 $(this).remove();
@@ -764,9 +770,9 @@
                     let userId = $(this).data('id');
                     let action = $(this).data('action');
                     
-                    let titleText = 'Are you sure?';
-                    let descText = action === 'unsuspend' ? 'This will restore user account access. They will be able to log in and use all features.' : 'This will suspend this user account. They will not be able to log in or use the app, but their ID and profile will remain.';
-                    let confirmText = action === 'unsuspend' ? 'Yes, unsuspend user!' : 'Yes, suspend user!';
+                    let titleText = "{{ __('Are you sure?') }}";
+                    let descText = action === 'unsuspend' ? "{{ __('This will restore user account access. They will be able to log in and use all features.') }}" : "{{ __('This will suspend this user account. They will not be able to log in or use the app, but their ID and profile will remain.') }}";
+                    let confirmText = action === 'unsuspend' ? "{{ __('Yes, unsuspend user!') }}" : "{{ __('Yes, suspend user!') }}";
                     let ajaxUrl = action === 'unsuspend' ? "{{ route('user.unsuspend', ['id' => '___id___']) }}".replace('___id___', userId) : "{{ route('user.suspend', ['id' => '___id___']) }}".replace('___id___', userId);
 
                     Swal.fire({
@@ -776,7 +782,8 @@
                         showCancelButton: true,
                         confirmButtonColor: action === 'unsuspend' ? '#28a745' : '#d33',
                         cancelButtonColor: '#3085d6',
-                        confirmButtonText: confirmText
+                        confirmButtonText: confirmText,
+                        cancelButtonText: "{{ __('Cancel') }}"
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
@@ -787,14 +794,14 @@
                                 },
                                 success: function (response) {
                                     if (response.status === 'success') {
-                                        Swal.fire(action === 'unsuspend' ? 'Unsuspended!' : 'Suspended!', response.message, 'success');
+                                        Swal.fire(action === 'unsuspend' ? "{{ __('Unsuspended!') }}" : "{{ __('Suspended!') }}", response.message, 'success');
                                         $('#kt_table_users').DataTable().ajax.reload();
                                     } else {
-                                        Swal.fire('Error!', response.message, 'error');
+                                        Swal.fire("{{ __('Error!') }}", response.message, 'error');
                                     }
                                 },
                                 error: function (xhr) {
-                                    Swal.fire('Error!', xhr.responseJSON?.message || 'Something went wrong.', 'error');
+                                    Swal.fire("{{ __('Error!') }}", xhr.responseJSON?.message || "{{ __('Something went wrong.') }}", 'error');
                                 }
                             });
                         }

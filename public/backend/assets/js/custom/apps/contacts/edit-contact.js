@@ -87,10 +87,10 @@ var KTAppContactEdit = function () {
 
                             // Show popup confirmation 
                             Swal.fire({
-                                text: "Form has been successfully submitted!",
+                                text: "{{ __('Form has been successfully submitted!') }}",
                                 icon: "success",
                                 buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
+                                confirmButtonText: "{{ __('Ok, got it!') }}",
                                 customClass: {
                                     confirmButton: "btn btn-primary"
                                 }
@@ -101,10 +101,10 @@ var KTAppContactEdit = function () {
                     } else {
                         // Show popup error 
                         Swal.fire({
-                            text: "Oops! There are some error(s) detected.",
+                            text: "{{ __('Oops! There are some error(s) detected.') }}",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary"
                             }

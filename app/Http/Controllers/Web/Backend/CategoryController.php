@@ -41,13 +41,7 @@ class CategoryController extends Controller
                     return '<span class="badge ' . $badgeClass . ' text-uppercase">' . __(ucfirst($row->status)) . '</span>';
                 })
                 ->addColumn('created_at', function ($row) {
-                    if (!$row->created_at) {
-                        return '-';
-                    }
-                    if (app()->getLocale() === 'ar') {
-                        return $row->created_at->locale('ar')->isoFormat('D MMMM YYYY، hh:mm a');
-                    }
-                    return $row->created_at->format('d M Y, h:i a');
+                    return helpers::translateDate($row->created_at, 'h:i a, Y M d') ?: '-';
                 })
                 ->addColumn('actions', function ($row) {
                     return '

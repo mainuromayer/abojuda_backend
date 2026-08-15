@@ -115,10 +115,10 @@ var KTSignupGeneral = function () {
 
                         // Show message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                         Swal.fire({
-                            text: "You have successfully reset your password!",
+                            text: "{{ __('You have successfully reset your password!') }}",
                             icon: "success",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary"
                             }
@@ -139,10 +139,10 @@ var KTSignupGeneral = function () {
                 } else {
                     // Show error popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                     Swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary"
                         }
@@ -170,7 +170,7 @@ var KTSignupGeneral = function () {
                     'name': {
                         validators: {
                             notEmpty: {
-                                message: 'Name is required'
+                                message: '{{ __("Name is required") }}'
                             }
                         }
                     },
@@ -178,20 +178,20 @@ var KTSignupGeneral = function () {
                         validators: {
                             regexp: {
                                 regexp: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                message: 'The value is not a valid email address',
+                                message: '{{ __("The value is not a valid email address") }}',
                             },
                             notEmpty: {
-                                message: 'Email address is required'
+                                message: '{{ __("Email address is required") }}'
                             }
                         }
                     },
                     'password': {
                         validators: {
                             notEmpty: {
-                                message: 'The password is required'
+                                message: '{{ __("The password is required") }}'
                             },
                             callback: {
-                                message: 'Please enter valid password',
+                                message: '{{ __("Please enter valid password") }}',
                                 callback: function (input) {
                                     if (input.value.length > 0) {
                                         return validatePassword();
@@ -203,20 +203,20 @@ var KTSignupGeneral = function () {
                     'password_confirmation': {
                         validators: {
                             notEmpty: {
-                                message: 'The password confirmation is required'
+                                message: '{{ __("The password confirmation is required") }}'
                             },
                             identical: {
                                 compare: function () {
                                     return form.querySelector('[name="password"]').value;
                                 },
-                                message: 'The password and its confirm are not the same'
+                                message: '{{ __("The password and its confirm are not the same") }}'
                             }
                         }
                     },
                     'toc': {
                         validators: {
                             notEmpty: {
-                                message: 'You must accept the terms and conditions'
+                                message: '{{ __("You must accept the terms and conditions") }}'
                             }
                         }
                     }
@@ -264,10 +264,10 @@ var KTSignupGeneral = function () {
                         } else {
                             // Show error popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                             Swal.fire({
-                                text: "Sorry, looks like there are some errors detected, please try again.",
+                                text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
                                 icon: "error",
                                 buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
+                                confirmButtonText: "{{ __('Ok, got it!') }}",
                                 customClass: {
                                     confirmButton: "btn btn-primary"
                                 }
@@ -275,10 +275,10 @@ var KTSignupGeneral = function () {
                         }
                     }).catch(function (error) {
                         Swal.fire({
-                            text: "Sorry, looks like there are some errors detected, please try again.",
+                            text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
                             icon: "error",
                             buttonsStyling: false,
-                            confirmButtonText: "Ok, got it!",
+                            confirmButtonText: "{{ __('Ok, got it!') }}",
                             customClass: {
                                 confirmButton: "btn btn-primary"
                             }
@@ -294,10 +294,10 @@ var KTSignupGeneral = function () {
                 } else {
                     // Show error popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                     Swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "{{ __('Ok, got it!') }}",
                         customClass: {
                             confirmButton: "btn btn-primary"
                         }

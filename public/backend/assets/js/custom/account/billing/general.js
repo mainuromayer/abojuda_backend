@@ -11,12 +11,12 @@ var KTAccountBillingGeneral = function () {
             e.preventDefault();
 
             swal.fire({
-                text: "Are you sure you would like to cancel your subscription ?",
+                text: "{{ __('Are you sure you would like to cancel your subscription ?') }}",
                 icon: "warning",
                 buttonsStyling: false,
                 showDenyButton: true,
-                confirmButtonText: "Yes",
-                denyButtonText: 'No',
+                confirmButtonText: "{{ __('Yes') }}",
+                denyButtonText: "{{ __('No') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     denyButton: "btn btn-light-danger"
@@ -24,9 +24,9 @@ var KTAccountBillingGeneral = function () {
             }).then((result) => {
                 if (result.isConfirmed) {
                     Swal.fire({
-                        text: 'Your subscription has been canceled.', 
+                        text: "{{ __('Your subscription has been canceled.') }}", 
                         icon: 'success',
-                        confirmButtonText: "Ok",
+                        confirmButtonText: "{{ __('Ok') }}",
                         buttonsStyling: false,
                         customClass: {
                             confirmButton: "btn btn-light-primary"
@@ -44,12 +44,12 @@ var KTAccountBillingGeneral = function () {
             var el = this;
 
             swal.fire({
-                text: "Are you sure you would like to delete selected card ?",
+                text: "{{ __('Are you sure you would like to delete selected card ?') }}",
                 icon: "warning",
                 buttonsStyling: false,
                 showDenyButton: true,
-                confirmButtonText: "Yes",
-                denyButtonText: 'No',
+                confirmButtonText: "{{ __('Yes') }}",
+                denyButtonText: "{{ __('No') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     denyButton: "btn btn-light-danger"
@@ -61,9 +61,9 @@ var KTAccountBillingGeneral = function () {
 
                     setTimeout(function() {
                         Swal.fire({
-                            text: 'Your selected card has been successfully deleted', 
+                            text: "{{ __('Your selected card has been successfully deleted') }}", 
                             icon: 'success',
-                            confirmButtonText: "Ok",
+                            confirmButtonText: "{{ __('Ok') }}",
                             buttonsStyling: false,
                             customClass: {
                                 confirmButton: "btn btn-light-primary"
@@ -84,12 +84,12 @@ var KTAccountBillingGeneral = function () {
             var el = this;
 
             swal.fire({
-                text: "Are you sure you would like to delete selected address ?",
+                text: "{{ __('Are you sure you would like to delete selected address ?') }}",
                 icon: "warning",
                 buttonsStyling: false,
                 showDenyButton: true,
-                confirmButtonText: "Yes",
-                denyButtonText: 'No',
+                confirmButtonText: "{{ __('Yes') }}",
+                denyButtonText: "{{ __('No') }}",
                 customClass: {
                     confirmButton: "btn btn-primary",
                     denyButton: "btn btn-light-danger"
@@ -101,9 +101,9 @@ var KTAccountBillingGeneral = function () {
 
                     setTimeout(function() {
                         Swal.fire({
-                            text: 'Your selected address has been successfully deleted', 
+                            text: "{{ __('Your selected address has been successfully deleted') }}", 
                             icon: 'success',
-                            confirmButtonText: "Ok",
+                            confirmButtonText: "{{ __('Ok') }}",
                             buttonsStyling: false,
                             customClass: {
                                 confirmButton: "btn btn-light-primary"

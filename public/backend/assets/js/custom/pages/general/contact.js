@@ -63,7 +63,7 @@ var KTContactApply = function () {
                     html: 'Your selected - <b>"' + selectedlocation + ' - ' + result.latlng + '"</b>.',
                     icon: "success",
                     buttonsStyling: false,
-                    confirmButtonText: "Ok, got it!",
+                    confirmButtonText: "{{ __('Ok, got it!') }}",
                     customClass: {
                         confirmButton: "btn btn-primary"
                     }
@@ -95,24 +95,24 @@ var KTContactApply = function () {
 					'name': {
 						validators: {
 							notEmpty: {
-								message: 'Name is required'
+								message: "{{ __('Name is required') }}"
 							}
 						}
 					},
 					'email': {
                         validators: {
 							notEmpty: {
-								message: 'Email address is required'
+								message: "{{ __('Email address is required') }}"
 							},
                             emailAddress: {
-								message: 'The value is not a valid email address'
+								message: "{{ __('The value is not a valid email address') }}"
 							}
 						}
 					},
 					'message': {
                         validators: {
 							notEmpty: {
-								message: 'Message is required'
+								message: "{{ __('Message is required') }}"
 							}
 						}
 					}		 
@@ -150,10 +150,10 @@ var KTContactApply = function () {
 							submitButton.disabled = false;
 							
 							Swal.fire({
-								text: "Form has been successfully submitted!",
+								text: "{{ __('Form has been successfully submitted!') }}",
 								icon: "success",
 								buttonsStyling: false,
-								confirmButtonText: "Ok, got it!",
+								confirmButtonText: "{{ __('Ok, got it!') }}",
 								customClass: {
 									confirmButton: "btn btn-primary"
 								}
@@ -170,10 +170,10 @@ var KTContactApply = function () {
 
 						// Show error popuo. For more info check the plugin's official documentation: https://sweetalert2.github.io/
 						Swal.fire({
-							text: "Sorry, looks like there are some errors detected, please try again.",
+							text: "{{ __('Sorry, looks like there are some errors detected, please try again.') }}",
 							icon: "error",
 							buttonsStyling: false,
-							confirmButtonText: "Ok, got it!",
+							confirmButtonText: "{{ __('Ok, got it!') }}",
 							customClass: {
 								confirmButton: "btn btn-primary"
 							}
