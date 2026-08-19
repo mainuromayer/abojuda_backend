@@ -30,6 +30,38 @@ class PostController extends Controller
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->filterColumn('title', function($query, $keyword) {
+                    $query->where(function($q) use ($keyword) {
+                        $q->where('title->en', 'LIKE', "%{$keyword}%")
+                          ->orWhere('title->ar', 'LIKE', "%{$keyword}%")
+                          ->orWhere('business_name->en', 'LIKE', "%{$keyword}%")
+                          ->orWhere('business_name->ar', 'LIKE', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('user', function($query, $keyword) {
+                    $query->whereHas('user', function($q) use ($keyword) {
+                        $columns = \Illuminate\Support\Facades\Schema::getColumnListing('users');
+                        $q->where(function($inner) use ($columns, $keyword) {
+                            $first = true;
+                            if (in_array('name', $columns)) {
+                                $inner->where('name', 'LIKE', "%{$keyword}%");
+                                $first = false;
+                            }
+                            if (in_array('first_name', $columns)) {
+                                if ($first) { $inner->where('first_name', 'LIKE', "%{$keyword}%"); $first = false; }
+                                else { $inner->orWhere('first_name', 'LIKE', "%{$keyword}%"); }
+                            }
+                            if (in_array('last_name', $columns)) {
+                                if ($first) { $inner->where('last_name', 'LIKE', "%{$keyword}%"); $first = false; }
+                                else { $inner->orWhere('last_name', 'LIKE', "%{$keyword}%"); }
+                            }
+                            if (in_array('email', $columns)) {
+                                if ($first) { $inner->where('email', 'LIKE', "%{$keyword}%"); }
+                                else { $inner->orWhere('email', 'LIKE', "%{$keyword}%"); }
+                            }
+                        });
+                    });
+                })
                 ->setRowClass(function ($row) {
                     return $row->status === 'pending' ? 'bg-light-warning' : '';
                 })
@@ -322,6 +354,16 @@ class PostController extends Controller
             $post = Post::findOrFail($id);
             $reports = Report::where('post_id', $id)->with('user')->latest()->get();
 
+            // Translate reason and other_note for AJAX response
+            $locale = app()->getLocale();
+            $reportsData = $reports->map(function ($report) use ($locale) {
+                $data = $report->toArray();
+                $data['reason'] = $report->getTranslation('reason', $locale);
+                $data['other_note'] = $report->getTranslation('other_note', $locale);
+                $data['user'] = $report->user;
+                return $data;
+            });
+
             return response()->json([
                 'success' => true,
                 'post' => [
@@ -329,7 +371,7 @@ class PostController extends Controller
                     'title' => $post->title ?? $post->business_name ?? 'Untitled Listing',
                     'status' => $post->status,
                 ],
-                'reports' => $reports
+                'reports' => $reportsData
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);

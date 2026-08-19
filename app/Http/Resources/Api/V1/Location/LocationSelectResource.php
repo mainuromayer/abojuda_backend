@@ -9,10 +9,13 @@ class LocationSelectResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $locale = $request->header('Accept-Language', 'en');
+        $loc = \App\Helpers\translateHelper::translateLocation($this->province, $this->city, $locale);
+
         return [
             'user_id'          => $this->id,
-            'province'         => $this->province,
-            'city'             => $this->city,
+            'province'         => $loc['province'],
+            'city'             => $loc['city'],
             'latitude'         => $this->latitude,
             'longitude'        => $this->longitude,
             'role'             => $this->role,

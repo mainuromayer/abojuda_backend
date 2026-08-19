@@ -77,8 +77,8 @@ class UserRoleManagementController extends Controller
                             data-user="' . $data->id . '"
                             data-bs-toggle="tooltip"
                             data-bs-placement="top"
-                            title="Manage roles for ' . htmlspecialchars($data->email) . '">
-                        Manage Roles
+                            title="' . __('Manage roles for') . ' ' . htmlspecialchars($data->email) . '">
+                        ' . __('Manage Roles') . '
                     </button>
                 ';
                 })

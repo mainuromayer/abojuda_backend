@@ -16,10 +16,16 @@ class DynamicPageController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = DynamicPage::latest()->get();
+            $data = DynamicPage::latest();
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->filterColumn('title', function($query, $keyword) {
+                    $query->where(function($q) use ($keyword) {
+                        $q->where('title->en', 'LIKE', "%{$keyword}%")
+                          ->orWhere('title->ar', 'LIKE', "%{$keyword}%");
+                    });
+                })
                 ->addColumn('title', function ($row) {
                     return $row->title;
                 })
@@ -57,7 +63,7 @@ class DynamicPageController extends Controller
                             </div>
                         </div>';
                 })
-                ->rawColumns(['slug','actions'])
+                ->rawColumns(['title','slug','actions'])
                 ->make(true);
         }
         return view('backend.layout.dynamic_pages.index');

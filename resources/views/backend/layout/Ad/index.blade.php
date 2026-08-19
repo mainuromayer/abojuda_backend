@@ -191,8 +191,8 @@
                     $('#ad_video_preview').attr('src', '').addClass('d-none');
                     $('#ad_video_placeholder').removeClass('d-none');
 
-                    $('#ad_modal_title').text('Add New Ad');
-                    $('#ad_submit_btn').find('.indicator-label').text('Submit');
+                    $('#ad_modal_title').text("{{ __('Add New Ad') }}");
+                    $('#ad_submit_btn').find('.indicator-label').text("{{ __('Submit') }}");
                     $('#kt_modal_add_ad').modal('show');
                 });
 
@@ -234,12 +234,12 @@
                                 }
                             }
 
-                            $('#ad_modal_title').text('Edit Ad');
-                            $('#ad_submit_btn').find('.indicator-label').text('Save Changes');
+                            $('#ad_modal_title').text("{{ __('Edit Ad') }}");
+                            $('#ad_submit_btn').find('.indicator-label').text("{{ __('Save Changes') }}");
                             $('#kt_modal_add_ad').modal('show');
                         },
                         error: function(xhr) {
-                            toastr.error('Failed to fetch ad data.');
+                            toastr.error("{{ __('Failed to fetch ad data.') }}");
                         }
                     });
                 });
@@ -278,7 +278,7 @@
                                     toastr.error(val[0]);
                                 });
                             } else {
-                                toastr.error(xhr.responseJSON?.message || 'Failed to submit form.');
+                                toastr.error(xhr.responseJSON?.message || "{{ __('Failed to submit form.') }}");
                             }
                         },
                         complete: function() {

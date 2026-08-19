@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" direction="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" style="direction: {{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <!--begin::Head-->
 
 <!-- Added by HTTrack -->
@@ -56,7 +56,7 @@
 
 <!--begin::Body-->
 
-<body id="kt_body" class="auth-bg">
+<body id="kt_body" class="auth-bg" direction="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" style="direction: {{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
     <!--begin::Theme mode setup on page load-->
     <script>
         var defaultThemeMode = "light";

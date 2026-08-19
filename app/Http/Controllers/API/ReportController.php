@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\translateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Report\ReportPostRequest;
 use App\Http\Requests\Api\V1\Report\ReportUserRequest;
@@ -38,11 +39,14 @@ class ReportController extends Controller
                 'other_note' => $request->other_note,
             ]);
 
+            $lang = $request->header('Accept-Language', 'en');
+            $reasonEn = translateHelper::toEnglish($request->reason, $lang);
+
             // Create Admin System Notification
             SystemNotification::create([
                 'type' => 'report_user',
                 'title' => 'User Reported',
-                'content' => 'User "' . $user->name . '" reported user "' . $reportedUser->name . '". Reason: ' . $request->reason,
+                'content' => 'User "' . $user->name . '" reported user "' . $reportedUser->name . '". Reason: ' . $reasonEn,
                 'is_read' => false,
                 'target_url' => url('/admin/user?reported_user_id=' . $reportedUser->id),
             ]);
@@ -75,11 +79,14 @@ class ReportController extends Controller
                 'other_note' => $request->other_note,
             ]);
 
+            $lang = $request->header('Accept-Language', 'en');
+            $reasonEn = translateHelper::toEnglish($request->reason, $lang);
+
             // Create Admin System Notification
             SystemNotification::create([
                 'type' => 'report_post',
                 'title' => 'Post Reported',
-                'content' => 'User "' . $user->name . '" reported listing "' . ($post->title ?? $post->business_name) . '". Reason: ' . $request->reason,
+                'content' => 'User "' . $user->name . '" reported listing "' . ($post->title ?? $post->business_name) . '". Reason: ' . $reasonEn,
                 'is_read' => false,
                 'target_url' => url('/admin/posts?reported_post_id=' . $post->id),
             ]);

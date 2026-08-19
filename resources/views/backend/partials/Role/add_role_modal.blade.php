@@ -6,7 +6,7 @@
             <!--begin::Modal header-->
             <div class="modal-header" id="kt_modal_add_user_header">
                 <!--begin::Modal title-->
-                <h2 class="fw-bold">Add New Role</h2>
+                <h2 class="fw-bold">{{ __('Add New Role') }}</h2>
                 <!--end::Modal title-->
 
                 <!--begin::Close-->
@@ -35,9 +35,9 @@
                         <div class="d-flex flex-column flex-md-row gap-5 mb-6">
                             <!-- first name-->
                             <div class="fv-row flex-row-fluid">
-                                <label class="required form-label">Enter Role Name</label>
+                                <label class="required form-label">{{ __('Enter Role Name') }}</label>
                                 <input class="form-control form-control-solid" type="text" name="role"
-                                    placeholder="Enter Role Name" value="{{ old('role') }}">
+                                    placeholder="{{ __('Enter Role Name') }}" value="{{ old('role') }}">
                             </div>
                         </div>
 
@@ -46,7 +46,7 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-7 fv-plugins-icon-container">
                             <!--begin::Label-->
-                            <label class="required fw-semibold fs-6 mb-2">Select Permissions</label>
+                            <label class="required fw-semibold fs-6 mb-2">{{ __('Select Permissions') }}</label>
                             <!--end::Label-->
 
                             <div id="permissions-container"></div>
@@ -62,15 +62,15 @@
                     <!--begin::Actions-->
                     <div class="text-center pt-10">
                         <button type="reset" class="btn btn-light me-3" data-kt-users-modal-action="cancel">
-                            Discard
+                            {{ __('Discard') }}
                         </button>
 
                         <button type="submit" class="btn btn-primary" data-kt-users-modal-action="submit">
                             <span class="indicator-label">
-                                Submit
+                                {{ __('Submit') }}
                             </span>
                             <span class="indicator-progress">
-                                Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                {{ __('Please wait...') }} <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                             </span>
                         </button>
                     </div>
@@ -95,7 +95,7 @@
     <div class="modal-dialog modal-dialog-centered mw-650px">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="fw-bold">Edit Role</h2>
+                <h2 class="fw-bold">{{ __('Edit Role') }}</h2>
                 <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
                     <i class="ki-duotone ki-cross fs-1"></i>
                 </div>
@@ -106,21 +106,21 @@
                     <input type="hidden" name="role_id" id="edit_role_id">
 
                     <div class="mb-6">
-                        <label class="form-label">Role Name</label>
+                        <label class="form-label">{{ __('Role Name') }}</label>
                         <input type="text" class="form-control form-control-solid" name="role" id="edit_role_name"
-                            placeholder="Enter Role Name">
+                            placeholder="{{ __('Enter Role Name') }}">
                     </div>
 
                     <div class="mb-7">
-                        <label class="form-label">Permissions</label>
+                        <label class="form-label">{{ __('Permissions') }}</label>
                         <div id="edit-permissions-container"></div>
                     </div>
 
                     <div class="text-center pt-10">
-                        <button type="button" class="btn btn-light me-3" data-bs-dismiss="modal">Discard</button>
+                        <button type="button" class="btn btn-light me-3" data-bs-dismiss="modal">{{ __('Discard') }}</button>
                         <button type="submit" class="btn btn-primary">
-                            <span class="indicator-label">Update</span>
-                            <span class="indicator-progress">Please wait...
+                            <span class="indicator-label">{{ __('Update') }}</span>
+                            <span class="indicator-progress">{{ __('Please wait...') }}
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                             </span>
                         </button>

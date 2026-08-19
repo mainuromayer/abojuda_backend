@@ -23,6 +23,18 @@ class CategoryController extends Controller
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->filterColumn('name', function($query, $keyword) {
+                    $query->where(function($q) use ($keyword) {
+                        $q->where('name->en', 'LIKE', "%{$keyword}%")
+                          ->orWhere('name->ar', 'LIKE', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('description', function($query, $keyword) {
+                    $query->where(function($q) use ($keyword) {
+                        $q->where('shot_desc->en', 'LIKE', "%{$keyword}%")
+                          ->orWhere('shot_desc->ar', 'LIKE', "%{$keyword}%");
+                    });
+                })
                 ->addColumn('icon', function ($row) {
                     $iconUrl = $row->icon ? $this->getImageUrl($row->icon) : asset('backend/assets/media/svg/files/blank-image.svg');
                     return '<img src="' . $iconUrl . '" class="w-40px h-40px object-fit-cover rounded" alt="icon">';
@@ -115,10 +127,14 @@ class CategoryController extends Controller
     public function edit($id)
     {
         $category = Category::findOrFail($id);
-        $category->icon_url = $category->icon ? $this->getImageUrl($category->icon) : null;
-        $category->name = __($category->name);
-        $category->shot_desc = $category->shot_desc ? __($category->shot_desc) : null;
-        return response()->json(['category' => $category]);
+        $locale = app()->getLocale();
+
+        $data = $category->toArray();
+        $data['name'] = $category->getTranslation('name', $locale);
+        $data['shot_desc'] = $category->getTranslation('shot_desc', $locale) ?: '';
+        $data['icon_url'] = $category->icon ? $this->getImageUrl($category->icon) : null;
+
+        return response()->json(['category' => $data]);
     }
 
     /**

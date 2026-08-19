@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Events\MessageSent;
 use App\Events\MessagesRead;
 use App\Helpers\helpers;
+use App\Helpers\translateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Chat\GetMessagesRequest;
 use App\Http\Requests\Api\V1\Chat\MarkReadRequest;
@@ -29,10 +30,13 @@ class ChatController extends Controller
      */
     public function index(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('chat.unauthenticated', 'Unauthenticated user.', $lang);
+                return $this->sendError($message, [], 401);
             }
 
             $userId = $user->id;
@@ -68,9 +72,12 @@ class ChatController extends Controller
                                    ->orderBy('updated_at', 'desc')
                                    ->get();
 
-            return $this->sendResponse(ConversationResource::collection($conversations), 'Conversations retrieved successfully.');
+            $message = translateHelper::translateCached('chat.conversations.success', 'Conversations retrieved successfully.', $lang);
+
+            return $this->sendResponse(ConversationResource::collection($conversations), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve conversations.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('chat.conversations.failed', 'Failed to retrieve conversations.', $lang);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
@@ -79,10 +86,13 @@ class ChatController extends Controller
      */
     public function messages(GetMessagesRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('chat.unauthenticated', 'Unauthenticated user.', $lang);
+                return $this->sendError($message, [], 401);
             }
 
             $userId = $user->id;
@@ -90,18 +100,21 @@ class ChatController extends Controller
             $conversation = Conversation::find($conversationId);
 
             if (!$conversation) {
-                return $this->sendError('Conversation not found.', [], 404);
+                $message = translateHelper::translateCached('chat.conversation.not_found', 'Conversation not found.', $lang);
+                return $this->sendError($message, [], 404);
             }
 
             // Ensure the user belongs to this conversation
             if ($conversation->sender_id !== $userId && $conversation->receiver_id !== $userId) {
-                return $this->sendError('Unauthorized access to conversation.', [], 403);
+                $message = translateHelper::translateCached('chat.conversation.unauthorized', 'Unauthorized access to conversation.', $lang);
+                return $this->sendError($message, [], 403);
             }
 
             // Exclude if with blocked user
             $blockedUserIds = $user->getBlockedUserIds();
             if (in_array($conversation->sender_id, $blockedUserIds) || in_array($conversation->receiver_id, $blockedUserIds)) {
-                return $this->sendError('You cannot chat with this user.', [], 403);
+                $message = translateHelper::translateCached('chat.conversation.blocked', 'You cannot chat with this user.', $lang);
+                return $this->sendError($message, [], 403);
             }
 
             // Mark unread messages sent by the other user as read
@@ -118,9 +131,12 @@ class ChatController extends Controller
             // Get messages ordered by created_at asc
             $messages = $conversation->messages()->with(['sender', 'conversation.post'])->orderBy('created_at', 'asc')->get();
 
-            return $this->sendResponse(MessageResource::collection($messages), 'Messages retrieved successfully.');
+            $message = translateHelper::translateCached('chat.messages.success', 'Messages retrieved successfully.', $lang);
+
+            return $this->sendResponse(MessageResource::collection($messages), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve messages.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('chat.messages.failed', 'Failed to retrieve messages.', $lang);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
@@ -129,10 +145,13 @@ class ChatController extends Controller
      */
     public function sendMessage(SendMessageRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('chat.unauthenticated', 'Unauthenticated user.', $lang);
+                return $this->sendError($message, [], 401);
             }
 
             $senderId = $user->id;
@@ -141,13 +160,15 @@ class ChatController extends Controller
 
             // Cannot message yourself
             if ($senderId === $receiverId) {
-                return $this->sendError('You cannot message yourself.', [], 400);
+                $message = translateHelper::translateCached('chat.send.self', 'You cannot message yourself.', $lang);
+                return $this->sendError($message, [], 400);
             }
 
             // Verify not blocked
             $blockedUserIds = $user->getBlockedUserIds();
             if (in_array($receiverId, $blockedUserIds)) {
-                return $this->sendError('You cannot message this user.', [], 403);
+                $message = translateHelper::translateCached('chat.send.blocked', 'You cannot message this user.', $lang);
+                return $this->sendError($message, [], 403);
             }
 
             // Find or create conversation
@@ -179,30 +200,30 @@ class ChatController extends Controller
             }
 
             // Create message using Object instantiation & saving instead of create()
-            $message = new Message();
-            $message->conversation_id = $conversation->id;
-            $message->sender_id = $senderId;
-            $message->message = $request->input('message');
-            $message->attachment = $attachmentPath;
-            $message->is_read = false;
-            $message->save();
+            $newMessage = new Message();
+            $newMessage->conversation_id = $conversation->id;
+            $newMessage->sender_id = $senderId;
+            $newMessage->message = $request->input('message');
+            $newMessage->attachment = $attachmentPath;
+            $newMessage->is_read = false;
+            $newMessage->save();
 
             // Touch conversation to update its updated_at timestamp
             $conversation->touch();
 
             // Broadcast the message to other participants
-            $message->load(['sender', 'conversation.post']);
-            broadcast(new MessageSent($message))->toOthers();
+            $newMessage->load(['sender', 'conversation.post']);
+            broadcast(new MessageSent($newMessage))->toOthers();
 
             // Send Firebase push notification to the receiver
-            $receiverId = ($conversation->sender_id === $senderId) ? $conversation->receiver_id : $conversation->sender_id;
-            $receiver = User::find($receiverId);
+            $notifyReceiverId = ($conversation->sender_id === $senderId) ? $conversation->receiver_id : $conversation->sender_id;
+            $receiver = User::find($notifyReceiverId);
             if ($receiver) {
                 $tokens = $receiver->firebaseTokens()->where('is_active', true)->pluck('token')->toArray();
                 if (!empty($tokens)) {
                     $notificationData = [
                         'title' => $user->name ?? 'New Message',
-                        'message' => $message->message ?? 'Sent an attachment',
+                        'message' => $newMessage->message ?? 'Sent an attachment',
                         'data' => [
                             'type' => 'chat',
                             'conversation_id' => (string)$conversation->id,
@@ -215,9 +236,12 @@ class ChatController extends Controller
                 }
             }
 
-            return $this->sendResponse(new MessageResource($message), 'Message sent successfully.');
+            $message = translateHelper::translateCached('chat.send.success', 'Message sent successfully.', $lang);
+
+            return $this->sendResponse(new MessageResource($newMessage), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to send message.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('chat.send.failed', 'Failed to send message.', $lang);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
@@ -226,10 +250,13 @@ class ChatController extends Controller
      */
     public function markAsRead(MarkReadRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('chat.unauthenticated', 'Unauthenticated user.', $lang);
+                return $this->sendError($message, [], 401);
             }
 
             $userId = $user->id;
@@ -237,11 +264,13 @@ class ChatController extends Controller
             $conversation = Conversation::find($conversationId);
 
             if (!$conversation) {
-                return $this->sendError('Conversation not found.', [], 404);
+                $message = translateHelper::translateCached('chat.conversation.not_found', 'Conversation not found.', $lang);
+                return $this->sendError($message, [], 404);
             }
 
             if ($conversation->sender_id !== $userId && $conversation->receiver_id !== $userId) {
-                return $this->sendError('Unauthorized access to conversation.', [], 403);
+                $message = translateHelper::translateCached('chat.conversation.unauthorized', 'Unauthorized access to conversation.', $lang);
+                return $this->sendError($message, [], 403);
             }
 
             $unreadMessages = Message::where('conversation_id', $conversation->id)
@@ -257,9 +286,12 @@ class ChatController extends Controller
             // Broadcast that the messages were read
             broadcast(new MessagesRead($conversation->id, $userId))->toOthers();
 
-            return $this->sendResponse(null, 'Conversation marked as read.');
+            $message = translateHelper::translateCached('chat.read.success', 'Conversation marked as read.', $lang);
+
+            return $this->sendResponse(null, $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to mark conversation as read.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('chat.read.failed', 'Failed to mark conversation as read.', $lang);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 }

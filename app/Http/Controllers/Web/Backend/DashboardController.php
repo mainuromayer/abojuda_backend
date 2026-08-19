@@ -8,6 +8,8 @@ use App\Models\Post;
 use App\Models\User;
 use App\Models\Report;
 use App\Models\ContactSupport;
+use App\Models\Ad;
+use App\Models\DynamicPage;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -35,6 +37,7 @@ class DashboardController extends Controller
     public function globalSearch(Request $request)
     {
         $query = trim($request->input('query'));
+
         if (strlen($query) < 2) {
             return response()->json(['results' => []]);
         }
@@ -42,9 +45,12 @@ class DashboardController extends Controller
         $results = [];
 
         // Search Categories
-        $categories = Category::where('name', 'LIKE', "%{$query}%")
-            ->orWhere('shot_desc', 'LIKE', "%{$query}%")
-            ->take(5)->get();
+        $categories = Category::where(function($q) use ($query) {
+            $q->where('name->en', 'LIKE', "%{$query}%")
+              ->orWhere('name->ar', 'LIKE', "%{$query}%")
+              ->orWhere('shot_desc->en', 'LIKE', "%{$query}%")
+              ->orWhere('shot_desc->ar', 'LIKE', "%{$query}%");
+        })->take(5)->get();
 
         foreach ($categories as $cat) {
             $results[] = [
@@ -57,9 +63,12 @@ class DashboardController extends Controller
         }
 
         // Search Posts
-        $posts = Post::where('title', 'LIKE', "%{$query}%")
-            ->orWhere('description', 'LIKE', "%{$query}%")
-            ->take(5)->get();
+        $posts = Post::where(function($q) use ($query) {
+            $q->where('title->en', 'LIKE', "%{$query}%")
+              ->orWhere('title->ar', 'LIKE', "%{$query}%")
+              ->orWhere('description->en', 'LIKE', "%{$query}%")
+              ->orWhere('description->ar', 'LIKE', "%{$query}%");
+        })->take(5)->get();
 
         foreach ($posts as $post) {
             $results[] = [
@@ -71,16 +80,74 @@ class DashboardController extends Controller
             ];
         }
 
+        // Search Ads
+        $ads = Ad::where(function($q) use ($query) {
+            $q->where('title->en', 'LIKE', "%{$query}%")
+              ->orWhere('title->ar', 'LIKE', "%{$query}%");
+        })->take(5)->get();
+
+        foreach ($ads as $ad) {
+            $results[] = [
+                'type' => __('Ads'),
+                'title' => __($ad->title),
+                'url' => route('ad.index'),
+                'icon' => 'ki-badge',
+                'sub' => $ad->status ? __($ad->status) : ''
+            ];
+        }
+
+        // Search Dynamic Pages
+        $pages = DynamicPage::where(function($q) use ($query) {
+            $q->where('title->en', 'LIKE', "%{$query}%")
+              ->orWhere('title->ar', 'LIKE', "%{$query}%")
+              ->orWhere('content->en', 'LIKE', "%{$query}%")
+              ->orWhere('content->ar', 'LIKE', "%{$query}%");
+        })->take(5)->get();
+
+        foreach ($pages as $page) {
+            $results[] = [
+                'type' => __('Dynamic Pages'),
+                'title' => __($page->title),
+                'url' => route('dynamic-pages.index'),
+                'icon' => 'ki-document',
+                'sub' => $page->slug
+            ];
+        }
+
         // Search Users
-        $users = User::where('first_name', 'LIKE', "%{$query}%")
-            ->orWhere('last_name', 'LIKE', "%{$query}%")
-            ->orWhere('email', 'LIKE', "%{$query}%")
-            ->take(5)->get();
+        $usersQuery = User::query();
+        $usersQuery->where(function($q) use ($query) {
+            $columns = \Illuminate\Support\Facades\Schema::getColumnListing('users');
+            $first = true;
+            if (in_array('name', $columns)) {
+                $q->where('name', 'LIKE', "%{$query}%");
+                $first = false;
+            }
+            if (in_array('first_name', $columns)) {
+                if ($first) { $q->where('first_name', 'LIKE', "%{$query}%"); $first = false; }
+                else { $q->orWhere('first_name', 'LIKE', "%{$query}%"); }
+            }
+            if (in_array('last_name', $columns)) {
+                if ($first) { $q->where('last_name', 'LIKE', "%{$query}%"); $first = false; }
+                else { $q->orWhere('last_name', 'LIKE', "%{$query}%"); }
+            }
+            if (in_array('email', $columns)) {
+                if ($first) { $q->where('email', 'LIKE', "%{$query}%"); }
+                else { $q->orWhere('email', 'LIKE', "%{$query}%"); }
+            }
+        });
+        $users = $usersQuery->take(5)->get();
 
         foreach ($users as $user) {
+            $displayName = '';
+            if (isset($user->name)) {
+                $displayName = $user->name;
+            } elseif (isset($user->first_name) || isset($user->last_name)) {
+                $displayName = trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? ''));
+            }
             $results[] = [
                 'type' => __('Users'),
-                'title' => trim($user->first_name . ' ' . $user->last_name) ?: $user->email,
+                'title' => $displayName ?: $user->email,
                 'url' => route('user.show', $user->id),
                 'icon' => 'ki-profile-circle',
                 'sub' => $user->email

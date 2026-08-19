@@ -158,6 +158,13 @@ html[dir="rtl"] {
     text-align: right;
 }
 
+/* Increase table padding and column spacing for both LTR and RTL */
+table.table th,
+table.table td {
+    padding: 1.15rem 1rem !important; /* Increase spacing */
+    vertical-align: middle !important;
+}
+
 /* Text alignment & Table overrides for RTL */
 html[dir="rtl"] .text-end {
     text-align: left !important;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\translateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\DynamicPage\ShowRequest;
 use App\Http\Resources\Api\V1\DynamicPage\DynamicPageDetailsResource;
@@ -10,6 +11,8 @@ use App\Models\DynamicPage;
 use App\Traits\ApiResponse;
 use Exception;
 
+use Illuminate\Http\Request;
+
 class DynamicPageController extends Controller
 {
     use ApiResponse;
@@ -17,10 +20,20 @@ class DynamicPageController extends Controller
     /**
      * Get list of all dynamic pages.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             $pages = DynamicPage::select('id', 'title', 'slug')->get();
+
+            $lang = $request->header('Accept-Language', 'en');
+            if ($lang !== 'en') {
+                $pages->each(function ($page) use ($lang) {
+                    if (!empty($page->title)) {
+                        $page->title = translateHelper::translateCached("dynamic_page_title_{$page->slug}", $page->title, $lang);
+                    }
+                });
+            }
+
             return $this->sendResponse(DynamicPageResource::collection($pages), 'Pages retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('Failed to retrieve pages.', ['error' => $e->getMessage()], 500);
@@ -37,6 +50,13 @@ class DynamicPageController extends Controller
             if (!$page) {
                 return $this->sendError('Page not found.', [], 404);
             }
+
+            $lang = $request->header('Accept-Language', 'en');
+            if ($lang !== 'en') {
+                $page->title = translateHelper::translateCached("dynamic_page_title_{$page->slug}", $page->title, $lang);
+                $page->content = translateHelper::translateCached("dynamic_page_content_{$page->slug}", $page->content, $lang);
+            }
+
             return $this->sendResponse(new DynamicPageDetailsResource($page), 'Page details retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('Failed to retrieve page details.', ['error' => $e->getMessage()], 500);

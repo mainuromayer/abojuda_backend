@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\translateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Ad\GetAdsRequest;
 use App\Http\Resources\Api\V1\Ad\AdResource;
@@ -19,6 +20,8 @@ class AdController extends Controller
     public function index(GetAdsRequest $request)
     {
         try {
+            $locale = $request->header('Accept-Language', 'en');
+            
             $query = Ad::where('status', 'active');
 
             if ($request->filled('type')) {
@@ -27,13 +30,37 @@ class AdController extends Controller
 
             $ads = $query->latest()->get();
 
+            $lang = $locale;
+            if ($lang !== 'en') {
+                $ads->each(function ($ad) use ($lang) {
+                    if (!empty($ad->title)) {
+                        $ad->title = translateHelper::translateCached("ad_title_{$ad->id}", $ad->title, $lang);
+                    }
+                    if (!empty($ad->description)) {
+                        $ad->description = translateHelper::translateCached("ad_description_{$ad->id}", $ad->description, $lang);
+                    }
+                });
+            }
+
+            $message = translateHelper::translateCached(
+                'ad.index.success',
+                'Ads retrieved successfully.',
+                $locale
+            );
+
             return $this->sendResponse(
                 AdResource::collection($ads),
-                'Ads retrieved successfully.'
+                $message
             );
         } catch (Exception $e) {
-            return $this->sendError(
+            $message = translateHelper::translateCached(
+                'ad.index.failed',
                 'Failed to retrieve ads.',
+                $locale
+            );
+
+            return $this->sendError(
+                $message,
                 ['error' => $e->getMessage()],
                 500
             );

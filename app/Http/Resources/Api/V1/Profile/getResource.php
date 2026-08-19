@@ -17,13 +17,16 @@ class getResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $locale = $request->header('Accept-Language', 'en');
+        $loc = \App\Helpers\translateHelper::translateLocation($this->province, $this->city, $locale);
+
         return [
             'id'       => $this->id,
             'uuid'     => $this->uuid,
             'name'     => $this->name,
             'email'    => $this->email,
-            'province' => $this->province,
-            'city'     => $this->city,
+            'province' => $loc['province'],
+            'city'     => $loc['city'],
             'address'  => $this->address,
             'avatar'   => $this->getImageUrl($this->avatar),
             'role'     => $this->role,

@@ -17,9 +17,9 @@ class CategoriesResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => \App\Helpers\translateHelper::translateCached("category.name.{$this->id}", $this->name ?? '', \Illuminate\Support\Facades\App::getLocale()),
             'slug' => $this->slug,
-            'shot_desc' => $this->shot_desc,
+            'shot_desc' => \App\Helpers\translateHelper::translateCached("category.shot_desc.{$this->id}", $this->shot_desc ?? '', \Illuminate\Support\Facades\App::getLocale()),
             'icon' => $this->icon ? $this->getImageUrl($this->icon) : null,
         ];
     }   

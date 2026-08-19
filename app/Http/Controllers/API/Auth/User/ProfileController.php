@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Auth\User;
 
 use App\Enum\Role;
 use App\Helpers\helpers;
+use App\Helpers\translateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Profile\BlockUserRequest;
 use App\Http\Requests\Api\V1\Profile\ChangePasswordRequest;
@@ -31,11 +32,20 @@ class ProfileController extends Controller
     /**
      * Get user profile details
      */
-    public function index()
+    public function index(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $auth = auth('api')->user();
-            return $this->sendResponse(new getResource($auth), 'User profile retrieved successfully.');
+
+            $message = translateHelper::translateCached(
+                'profile.index.success',
+                'User profile retrieved successfully.',
+                $lang
+            );
+
+            return $this->sendResponse(new getResource($auth), $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -46,13 +56,20 @@ class ProfileController extends Controller
      */
     public function update(UpdateRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         $validated = $request->validated();
 
         try {
             $auth = auth('api')->user();
 
             if ($auth->role === Role::GUEST) {
-                return $this->sendError('Guest users cannot update their profile.', [], 403);
+                $message = translateHelper::translateCached(
+                    'profile.update.guest_forbidden',
+                    'Guest users cannot update their profile.',
+                    $lang
+                );
+                return $this->sendError($message, [], 403);
             }
 
             // Handle avatar upload (Base64 cropped or File upload)
@@ -101,7 +118,13 @@ class ProfileController extends Controller
             }
             $auth->save();
 
-            return $this->sendResponse(new UpdateResource($auth), 'User profile updated successfully.');
+            $message = translateHelper::translateCached(
+                'profile.update.success',
+                'User profile updated successfully.',
+                $lang
+            );
+
+            return $this->sendResponse(new UpdateResource($auth), $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -112,16 +135,29 @@ class ProfileController extends Controller
      */
     public function changePassword(ChangePasswordRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!Hash::check($request->current_password, $user->password)) {
-                return $this->sendError('Current password does not match.', [], 422);
+                $message = translateHelper::translateCached(
+                    'profile.password.mismatch',
+                    'Current password does not match.',
+                    $lang
+                );
+                return $this->sendError($message, [], 422);
             }
 
             $user->password = Hash::make($request->new_password);
             $user->save();
 
-            return $this->sendResponse([], 'Password changed successfully.');
+            $message = translateHelper::translateCached(
+                'profile.password.changed',
+                'Password changed successfully.',
+                $lang
+            );
+
+            return $this->sendResponse([], $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -132,12 +168,19 @@ class ProfileController extends Controller
      */
     public function blockUser(BlockUserRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
-            $targetUserId = (int)$request->input('user_id');
+            $targetUserId = (int) $request->input('user_id');
 
             if ($user->id === $targetUserId) {
-                return $this->sendError('You cannot block yourself.', [], 422);
+                $message = translateHelper::translateCached(
+                    'profile.block.self',
+                    'You cannot block yourself.',
+                    $lang
+                );
+                return $this->sendError($message, [], 422);
             }
 
             $blockedUsers = is_array($user->blocked_users) ? $user->blocked_users : [];
@@ -145,14 +188,19 @@ class ProfileController extends Controller
             // Check if already blocked
             $isAlreadyBlocked = false;
             foreach ($blockedUsers as $entry) {
-                if (isset($entry['user_id']) && (int)$entry['user_id'] === $targetUserId) {
+                if (isset($entry['user_id']) && (int) $entry['user_id'] === $targetUserId) {
                     $isAlreadyBlocked = true;
                     break;
                 }
             }
 
             if ($isAlreadyBlocked) {
-                return $this->sendResponse([], 'User is already blocked.');
+                $message = translateHelper::translateCached(
+                    'profile.block.already',
+                    'User is already blocked.',
+                    $lang
+                );
+                return $this->sendResponse([], $message);
             }
 
             $blockedUsers[] = [
@@ -163,7 +211,13 @@ class ProfileController extends Controller
             $user->blocked_users = $blockedUsers;
             $user->save();
 
-            return $this->sendResponse([], 'User blocked successfully.');
+            $message = translateHelper::translateCached(
+                'profile.block.success',
+                'User blocked successfully.',
+                $lang
+            );
+
+            return $this->sendResponse([], $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -172,14 +226,21 @@ class ProfileController extends Controller
     /**
      * Get list of blocked users
      */
-    public function blockedUsersList()
+    public function blockedUsersList(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             $blockedEntries = is_array($user->blocked_users) ? $user->blocked_users : [];
 
             if (empty($blockedEntries)) {
-                return $this->sendResponse([], 'No blocked users found.');
+                $message = translateHelper::translateCached(
+                    'profile.block.none_found',
+                    'No blocked users found.',
+                    $lang
+                );
+                return $this->sendResponse([], $message);
             }
 
             $blockedUserIds = array_column($blockedEntries, 'user_id');
@@ -195,7 +256,13 @@ class ProfileController extends Controller
                 }
             }
 
-            return $this->sendResponse(BlockedUserResource::collection($result), 'Blocked users retrieved successfully.');
+            $message = translateHelper::translateCached(
+                'profile.block.list_success',
+                'Blocked users retrieved successfully.',
+                $lang
+            );
+
+            return $this->sendResponse(BlockedUserResource::collection($result), $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -206,20 +273,28 @@ class ProfileController extends Controller
      */
     public function unblockUser(UnblockUserRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
-            $targetUserId = (int)$request->input('user_id');
+            $targetUserId = (int) $request->input('user_id');
 
             $blockedUsers = is_array($user->blocked_users) ? $user->blocked_users : [];
 
             $filtered = array_values(array_filter($blockedUsers, function ($entry) use ($targetUserId) {
-                return isset($entry['user_id']) && (int)$entry['user_id'] !== $targetUserId;
+                return isset($entry['user_id']) && (int) $entry['user_id'] !== $targetUserId;
             }));
 
             $user->blocked_users = $filtered;
             $user->save();
 
-            return $this->sendResponse([], 'User unblocked successfully.');
+            $message = translateHelper::translateCached(
+                'profile.unblock.success',
+                'User unblocked successfully.',
+                $lang
+            );
+
+            return $this->sendResponse([], $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -230,16 +305,29 @@ class ProfileController extends Controller
      */
     public function deleteAccount(DeleteAccountRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!Hash::check($request->password, $user->password)) {
-                return $this->sendError('Incorrect password.', [], 422);
+                $message = translateHelper::translateCached(
+                    'profile.delete.incorrect_password',
+                    'Incorrect password.',
+                    $lang
+                );
+                return $this->sendError($message, [], 422);
             }
 
             $user->status = 'pending_delete';
             $user->save();
 
-            return $this->sendResponse([], 'Your account deletion request has been submitted successfully and is pending admin approval.');
+            $message = translateHelper::translateCached(
+                'profile.delete.pending',
+                'Your account deletion request has been submitted successfully and is pending admin approval.',
+                $lang
+            );
+
+            return $this->sendResponse([], $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -248,16 +336,25 @@ class ProfileController extends Controller
     /**
      * Get notification settings
      */
-    public function getNotificationSettings()
+    public function getNotificationSettings(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
+
+            $message = translateHelper::translateCached(
+                'profile.notifications.get_success',
+                'Notification settings retrieved successfully.',
+                $lang
+            );
+
             return $this->sendResponse([
-                'all_notification'   => $user->new_message && $user->marketing && $user->email_notification,
-                'new_message'        => (bool)$user->new_message,
-                'marketing'          => (bool)$user->marketing,
-                'email_notification' => (bool)$user->email_notification,
-            ], 'Notification settings retrieved successfully.');
+                'all_notification' => $user->new_message && $user->marketing && $user->email_notification,
+                'new_message' => (bool) $user->new_message,
+                'marketing' => (bool) $user->marketing,
+                'email_notification' => (bool) $user->email_notification,
+            ], $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -268,6 +365,8 @@ class ProfileController extends Controller
      */
     public function updateNotificationSettings(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
 
@@ -290,12 +389,18 @@ class ProfileController extends Controller
 
             $user->save();
 
+            $message = translateHelper::translateCached(
+                'profile.notifications.update_success',
+                'Notification settings updated successfully.',
+                $lang
+            );
+
             return $this->sendResponse([
-                'all_notification'   => $user->new_message && $user->marketing && $user->email_notification,
-                'new_message'        => (bool)$user->new_message,
-                'marketing'          => (bool)$user->marketing,
-                'email_notification' => (bool)$user->email_notification,
-            ], 'Notification settings updated successfully.');
+                'all_notification' => $user->new_message && $user->marketing && $user->email_notification,
+                'new_message' => (bool) $user->new_message,
+                'marketing' => (bool) $user->marketing,
+                'email_notification' => (bool) $user->email_notification,
+            ], $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
@@ -304,13 +409,27 @@ class ProfileController extends Controller
     /**
      * Logout
      */
-    public function logout()
+    public function logout(Request $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
+
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
-            return $this->sendResponse([], 'Successfully logged out.');
+
+            $message = translateHelper::translateCached(
+                'profile.logout.success',
+                'Successfully logged out.',
+                $lang
+            );
+
+            return $this->sendResponse([], $message);
         } catch (JWTException $e) {
-            return $this->sendError('Failed to log out, please try again later', [], 500);
+            $message = translateHelper::translateCached(
+                'profile.logout.failed',
+                'Failed to log out, please try again later',
+                $lang
+            );
+            return $this->sendError($message, [], 500);
         }
     }
 
@@ -319,6 +438,7 @@ class ProfileController extends Controller
      */
     public function setLocale(SetLocaleRequest $request)
     {
+        $lang = $request->header('Accept-Language', 'en');
         $validated = $request->validated();
 
         try {
@@ -326,11 +446,103 @@ class ProfileController extends Controller
             $user->locale = $validated['locale'];
             $user->save();
 
+            \Illuminate\Support\Facades\Cache::forever('app.current_locale', $validated['locale']);
             helpers::updateEnv('APP_LOCALE', $validated['locale']);
 
-            return $this->sendResponse(new SetLocaleResource($user), 'Language preference updated successfully.');
+            $message = translateHelper::translateCached(
+                'profile.locale.success',
+                'Language preference updated successfully.',
+                $lang
+            );
+
+            return $this->sendResponse(new SetLocaleResource($user), $message);
         } catch (Exception $exception) {
             return $this->sendError($exception->getMessage(), [], 500);
         }
+    }
+
+    /**
+     * Set user locale preference (publicly accessible POST route)
+     */
+    public function getSetLocale(Request $request)
+    {
+        $lang = $request->input(
+            'lang',
+            $request->input(
+                'locale',
+                $request->query('lang')
+            )
+        );
+
+        if (!in_array($lang, ['en', 'ar'])) {
+            $lang = 'en';
+        }
+
+        try {
+            $user = auth('api')->user();
+            if (!$user && $request->has('guest_token')) {
+                try {
+                    $user = JWTAuth::setToken($request->guest_token)->authenticate();
+                } catch (Exception $e) {
+                }
+            }
+
+            if ($user) {
+                $user->locale = $lang;
+                $user->save();
+            }
+
+            \Illuminate\Support\Facades\Cache::forever('app.current_locale', $lang);
+            helpers::updateEnv('APP_LOCALE', $lang);
+            app()->setLocale($lang);
+
+            $message = translateHelper::translateCached(
+                'profile.locale.success',
+                'Language preference updated successfully.',
+                $lang
+            );
+
+            return $this->sendResponse(
+                $user ? new SetLocaleResource($user) : null,
+                $message
+            );
+        } catch (Exception $exception) {
+            return $this->sendError(
+                $exception->getMessage(),
+                [],
+                500
+            );
+        }
+    }
+
+    /**
+     * Get list of supported languages
+     */
+    public function languagesList(Request $request)
+    {
+        $lang = $request->header('Accept-Language', 'en');
+
+        $languages = [
+            [
+                'code' => 'en',
+                'name' => 'English',
+                'native_name' => 'English',
+                'direction' => 'ltr'
+            ],
+            [
+                'code' => 'ar',
+                'name' => 'Arabic',
+                'native_name' => 'العربية',
+                'direction' => 'rtl'
+            ]
+        ];
+
+        $message = translateHelper::translateCached(
+            'profile.languages.retrieved',
+            'Languages retrieved successfully.',
+            $lang
+        );
+
+        return $this->sendResponse($languages, $message);
     }
 }

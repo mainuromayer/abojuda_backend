@@ -130,38 +130,107 @@ class helpers
             return '';
         }
 
+        // If the text contains HTML tags, use the HTML-aware translator
+        if (str_contains($text, '<')) {
+            return self::translateHtml($text, $targetLocale);
+        }
+
+        return self::translateRawText($text, $targetLocale);
+    }
+
+    /**
+     * Internal raw text translator (no HTML check, safe from recursion)
+     */
+    public static function translateRawText(string $text, string $targetLocale): string
+    {
+        $text = trim($text);
+        if ($text === '') {
+            return '';
+        }
+
         $cacheKey = 'auto_trans_' . $targetLocale . '_' . md5($text);
 
-        return \Illuminate\Support\Facades\Cache::rememberForever($cacheKey, function () use ($text, $targetLocale) {
-            try {
-                $client = new \GuzzleHttp\Client();
-                $response = $client->get('https://translate.googleapis.com/translate_a/single', [
-                    'query' => [
-                        'client' => 'gtx',
-                        'sl' => 'auto',
-                        'tl' => $targetLocale,
-                        'dt' => 't',
-                        'q' => $text,
-                    ],
-                    'timeout' => 5.0,
-                ]);
+        if (\Illuminate\Support\Facades\Cache::has($cacheKey)) {
+            return \Illuminate\Support\Facades\Cache::get($cacheKey);
+        }
 
-                $data = json_decode($response->getBody(), true);
-                if (is_array($data) && isset($data[0])) {
-                    $translated = '';
-                    foreach ($data[0] as $part) {
-                        if (isset($part[0])) {
-                            $translated .= $part[0];
-                        }
+        try {
+            $client = new \GuzzleHttp\Client();
+            $response = $client->get('https://translate.googleapis.com/translate_a/single', [
+                'query' => [
+                    'client' => 'gtx',
+                    'sl' => 'auto',
+                    'tl' => $targetLocale,
+                    'dt' => 't',
+                    'q' => $text,
+                ],
+                'timeout' => 5.0,
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            if (is_array($data) && isset($data[0])) {
+                $translated = '';
+                foreach ($data[0] as $part) {
+                    if (isset($part[0])) {
+                        $translated .= $part[0];
                     }
-                    return $translated ?: $text;
                 }
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::warning('Auto translation failed for: ' . $text . ' | Error: ' . $e->getMessage());
+                $finalText = $translated ?: $text;
+                \Illuminate\Support\Facades\Cache::forever($cacheKey, $finalText);
+                return $finalText;
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Auto translation failed for: ' . $text . ' | Error: ' . $e->getMessage());
+        }
+
+        return $text;
+    }
+
+    /**
+     * Translate HTML content while preserving tags and structure
+     */
+    public static function translateHtml(string $html, string $targetLocale): string
+    {
+        if (empty($html)) {
+            return '';
+        }
+
+        // Split by block tags to get paragraphs/blocks
+        $parts = preg_split('/(<\/p>|<\/div>|<\/li>|<br\s*\/?>|<\/h[1-6]>)/i', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $translatedParts = [];
+
+        foreach ($parts as $part) {
+            if (empty($part)) {
+                $translatedParts[] = '';
+                continue;
             }
 
-            return $text;
-        });
+            // If it is just a delimiter/closing tag, don't translate it
+            if (preg_match('/^(<\/p>|<\/div>|<\/li>|<br\s*\/?>|<\/h[1-6]>)$/i', $part)) {
+                $translatedParts[] = $part;
+                continue;
+            }
+
+            // Decode HTML entities to check if it contains actual letters/content
+            $textDecoded = html_entity_decode(strip_tags($part), ENT_QUOTES, 'UTF-8');
+            if (!preg_match('/\p{L}/u', $textDecoded)) {
+                // No letters found, keep original block
+                $translatedParts[] = $part;
+            } else {
+                // Clean up bloated style attributes to prevent URL length limits if the part is too long
+                $cleanedPart = $part;
+                if (strlen($part) > 1000) {
+                    $cleanedPart = preg_replace('/style="[^"]*"/i', '', $part);
+                    $cleanedPart = preg_replace('/class="[^"]*"/i', '', $cleanedPart);
+                }
+                
+                // Translate the paragraph block using translateRawText (avoids infinite recursion)
+                $translatedText = self::translateRawText($cleanedPart, $targetLocale);
+                $translatedParts[] = $translatedText;
+            }
+        }
+
+        return implode('', $translatedParts);
     }
 
     /**

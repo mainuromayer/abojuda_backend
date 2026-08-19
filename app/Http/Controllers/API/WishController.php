@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\translateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Wish\StoreRequest;
 use App\Http\Requests\Api\V1\Wish\IndexRequest;
@@ -43,6 +44,18 @@ class WishController extends Controller
 
             $posts = $postsQuery->get();
 
+            $lang = $request->header('Accept-Language', 'en');
+            if ($lang !== 'en') {
+                $posts->each(function ($post) use ($lang) {
+                    if (!empty($post->title)) {
+                        $post->title = translateHelper::translateCached("post_title_{$post->id}", $post->title, $lang);
+                    }
+                    if (!empty($post->business_name)) {
+                        $post->business_name = translateHelper::translateCached("post_business_name_{$post->id}", $post->business_name, $lang);
+                    }
+                });
+            }
+
             return $this->sendResponse(PostCardResource::collection($posts), 'Wishlist retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('Failed to retrieve wishlist.', ['error' => $e->getMessage()], 500);
@@ -62,18 +75,15 @@ class WishController extends Controller
 
             $postId = $request->input('post_id');
 
-            // Find existing wish
             $wish = Wish::where('user_id', $user->id)
                 ->where('post_id', $postId)
                 ->first();
 
             if ($wish) {
-                // If it exists, remove it
                 $wish->delete();
                 return $this->sendResponse(null, 'Post removed from wishlist successfully.');
             }
 
-            // If it doesn't exist, instantiate new Wish object and save it
             $wish = new Wish();
             $wish->user_id = $user->id;
             $wish->post_id = $postId;

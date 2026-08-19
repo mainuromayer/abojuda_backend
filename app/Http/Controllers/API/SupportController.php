@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Helpers\helpers;
+use App\Helpers\translateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Support\ContactSupportRequest;
 use App\Mail\SupportRequestMail;
@@ -34,11 +35,15 @@ class SupportController extends Controller
                 'attachment' => $attachmentPath,
             ]);
 
+            $lang = $request->header('Accept-Language', 'en');
+            $subjectEn = translateHelper::toEnglish($request->subject, $lang);
+            $issueEn = translateHelper::toEnglish($request->describe_issue, $lang);
+
             // Create Admin System Notification
             SystemNotification::create([
                 'type' => 'contact_support',
                 'title' => 'New Support Request',
-                'content' => 'Support request from ' . $request->email . '. Issue: ' . Str::limit($request->describe_issue, 100),
+                'content' => 'Support request from ' . $request->email . '. Issue: ' . Str::limit($issueEn, 100),
                 'is_read' => false,
             ]);
 
@@ -51,8 +56,8 @@ class SupportController extends Controller
             foreach ($adminEmails as $adminEmail) {
                 Mail::to($adminEmail)->send(new SupportRequestMail(
                     $request->email,
-                    $request->subject,
-                    $request->describe_issue,
+                    $subjectEn,
+                    $issueEn,
                     $attachmentPath
                 ));
             }

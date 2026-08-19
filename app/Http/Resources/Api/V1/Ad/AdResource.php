@@ -14,7 +14,7 @@ class AdResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'title' => \App\Helpers\translateHelper::translateCached("ad.title.{$this->id}", $this->title ?? '', \Illuminate\Support\Facades\App::getLocale()),
             'media' => $this->getMediaUrl($this->media),
             'media_type' => $this->media_type,
             'back_link' => $this->back_link,

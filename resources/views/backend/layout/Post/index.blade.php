@@ -253,8 +253,8 @@ $(document).ready(function () {
 
     // Function to load and show post reports
     function loadPostReports(postId, postTitle) {
-        $('#reported_post_title').text('Reports Against ' + postTitle);
-        $('#post_reports_table_body').html('<tr><td colspan="7" class="text-center text-muted py-5">Loading reports...</td></tr>');
+        $('#reported_post_title').text("{{ __('Reports Against') }} " + postTitle);
+        $('#post_reports_table_body').html('<tr><td colspan="7" class="text-center text-muted py-5">' + "{{ __('Loading reports...') }}" + '</td></tr>');
         $('#reject_reported_post_btn').hide().attr('data-post-id', postId);
         $('#mark_all_post_reports_read_btn').hide();
         $('#delete_selected_post_reports_btn').hide();
@@ -266,7 +266,7 @@ $(document).ready(function () {
             type: 'GET',
             success: function (res) {
                 if (res.success && res.reports.length > 0) {
-                    $('#reported_post_title').text('Reports Against: ' + res.post.title + ' (' + res.post.status + ')');
+                    $('#reported_post_title').text("{{ __('Reports Against') }}: " + res.post.title + ' (' + res.post.status + ')');
                     if (res.post.status !== 'rejected') {
                         $('#reject_reported_post_btn').show();
                     }
@@ -514,7 +514,7 @@ $(document).ready(function () {
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="fw-bold" id="reported_post_title">Reports Against Post</h2>
+                    <h2 class="fw-bold" id="reported_post_title">{{ __('Reports Against Post') }}</h2>
                     <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
                         <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
                     </div>
@@ -529,12 +529,12 @@ $(document).ready(function () {
                                             <input class="form-check-input" type="checkbox" id="select_all_post_reports">
                                         </div>
                                     </th>
-                                    <th>Reporter</th>
-                                    <th>Reporter Email</th>
-                                    <th>Reason</th>
-                                    <th>Additional Note</th>
-                                    <th>Date</th>
-                                    <th class="text-end">Action</th>
+                                    <th>{{ __('Reporter') }}</th>
+                                    <th>{{ __('Reporter Email') }}</th>
+                                    <th>{{ __('Reason') }}</th>
+                                    <th>{{ __('Additional Note') }}</th>
+                                    <th>{{ __('Date') }}</th>
+                                    <th class="text-end">{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="post_reports_table_body" class="text-gray-600 fw-semibold">
@@ -545,15 +545,15 @@ $(document).ready(function () {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light-success btn-sm me-auto" id="mark_all_post_reports_read_btn" style="display: none;">
-                        <i class="ki-duotone ki-double-check fs-4"><span class="path1"></span><span class="path2"></span></i> Mark all as read
+                        <i class="ki-duotone ki-double-check fs-4"><span class="path1"></span><span class="path2"></span></i> {{ __('Mark all as read') }}
                     </button>
                     <button type="button" class="btn btn-danger btn-sm" id="delete_selected_post_reports_btn" style="display: none;">
-                        <i class="ki-duotone ki-trash fs-4"><span class="path1"></span><span class="path2"></span></i> Delete Selected
+                        <i class="ki-duotone ki-trash fs-4"><span class="path1"></span><span class="path2"></span></i> {{ __('Delete Selected') }}
                     </button>
                     <button type="button" class="btn btn-danger btn-sm" id="reject_reported_post_btn" style="display: none;">
-                        <i class="ki-duotone ki-cross-circle fs-4"><span class="path1"></span><span class="path2"></span></i> Reject Post
+                        <i class="ki-duotone ki-cross-circle fs-4"><span class="path1"></span><span class="path2"></span></i> {{ __('Reject Post') }}
                     </button>
-                    <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">{{ __('Close') }}</button>
                 </div>
             </div>
         </div>

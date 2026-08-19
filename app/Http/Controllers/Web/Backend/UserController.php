@@ -39,19 +39,21 @@ class UserController extends Controller
  
                     $statusBadge = '';
                     if ($row->status === 'pending_delete') {
-                        $statusBadge = ' <span class="badge badge-light-danger text-uppercase fs-9">Delete Requested</span>';
+                        $label = app()->getLocale() === 'ar' ? 'طلب الحذف' : 'Delete Requested';
+                        $statusBadge = ' <span class="badge badge-light-danger text-uppercase fs-9">' . $label . '</span>';
                     } elseif ($row->status === 'suspended') {
-                        $statusBadge = ' <span class="badge badge-light-warning text-uppercase fs-9">Suspended</span>';
+                        $label = app()->getLocale() === 'ar' ? 'معلق' : 'Suspended';
+                        $statusBadge = ' <span class="badge badge-light-warning text-uppercase fs-9">' . $label . '</span>';
                     }
  
                     return '
                     <div class="d-flex align-items-center">
-                        <div class="symbol symbol-circle symbol-50px overflow-hidden me-3">
+                        <div class="symbol symbol-circle symbol-50px overflow-hidden me-3 ms-3">
                             <img src="' . $avatarUrl . '" class="w-100" alt="' . $fullName . '">
                         </div>
-                        <div class="d-flex flex-column">
-                            <span class="text-gray-800 mb-1">' . $fullName . $statusBadge . '</span>
-                            <span>' . $row->email . '</span>
+                        <div class="d-flex flex-column align-items-start">
+                            <span class="text-gray-800 text-hover-primary mb-1 fs-6 fw-bold">' . $fullName . $statusBadge . '</span>
+                            <span class="text-muted fs-7">' . $row->email . '</span>
                         </div>
                     </div>';
                 })
@@ -198,11 +200,15 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        if ($user)
-        {
-            $user->avatar = $user->avatar ? Helpers::generateTempURL($user->avatar,config('app.file_system')) : null; ;
-        }
-        return response()->json(['user' => $user]);
+        $locale = app()->getLocale();
+
+        $data = $user->toArray();
+        $data['province'] = $user->getTranslation('province', $locale) ?: '';
+        $data['city'] = $user->getTranslation('city', $locale) ?: '';
+        $data['address'] = $user->getTranslation('address', $locale) ?: '';
+        $data['avatar'] = $user->avatar ? Helpers::generateTempURL($user->avatar, config('app.file_system')) : null;
+
+        return response()->json(['user' => $data]);
     }
 
 
@@ -335,6 +341,16 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $reports = Report::where('reported_user_id', $id)->with('user')->latest()->get();
 
+            // Translate reason and other_note for AJAX response
+            $locale = app()->getLocale();
+            $reportsData = $reports->map(function ($report) use ($locale) {
+                $data = $report->toArray();
+                $data['reason'] = $report->getTranslation('reason', $locale);
+                $data['other_note'] = $report->getTranslation('other_note', $locale);
+                $data['user'] = $report->user;
+                return $data;
+            });
+
             // Mark matching notifications as read
             SystemNotification::where('is_read', false)
                 ->where('target_url', url('/admin/user'))
@@ -343,7 +359,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'user' => $user,
-                'reports' => $reports
+                'reports' => $reportsData
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);

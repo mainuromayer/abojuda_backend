@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Enum\Role;
 use App\Helpers\helpers;
+use App\Helpers\translateHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Post\AuthPostIndexRequest;
 use App\Http\Requests\Api\V1\Post\CreateRequest;
@@ -43,6 +44,8 @@ class PostController extends Controller
 
     public function index(IndexRequest $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $query = Post::where('status', 'active')->with('category');
             $this->applyFilters($query, $request);
@@ -65,14 +68,19 @@ class PostController extends Controller
 
             $posts = $query->paginate($request->input('per_page', 10));
 
-            return $this->sendResponse(PostCardResource::collection($posts), 'Posts retrieved successfully.', 200, null, $posts);
+            $message = translateHelper::translateCached('post.index.success', 'Posts retrieved successfully.', $locale);
+
+            return $this->sendResponse(PostCardResource::collection($posts), $message, 200, null, $posts);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve posts.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.index.failed', 'Failed to retrieve posts.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
     public function show(ShowRequest $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $query = Post::where('id', $request->post_id)->where('status', 'active');
 
@@ -86,19 +94,25 @@ class PostController extends Controller
 
             $post = $query->with(['category', 'businessHours'])->first();
             if (!$post) {
-                return $this->sendError('Post not found.', [], 404);
+                $message = translateHelper::translateCached('post.show.not_found', 'Post not found.', $locale);
+                return $this->sendError($message, [], 404);
             }
 
             $post->increment('views');
 
-            return $this->sendResponse(new PostResource($post), 'Post retrieved successfully.');
+            $message = translateHelper::translateCached('post.show.success', 'Post retrieved successfully.', $locale);
+
+            return $this->sendResponse(new PostResource($post), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve post.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.show.failed', 'Failed to retrieve post.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
     public function related(RelatedPostsRequest $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $currentPostId = $request->current_post_id;
             $currentPost = Post::findOrFail($currentPostId);
@@ -118,28 +132,38 @@ class PostController extends Controller
 
             $posts = $query->latest()->take(10)->get();
 
-            return $this->sendResponse(PostCardResource::collection($posts), 'Related posts retrieved successfully.');
+            $message = translateHelper::translateCached('post.related.success', 'Related posts retrieved successfully.', $locale);
+
+            return $this->sendResponse(PostCardResource::collection($posts), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve related posts.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.related.failed', 'Failed to retrieve related posts.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
     public function recent(IndexRequest $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $query = Post::where('status', 'active')->with('category');
             $this->applyFilters($query, $request);
 
             $posts = $query->orderBy('updated_at', 'desc')->take(10)->get();
 
-            return $this->sendResponse(PostCardResource::collection($posts), 'Recent posts retrieved successfully.');
+            $message = translateHelper::translateCached('post.recent.success', 'Recent posts retrieved successfully.', $locale);
+
+            return $this->sendResponse(PostCardResource::collection($posts), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve posts.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.recent.failed', 'Failed to retrieve posts.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
     public function featured(IndexRequest $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $query = Post::where('status', 'active')->where('is_featured', true)->with('category');
             $this->applyFilters($query, $request);
@@ -150,18 +174,24 @@ class PostController extends Controller
 
             $posts = $query->paginate($request->input('per_page', 10));
 
-            return $this->sendResponse(PostCardResource::collection($posts), 'Posts retrieved successfully.', 200, null, $posts);
+            $message = translateHelper::translateCached('post.featured.success', 'Posts retrieved successfully.', $locale);
+
+            return $this->sendResponse(PostCardResource::collection($posts), $message, 200, null, $posts);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve posts.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.featured.failed', 'Failed to retrieve posts.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
     public function userPosts(AuthPostIndexRequest $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('post.unauthenticated', 'Unauthenticated user.', $locale);
+                return $this->sendError($message, [], 401);
             }
 
             $query = Post::where('user_id', $user->id);
@@ -181,30 +211,37 @@ class PostController extends Controller
             $totalWish = (int) Wish::whereIn('post_id', Post::where('user_id', $user->id)->select('id'))->count();
             $totalMessage = 0; // Default to 0 since no chat/message tables exist yet
 
+            $message = translateHelper::translateCached('post.user_posts.success', 'User posts retrieved successfully.', $locale);
+
             return $this->sendResponse([
                 'total_post' => $totalPost,
                 'total_view' => $totalView,
                 'total_wish' => $totalWish,
                 'total_message' => $totalMessage,
                 'posts' => AuthPostResource::collection($posts),
-            ], 'User posts retrieved successfully.', 200, null, $posts);
+            ], $message, 200, null, $posts);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve user posts.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.user_posts.failed', 'Failed to retrieve user posts.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
     public function deletePost(DeletePostRequest $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('post.unauthenticated', 'Unauthenticated user.', $locale);
+                return $this->sendError($message, [], 401);
             }
 
             $post = Post::where('id', $request->post_id)->where('user_id', $user->id)->first();
 
             if (!$post) {
-                return $this->sendError('Post not found or unauthorized.', [], 404);
+                $message = translateHelper::translateCached('post.delete.not_found', 'Post not found or unauthorized.', $locale);
+                return $this->sendError($message, [], 404);
             }
 
             if ($post->thumbnail) {
@@ -221,9 +258,12 @@ class PostController extends Controller
 
             $post->delete();
 
-            return $this->sendResponse([], 'Post deleted successfully.');
+            $message = translateHelper::translateCached('post.delete.success', 'Post deleted successfully.', $locale);
+
+            return $this->sendResponse([], $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to delete post.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.delete.failed', 'Failed to delete post.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
@@ -298,26 +338,36 @@ class PostController extends Controller
     }
 
 
-    public function categories()
+    public function categories(Request $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $categories = Category::where('status', 'active')->get();
-            return $this->sendResponse(CategoriesResource::collection($categories), 'Categories retrieved successfully.');
+
+            $message = translateHelper::translateCached('post.categories.success', 'Categories retrieved successfully.', $locale);
+
+            return $this->sendResponse(CategoriesResource::collection($categories), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve categories.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.categories.failed', 'Failed to retrieve categories.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
     public function saveDraft(SaveDraftRequest $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('post.unauthenticated', 'Unauthenticated user.', $locale);
+                return $this->sendError($message, [], 401);
             }
 
             if ($user->role === Role::GUEST) {
-                return $this->sendError('Guest users cannot save drafts or create posts.', [], 403);
+                $message = translateHelper::translateCached('post.draft.guest_forbidden', 'Guest users cannot save drafts or create posts.', $locale);
+                return $this->sendError($message, [], 403);
             }
 
             $existingDraftId = Cache::get('user_latest_draft_' . $user->id);
@@ -429,7 +479,9 @@ class PostController extends Controller
 
                     Cache::put($draftKey, $draftData, now()->addDays(7));
 
-                    return $this->sendResponse($this->resolvePhotosForResponse($draftData), 'Draft updated successfully.');
+                    $message = translateHelper::translateCached('post.draft.update_success', 'Draft updated successfully.', $locale);
+
+                    return $this->sendResponse($this->resolvePhotosForResponse($draftData), $message);
                 }
             }
 
@@ -539,66 +591,85 @@ class PostController extends Controller
             Cache::put('post_draft_' . $draftId, $draftData, now()->addDays(7));
             Cache::put('user_latest_draft_' . $user->id, $draftId, now()->addDays(7));
 
-            return $this->sendResponse($this->resolvePhotosForResponse($draftData), 'Draft created successfully.');
+            $message = translateHelper::translateCached('post.draft.create_success', 'Draft created successfully.', $locale);
+
+            return $this->sendResponse($this->resolvePhotosForResponse($draftData), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to save draft.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.draft.save_failed', 'Failed to save draft.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
-    public function getDraft()
+    public function getDraft(Request $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('post.unauthenticated', 'Unauthenticated user.', $locale);
+                return $this->sendError($message, [], 401);
             }
 
             $existingDraftId = Cache::get('user_latest_draft_' . $user->id);
             if (!$existingDraftId) {
-                return $this->sendError('No draft found.', [], 404);
+                $message = translateHelper::translateCached('post.draft.none_found', 'No draft found.', $locale);
+                return $this->sendError($message, [], 404);
             }
 
             $draftData = Cache::get('post_draft_' . $existingDraftId);
             if (!$draftData) {
-                return $this->sendError('Draft not found.', [], 404);
+                $message = translateHelper::translateCached('post.draft.data_not_found', 'Draft not found.', $locale);
+                return $this->sendError($message, [], 404);
             }
 
-            return $this->sendResponse($this->resolvePhotosForResponse($draftData), 'Draft retrieved successfully.');
+            $message = translateHelper::translateCached('post.draft.get_success', 'Draft retrieved successfully.', $locale);
+
+            return $this->sendResponse($this->resolvePhotosForResponse($draftData), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to retrieve draft.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.draft.get_failed', 'Failed to retrieve draft.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
-    public function store()
+    public function store(Request $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('post.unauthenticated', 'Unauthenticated user.', $locale);
+                return $this->sendError($message, [], 401);
             }
 
             if ($user->role === Role::GUEST) {
-                return $this->sendError('Guest users cannot create posts.', [], 403);
+                $message = translateHelper::translateCached('post.store.guest_forbidden', 'Guest users cannot create posts.', $locale);
+                return $this->sendError($message, [], 403);
             }
 
             $draftId = Cache::get('user_latest_draft_' . $user->id);
             if (!$draftId) {
-                return $this->sendError('No draft found to publish.', [], 404);
+                $message = translateHelper::translateCached('post.store.no_draft', 'No draft found to publish.', $locale);
+                return $this->sendError($message, [], 404);
             }
 
             $draftKey = 'post_draft_' . $draftId;
             $draftData = Cache::get($draftKey);
             if (!$draftData) {
-                return $this->sendError('Draft data not found.', [], 404);
+                $message = translateHelper::translateCached('post.store.draft_data_not_found', 'Draft data not found.', $locale);
+                return $this->sendError($message, [], 404);
             }
 
             if ($draftData['user_id'] !== $user->id) {
-                return $this->sendError('Unauthorized.', [], 403);
+                $message = translateHelper::translateCached('post.store.unauthorized', 'Unauthorized.', $locale);
+                return $this->sendError($message, [], 403);
             }
 
             $categoryId = $draftData['category_id'] ?? null;
             if (!$categoryId) {
-                return $this->sendError('Missing required category_id in draft.', [], 422);
+                $message = translateHelper::translateCached('post.store.missing_category', 'Missing required category_id in draft.', $locale);
+                return $this->sendError($message, [], 422);
             }
 
             $uploadedPhotos = $draftData['photos'] ?? [];
@@ -676,9 +747,12 @@ class PostController extends Controller
             Cache::forget($draftKey);
             Cache::forget('user_latest_draft_' . $user->id);
 
-            return $this->sendResponse(new PostResource($post->load(['category', 'businessHours'])), 'Listing created successfully.');
+            $message = translateHelper::translateCached('post.store.success', 'Listing created successfully.', $locale);
+
+            return $this->sendResponse(new PostResource($post->load(['category', 'businessHours'])), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to create listing.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.store.failed', 'Failed to create listing.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 
@@ -715,14 +789,14 @@ class PostController extends Controller
         $businessName = $draftData['business_name'] ?? null;
         $condition = $draftData['condition'] ?? null;
         $jobType = $draftData['job_type'] ?? null;
-                $serviceArea = $draftData['service_area'] ?? null;
+        $serviceArea = $draftData['service_area'] ?? null;
         $province = $draftData['province'] ?? null;
         $city = $draftData['city'] ?? null;
         $address = $draftData['address'] ?? null;
         $businessCategory = $draftData['business_category'] ?? null;
         $businessHours = $draftData['business_hours'] ?? null;
 
-        if (app()->getLocale() === 'ar') {
+        if (request()->header('Accept-Language', 'en') === 'ar') {
             $title = helpers::translateText($title, 'ar');
             $description = helpers::translateText($description, 'ar');
             $companyName = helpers::translateText($companyName, 'ar');
@@ -873,15 +947,19 @@ class PostController extends Controller
 
     public function update(UpdatePostRequest $request)
     {
+        $locale = $request->header('Accept-Language', 'en');
+
         try {
             $user = auth('api')->user();
             if (!$user) {
-                return $this->sendError('Unauthenticated user.', [], 401);
+                $message = translateHelper::translateCached('post.unauthenticated', 'Unauthenticated user.', $locale);
+                return $this->sendError($message, [], 401);
             }
 
             $post = Post::where('id', $request->post_id)->where('user_id', $user->id)->first();
             if (!$post) {
-                return $this->sendError('Post not found or unauthorized.', [], 404);
+                $message = translateHelper::translateCached('post.update.not_found', 'Post not found or unauthorized.', $locale);
+                return $this->sendError($message, [], 404);
             }
 
             // Handle Category resolution
@@ -1072,9 +1150,12 @@ class PostController extends Controller
                 }
             }
 
-            return $this->sendResponse(new PostResource($post->load(['category', 'businessHours'])), 'Post updated successfully.');
+            $message = translateHelper::translateCached('post.update.success', 'Post updated successfully.', $locale);
+
+            return $this->sendResponse(new PostResource($post->load(['category', 'businessHours'])), $message);
         } catch (Exception $e) {
-            return $this->sendError('Failed to update post.', ['error' => $e->getMessage()], 500);
+            $message = translateHelper::translateCached('post.update.failed', 'Failed to update post.', $locale);
+            return $this->sendError($message, ['error' => $e->getMessage()], 500);
         }
     }
 

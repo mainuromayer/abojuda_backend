@@ -408,8 +408,8 @@
 
                 // Function to load and show reports
                 function loadUserReports(userId, userName) {
-                    $('#reported_user_title').text('Reports Against ' + userName);
-                    $('#user_reports_table_body').html('<tr><td colspan="7" class="text-center text-muted py-5">Loading reports...</td></tr>');
+                    $('#reported_user_title').text("{{ __('Reports Against') }} " + userName);
+                    $('#user_reports_table_body').html('<tr><td colspan="7" class="text-center text-muted py-5">' + "{{ __('Loading reports...') }}" + '</td></tr>');
                     $('#block_reported_user_btn').hide().attr('data-user-id', userId);
                     $('#email_reported_user_footer_btn').hide();
                     $('#mark_all_reports_read_btn').hide();
@@ -423,18 +423,19 @@
                         success: function (res) {
                             if (res.success && res.reports.length > 0) {
                                 // Show accused user name and email in modal header
-                                $('#reported_user_title').text('Reports Against: ' + res.user.name + ' (' + res.user.email + ')');
+                                var userEmailText = res.user.email ? ' (' + res.user.email + ')' : '';
+                                $('#reported_user_title').text("{{ __('Reports Against') }}: " + res.user.name + userEmailText);
                                 // Setup block and email buttons in footer
                                 if (res.user.status === 'suspended') {
                                     $('#block_reported_user_btn')
-                                        .html('<i class="ki-duotone ki-user fs-4"><span class="path1"></span><span class="path2"></span></i> Unsuspend')
+                                        .html('<i class="ki-duotone ki-user fs-4"><span class="path1"></span><span class="path2"></span></i> ' + "{{ __('Unsuspend') }}")
                                         .removeClass('btn-danger')
                                         .addClass('btn-success')
                                         .attr('data-action', 'unsuspend')
                                         .show();
                                 } else {
                                     $('#block_reported_user_btn')
-                                        .html('<i class="ki-duotone ki-user-block fs-4"><span class="path1"></span><span class="path2"></span></i> Suspend')
+                                        .html('<i class="ki-duotone ki-user-block fs-4"><span class="path1"></span><span class="path2"></span></i> ' + "{{ __('Suspend') }}")
                                         .removeClass('btn-success')
                                         .addClass('btn-danger')
                                         .attr('data-action', 'suspend')
@@ -824,7 +825,7 @@
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2 class="fw-bold" id="reported_user_title">Reports Against User</h2>
+                        <h2 class="fw-bold" id="reported_user_title">{{ __('Reports Against User') }}</h2>
                         <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
                             <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
                         </div>
@@ -839,12 +840,12 @@
                                                 <input class="form-check-input" type="checkbox" id="select_all_reports">
                                             </div>
                                         </th>
-                                        <th>Reporter</th>
-                                        <th>Reporter Email</th>
-                                        <th>Reason</th>
-                                        <th>Additional Note</th>
-                                        <th>Date</th>
-                                        <th class="text-end">Action</th>
+                                        <th>{{ __('Reporter') }}</th>
+                                        <th>{{ __('Reporter Email') }}</th>
+                                        <th>{{ __('Reason') }}</th>
+                                        <th>{{ __('Additional Note') }}</th>
+                                        <th>{{ __('Date') }}</th>
+                                        <th class="text-end">{{ __('Action') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="user_reports_table_body" class="text-gray-600 fw-semibold">
@@ -855,20 +856,20 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light-success btn-sm me-auto" id="mark_all_reports_read_btn" style="display: none;">
-                            <i class="ki-duotone ki-double-check fs-4"><span class="path1"></span><span class="path2"></span></i> Mark all as read
+                            <i class="ki-duotone ki-double-check fs-4"><span class="path1"></span><span class="path2"></span></i> {{ __('Mark all as read') }}
                         </button>
                         <button type="button" class="btn btn-danger btn-sm" id="delete_selected_reports_btn" style="display: none;">
-                            <i class="ki-duotone ki-trash fs-4"><span class="path1"></span><span class="path2"></span></i> Delete Selected
+                            <i class="ki-duotone ki-trash fs-4"><span class="path1"></span><span class="path2"></span></i> {{ __('Delete Selected') }}
                         </button>
                         <button type="button" class="btn btn-light-primary btn-sm" id="email_reported_user_footer_btn" style="display: none;">
-                            <i class="ki-duotone ki-sms fs-4"><span class="path1"></span><span class="path2"></span></i> Send Email
+                            <i class="ki-duotone ki-sms fs-4"><span class="path1"></span><span class="path2"></span></i> {{ __('Send Email') }}
                         </button>
                         <button type="button" class="btn btn-danger btn-sm" id="block_reported_user_btn"
                             style="display: none;">
                             <i class="ki-duotone ki-user-block fs-4"><span class="path1"></span><span class="path2"></span></i>
-                            Suspend User
+                            {{ __('Suspend User') }}
                         </button>
-                        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">{{ __('Close') }}</button>
                     </div>
                 </div>
             </div>
@@ -880,7 +881,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h2 class="fw-bold">Send Email to User</h2>
+                        <h2 class="fw-bold">{{ __('Send Email to User') }}</h2>
                         <div class="btn btn-icon btn-sm btn-active-icon-primary"
                             onclick="$('#kt_modal_send_custom_email').modal('hide')">
                             <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
@@ -890,26 +891,25 @@
                         <form id="admin_send_email_form">
                             @csrf
                             <div class="mb-5">
-                                <label class="form-label fw-semibold">Recipient</label>
+                                <label class="form-label fw-semibold">{{ __('Recipient') }}</label>
                                 <input type="text" id="email_recipient_display" class="form-control form-control-solid"
                                     readonly>
                                 <input type="hidden" name="email" id="email_recipient_hidden">
                             </div>
                             <div class="mb-5">
-                                <label class="form-label fw-semibold">Subject</label>
+                                <label class="form-label fw-semibold">{{ __('Subject') }}</label>
                                 <input type="text" name="subject" class="form-control form-control-solid"
-                                    placeholder="Enter subject" required>
+                                    placeholder="{{ __('Enter subject') }}" required>
                             </div>
                             <div class="mb-5">
-                                <label class="form-label fw-semibold">Message</label>
+                                <label class="form-label fw-semibold">{{ __('Message') }}</label>
                                 <textarea name="message" class="form-control form-control-solid" rows="5"
-                                    placeholder="Write your email body here..." required></textarea>
+                                    placeholder="{{ __('Write your email body here...') }}" required></textarea>
                             </div>
                             <div class="text-end">
                                 <button type="button" class="btn btn-light btn-sm me-2"
-                                    onclick="$('#kt_modal_send_custom_email').modal('hide')">Cancel</button>
-                                <button type="submit" class="btn btn-primary btn-sm" id="send_email_submit_btn">Send
-                                    Email</button>
+                                    onclick="$('#kt_modal_send_custom_email').modal('hide')">{{ __('Cancel') }}</button>
+                                <button type="submit" class="btn btn-primary btn-sm" id="send_email_submit_btn">{{ __('Send Email') }}</button>
                             </div>
                         </form>
                     </div>

@@ -1,6 +1,6 @@
 @extends('auth.app')
 
-@section('title', 'Login')
+@section('title', __('Login'))
 @section('content')
     <div class="d-flex flex-column flex-lg-row flex-column-fluid">
 
@@ -25,7 +25,7 @@
 
                             <!--begin::Title-->
                             <h1 class="text-dark mb-3">
-                                Sign In to Dashboard </h1>
+                                {{ __('Sign In to Dashboard') }} </h1>
                             <!--end::Title-->
                         </div>
                         <!--begin::Heading-->
@@ -33,7 +33,7 @@
                         <!--begin::Input group-->
                         <div class="fv-row mb-10 fv-plugins-icon-container">
                             <!--begin::Label-->
-                            <label class="form-label fs-6 fw-bold text-dark">Email</label>
+                            <label class="form-label fs-6 fw-bold text-dark">{{ __('Email') }}</label>
                             <!--end::Label-->
 
                             <!--begin::Input-->
@@ -51,12 +51,12 @@
                             <!--begin::Wrapper-->
                             <div class="d-flex flex-stack mb-2">
                                 <!--begin::Label-->
-                                <label class="form-label fw-bold text-dark fs-6 mb-0">Password</label>
+                                <label class="form-label fw-bold text-dark fs-6 mb-0">{{ __('Password') }}</label>
                                 <!--end::Label-->
 
                                 <!--begin::Link-->
                                 <a href="{{ route('password.request') }}" class="link-primary fs-6 fw-bold">
-                                    Forgot Password ?
+                                    {{ __('Forgot Password ?') }}
                                 </a>
                                 <!--end::Link-->
                             </div>
@@ -82,11 +82,11 @@
                             <!--begin::Submit button-->
                             <button type="submit" class="btn btn-lg btn-primary w-100 mb-5">
                                 <span class="indicator-label">
-                                    Continue
+                                    {{ __('Continue') }}
                                 </span>
 
                                 <span class="indicator-progress">
-                                    Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                    {{ __('Please wait...') }} <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                 </span>
                             </button>
                             <!--end::Submit button-->
@@ -94,7 +94,7 @@
                             <!--begin::Quick credentials-->
                             <div class="mb-5">
                                 <button type="button" class="btn btn-light-success btn-sm w-100 fw-bold" id="btnQuickAdmin">
-                                    Use Admin Credentials
+                                    {{ __('Use Admin Credentials') }}
                                 </button>
                             </div>
                             <!--end::Quick credentials-->

@@ -33,15 +33,22 @@ class PostCardResource extends JsonResource
             $title = $this->business_name ?? ($this->company_name ?? null);
         }
 
+        $locale = $request->header('Accept-Language', 'en');
+        $translatedTitle = $title ? \App\Helpers\translateHelper::translateCached("post.title.{$this->id}", $title, $locale) : null;
+        $categoryName = $this->whenLoaded('category', fn() => $this->category?->name, $this->category?->name ?? null);
+        $translatedCategoryName = $categoryName ? \App\Helpers\translateHelper::translateCached("category.name.{$this->category_id}", $categoryName, $locale) : null;
+
+        $loc = \App\Helpers\translateHelper::translateLocation($this->province, $this->city, $locale);
+
         $data = [
             'id' => $this->id,
             'category_id' => $this->category_id,
-            'category_name' => $this->whenLoaded('category', fn() => $this->category?->name, $this->category?->name ?? null),
-            'title' => $title,
+            'category_name' => $translatedCategoryName,
+            'title' => $translatedTitle,
             'thumbnail' => $this->getImageUrl($this->thumbnail),
             'price' => $this->price ?? null,
-            'province' => $this->province ?? null,
-            'city' => $this->city ?? null,
+            'province' => $loc['province'] ?? null,
+            'city' => $loc['city'] ?? null,
             'is_featured' => (bool)$this->is_featured,
             'is_wish' => (bool)$this->is_wish,
             'time_ago' => $this->created_at ? $this->created_at->diffForHumans() : null,

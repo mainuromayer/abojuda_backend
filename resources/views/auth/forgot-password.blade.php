@@ -28,7 +28,7 @@
 
 @extends('auth.app')
 
-@section('title', 'Forgot your password')
+@section('title', __('Forgot your password'))
 @section('content')
     <div class="d-flex flex-column flex-lg-row flex-column-fluid">
 
@@ -47,13 +47,13 @@
                         <div class="text-center mb-10">
                             <!--begin::Title-->
                             <h1 class="text-dark mb-3">
-                                Forgot Password ?
+                                {{ __('Forgot Password ?') }}
                             </h1>
                             <!--end::Title-->
 
                             <!--begin::Link-->
                             <div class="text-gray-400 fw-semibold fs-4">
-                                Enter your email to reset your password.
+                                {{ __('Enter your email to reset your password.') }}
                             </div>
                             <!--end::Link-->
                         </div>
@@ -61,7 +61,7 @@
 
                         <!--begin::Input group-->
                         <div class="fv-row mb-10 fv-plugins-icon-container">
-                            <label class="form-label fw-bold text-gray-900 fs-6">Email</label>
+                            <label class="form-label fw-bold text-gray-900 fs-6">{{ __('Email') }}</label>
                             <input class="form-control form-control-solid" type="email" placeholder="" name="email"
                                 autocomplete="off">
                             <div
@@ -72,17 +72,17 @@
 
                         <!--begin::Actions-->
                         <div class="d-flex flex-wrap justify-content-center pb-lg-0">
-                            <button type="button" id="kt_password_reset_submit"
+                            <button type="submit" id="kt_password_reset_submit"
                                 class="btn btn-lg btn-primary fw-bold me-4">
                                 <span class="indicator-label">
-                                    Email Password Reset Link
+                                    {{ __('Email Password Reset Link') }}
                                 </span>
                                 <span class="indicator-progress">
-                                    Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                    {{ __('Please wait...') }} <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                 </span>
                             </button>
 
-                            <a href="{{ route('login') }}" class="btn btn-lg btn-light-primary fw-bold">Cancel</a>
+                            <a href="{{ route('login') }}" class="btn btn-lg btn-light-primary fw-bold">{{ __('Cancel') }}</a>
                         </div>
                         <!--end::Actions-->
                     </form>

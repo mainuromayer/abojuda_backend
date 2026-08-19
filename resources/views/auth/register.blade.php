@@ -1,52 +1,74 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+@extends('auth.app')
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+@section('title', __('Register'))
+@section('content')
+    <div class="d-flex flex-column flex-lg-row flex-column-fluid">
+
+        <!--begin::Body-->
+        <div class="content d-flex flex-column flex-lg-row-fluid py-10">
+            <!--begin::Content-->
+            <div class="d-flex flex-center flex-column flex-column-fluid">
+                <!--begin::Wrapper-->
+                <div class="w-lg-500px p-10 p-lg-15 mx-auto card">
+
+                    <!--begin::Form-->
+                    <form class="form w-100 fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate" method="POST" action="{{ route('register') }}">
+                        @csrf
+                        @include('backend.partials.brand_logo')
+                        <!--begin::Heading-->
+                        <div class="text-center mb-10">
+                            <!--begin::Title-->
+                            <h1 class="text-dark mb-3">
+                                {{ __('Create an Account') }}
+                            </h1>
+                            <!--end::Title-->
+                        </div>
+                        <!--begin::Heading-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-10 fv-plugins-icon-container">
+                            <label class="form-label fw-bold text-gray-900 fs-6">{{ __('Name') }}</label>
+                            <input class="form-control form-control-solid" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name">
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-10 fv-plugins-icon-container">
+                            <label class="form-label fw-bold text-gray-900 fs-6">{{ __('Email') }}</label>
+                            <input class="form-control form-control-solid" type="email" name="email" value="{{ old('email') }}" required autocomplete="username">
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-10 fv-plugins-icon-container">
+                            <label class="form-label fw-bold text-gray-900 fs-6">{{ __('Password') }}</label>
+                            <input class="form-control form-control-solid" type="password" name="password" required autocomplete="new-password">
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-10 fv-plugins-icon-container">
+                            <label class="form-label fw-bold text-gray-900 fs-6">{{ __('Confirm Password') }}</label>
+                            <input class="form-control form-control-solid" type="password" name="password_confirmation" required autocomplete="new-password">
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Actions-->
+                        <div class="d-flex flex-wrap justify-content-center pb-lg-0">
+                            <button type="submit" class="btn btn-lg btn-primary fw-bold me-4">
+                                {{ __('Register') }}
+                            </button>
+
+                            <a href="{{ route('login') }}" class="btn btn-lg btn-light-primary fw-bold">{{ __('Already registered?') }}</a>
+                        </div>
+                        <!--end::Actions-->
+                    </form>
+                    <!--end::Form-->
+                </div>
+                <!--end::Wrapper-->
+            </div>
+            <!--end::Content-->
         </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+        <!--end::Body-->
+    </div>
+@endsection

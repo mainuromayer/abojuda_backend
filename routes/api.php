@@ -62,6 +62,12 @@ Route::prefix('v1')->controller(DynamicPageController::class)->group(function ()
 //! Route for ads
 Route::get('v1/ads', [AdController::class, 'index']);
 
+// Route to set locale (POST version - public)
+Route::post('v1/language', [ProfileController::class, 'getSetLocale']);
+
+// Route to get list of supported languages
+Route::get('v1/languages', [ProfileController::class, 'languagesList']);
+
 /**
  * Firebase Token Module
  */

@@ -23,6 +23,12 @@ class AdController extends Controller
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->filterColumn('title', function($query, $keyword) {
+                    $query->where(function($q) use ($keyword) {
+                        $q->where('title->en', 'LIKE', "%{$keyword}%")
+                          ->orWhere('title->ar', 'LIKE', "%{$keyword}%");
+                    });
+                })
                 ->addColumn('media', function ($row) {
                     if (!$row->media) {
                         $defaultImg = asset('backend/assets/media/svg/files/blank-image.svg');
@@ -130,8 +136,13 @@ class AdController extends Controller
     public function edit($id)
     {
         $ad = Ad::findOrFail($id);
-        $ad->media_url = $ad->media ? $this->getMediaUrl($ad->media) : null;
-        return response()->json(['ad' => $ad]);
+        $locale = app()->getLocale();
+
+        $data = $ad->toArray();
+        $data['title'] = $ad->getTranslation('title', $locale);
+        $data['media_url'] = $ad->media ? $this->getMediaUrl($ad->media) : null;
+
+        return response()->json(['ad' => $data]);
     }
 
     /**

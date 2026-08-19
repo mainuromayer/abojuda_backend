@@ -7,7 +7,14 @@ $imageUrl = ($setting && $setting->favicon)
 ?>
 
 <!--begin::Fonts(mandatory for all pages)-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" /> <!--end::Fonts-->
+    @if (app()->getLocale() == 'ar')
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    @else
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+    @endif
+<!--end::Fonts-->
 
     <!--begin::Vendor Stylesheets(used for this page only)-->
     @if (app()->getLocale() == 'ar')

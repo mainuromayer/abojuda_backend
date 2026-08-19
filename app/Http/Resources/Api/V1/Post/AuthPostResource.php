@@ -39,9 +39,9 @@ class AuthPostResource extends JsonResource
         ];
 
         if ($this->category_id == 3 && empty($this->title)) {
-            $data['business_name'] = $this->business_name;
+            $data['business_name'] = $this->business_name ? \App\Helpers\translateHelper::translateCached("post.business_name.{$this->id}", $this->business_name, \Illuminate\Support\Facades\App::getLocale()) : null;
         } else {
-            $data['title'] = $this->title;
+            $data['title'] = $this->title ? \App\Helpers\translateHelper::translateCached("post.title.{$this->id}", $this->title, \Illuminate\Support\Facades\App::getLocale()) : null;
         }
 
         return $data;
