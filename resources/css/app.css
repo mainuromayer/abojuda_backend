@@ -6,3 +6,9 @@
     visibility: visible !important;
 }
 
+/* Prevent DataTables processing loader text from wrapping/squishing vertically in RTL layout */
+div.dataTables_wrapper div.dataTables_processing {
+    white-space: nowrap !important;
+}
+
+
