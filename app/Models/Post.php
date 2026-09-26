@@ -91,6 +91,30 @@ class Post extends Model
         'price' => 'decimal:2',
     ];
 
+    public function setPriceAttribute($value): void
+    {
+        if ($value !== null && is_string($value)) {
+            $value = str_replace(
+                ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩', '٫'],
+                ['0','1','2','3','4','5','6','7','8','9', '.'],
+                $value
+            );
+        }
+        $this->attributes['price'] = $value;
+    }
+
+    public function getPriceAttribute($value)
+    {
+        if ($value !== null && is_string($value)) {
+            $value = str_replace(
+                ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩', '٫'],
+                ['0','1','2','3','4','5','6','7','8','9', '.'],
+                $value
+            );
+        }
+        return $value;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

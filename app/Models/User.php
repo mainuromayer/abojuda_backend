@@ -163,9 +163,22 @@ class User extends Authenticatable implements JWTSubject
 
     public function getNameAttribute($value)
     {
-        if (app()->getLocale() === 'ar') {
-            return helpers::translateText($value, 'ar');
+        if (empty($value)) {
+            return $value;
         }
-        return $value;
+
+        $locale = app()->getLocale();
+
+        if ($locale === 'ar') {
+            if (!preg_match('/\p{Arabic}/u', $value)) {
+                return helpers::translateText($value, 'ar');
+            }
+            return $value;
+        } else {
+            if (preg_match('/\p{Arabic}/u', $value)) {
+                return helpers::translateText($value, 'en');
+            }
+            return $value;
+        }
     }
 }

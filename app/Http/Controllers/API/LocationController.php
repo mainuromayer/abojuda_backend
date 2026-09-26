@@ -28,7 +28,10 @@ class LocationController extends Controller
 
     public function provinces()
     {
-        $lang = request()->header('Accept-Language', 'en');
+        $lang = request()->get('lang') ?? request()->header('lang') ?? (substr(request()->header('Accept-Language', ''), 0, 2) ?: app()->getLocale());
+        if (!in_array($lang, ['en', 'ar'])) {
+            $lang = 'ar';
+        }
 
         $provinceList = array_keys($this->locations);
 
@@ -61,24 +64,25 @@ class LocationController extends Controller
     {
         $province = urldecode($province);
 
-        $lang = request()->header('Accept-Language', 'en');
+        $lang = request()->get('lang') ?? request()->header('lang') ?? (substr(request()->header('Accept-Language', ''), 0, 2) ?: app()->getLocale());
+        if (!in_array($lang, ['en', 'ar'])) {
+            $lang = 'ar';
+        }
 
         $matchedProvince = null;
 
         foreach (array_keys($this->locations) as $englishProvince) {
             $key = 'location.province.' . str_replace(' ', '_', $englishProvince);
 
-            $translated = $lang === 'ar'
-                ? translateHelper::translateCached(
-                    $key,
-                    $englishProvince,
-                    $lang
-                )
-                : $englishProvince;
+            $arabicProvince = translateHelper::translateCached(
+                $key,
+                $englishProvince,
+                'ar'
+            );
 
             if (
                 strcasecmp($province, $englishProvince) === 0 ||
-                strcasecmp($province, $translated) === 0
+                mb_strtolower($province, 'UTF-8') === mb_strtolower($arabicProvince, 'UTF-8')
             ) {
                 $matchedProvince = $englishProvince;
                 break;
@@ -131,7 +135,10 @@ class LocationController extends Controller
 
     public function selectLocation(SelectLocationRequest $request)
     {
-        $locale = $request->header('Accept-Language', 'en');
+        $locale = $request->get('lang') ?? $request->header('lang') ?? (substr($request->header('Accept-Language', ''), 0, 2) ?: app()->getLocale());
+        if (!in_array($locale, ['en', 'ar'])) {
+            $locale = 'ar';
+        }
 
         $province = trim($request->province);
         $city = trim($request->city);
@@ -152,7 +159,7 @@ class LocationController extends Controller
 
             if (
                 strcasecmp($province, $englishProvince) === 0 ||
-                strcasecmp($province, $arabicProvince) === 0
+                mb_strtolower($province, 'UTF-8') === mb_strtolower($arabicProvince, 'UTF-8')
             ) {
                 $matchedProvince = $englishProvince;
 
@@ -171,7 +178,7 @@ class LocationController extends Controller
 
                     if (
                         strcasecmp($city, $englishCity) === 0 ||
-                        strcasecmp($city, $arabicCity) === 0
+                        mb_strtolower($city, 'UTF-8') === mb_strtolower($arabicCity, 'UTF-8')
                     ) {
                         $matchedCity = $englishCity;
                         break;
@@ -258,18 +265,25 @@ class LocationController extends Controller
             );
         }
 
-        $user->province = $matchedProvince;
-        $user->city = $matchedCity;
+        $provinceKey = 'location.province.' . str_replace(' ', '_', $matchedProvince);
+        $arabicProvince = translateHelper::translateCached($provinceKey, $matchedProvince, 'ar');
 
-        $address = implode(', ', array_filter([
-            $matchedCity,
-            $matchedProvince,
-            'Canada',
-        ]));
+        $cityKey = 'location.city.' . str_replace(' ', '_', $matchedProvince) . '.' . str_replace(' ', '_', $matchedCity);
+        $arabicCity = translateHelper::translateCached($cityKey, $matchedCity, 'ar');
+
+        $englishAddress = implode(', ', array_filter([$matchedCity, $matchedProvince, 'Canada']));
+        $arabicAddress = implode('، ', array_filter([$arabicCity, $arabicProvince, 'كندا']));
+
+        $user->setTranslation('province', 'en', $matchedProvince);
+        $user->setTranslation('province', 'ar', $arabicProvince);
+        $user->setTranslation('city', 'en', $matchedCity);
+        $user->setTranslation('city', 'ar', $arabicCity);
+        $user->setTranslation('address', 'en', $englishAddress);
+        $user->setTranslation('address', 'ar', $arabicAddress);
 
         $geoLocation = app(GeoLocation::class);
 
-        $coords = $geoLocation->getCoordinates($address);
+        $coords = $geoLocation->getCoordinates($englishAddress);
 
         $user->latitude = $coords['latitude'] ?? null;
         $user->longitude = $coords['longitude'] ?? null;
@@ -282,33 +296,8 @@ class LocationController extends Controller
             $locale
         );
 
-        $responseUser = clone $user;
-
-        if ($locale === 'ar') {
-
-            $provinceKey = 'location.province.' .
-                str_replace(' ', '_', $matchedProvince);
-
-            $cityKey = 'location.city.' .
-                str_replace(' ', '_', $matchedProvince) .
-                '.' .
-                str_replace(' ', '_', $matchedCity);
-
-            $responseUser->province = translateHelper::translateCached(
-                $provinceKey,
-                $matchedProvince,
-                'ar'
-            );
-
-            $responseUser->city = translateHelper::translateCached(
-                $cityKey,
-                $matchedCity,
-                'ar'
-            );
-        }
-
         return $this->sendResponse(
-            new LocationSelectResource($responseUser),
+            new LocationSelectResource($user),
             $message,
             200
         );

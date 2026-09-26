@@ -154,8 +154,64 @@ class helpers
             return \Illuminate\Support\Facades\Cache::get($cacheKey);
         }
 
+        $client = new \GuzzleHttp\Client(['timeout' => 5.0]);
+
+        // Method 1: Google dict endpoint (clients5) - fast, reliable, high capacity
         try {
-            $client = new \GuzzleHttp\Client();
+            $response = $client->get('https://clients5.google.com/translate_a/t', [
+                'query' => [
+                    'client' => 'dict-chrome-ex',
+                    'sl' => 'auto',
+                    'tl' => $targetLocale,
+                    'q' => $text,
+                ],
+                'headers' => [
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            if (is_array($data)) {
+                $translated = '';
+                foreach ($data as $part) {
+                    if (is_array($part) && isset($part[0])) {
+                        $translated .= $part[0];
+                    } elseif (is_string($part)) {
+                        $translated .= $part;
+                    }
+                }
+                $finalText = trim($translated);
+                if (!empty($finalText)) {
+                    \Illuminate\Support\Facades\Cache::forever($cacheKey, $finalText);
+                    return $finalText;
+                }
+            }
+        } catch (\Throwable $e) {
+            // Fall through to next method
+        }
+
+        // Method 2: MyMemory API fallback
+        try {
+            $srcLang = ($targetLocale === 'ar') ? 'en' : 'ar';
+            $response = $client->get('https://api.mymemory.translated.net/get', [
+                'query' => [
+                    'q' => $text,
+                    'langpair' => "{$srcLang}|{$targetLocale}",
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            if (is_array($data) && !empty($data['responseData']['translatedText'])) {
+                $finalText = trim($data['responseData']['translatedText']);
+                \Illuminate\Support\Facades\Cache::forever($cacheKey, $finalText);
+                return $finalText;
+            }
+        } catch (\Throwable $e) {
+            // Fall through to next method
+        }
+
+        // Method 3: Google translate_a/single endpoint
+        try {
             $response = $client->get('https://translate.googleapis.com/translate_a/single', [
                 'query' => [
                     'client' => 'gtx',
@@ -164,7 +220,6 @@ class helpers
                     'dt' => 't',
                     'q' => $text,
                 ],
-                'timeout' => 5.0,
             ]);
 
             $data = json_decode($response->getBody(), true);
@@ -175,11 +230,11 @@ class helpers
                         $translated .= $part[0];
                     }
                 }
-                $finalText = $translated ?: $text;
+                $finalText = trim($translated) ?: $text;
                 \Illuminate\Support\Facades\Cache::forever($cacheKey, $finalText);
                 return $finalText;
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::warning('Auto translation failed for: ' . $text . ' | Error: ' . $e->getMessage());
         }
 

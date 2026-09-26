@@ -446,8 +446,7 @@ class ProfileController extends Controller
             $user->locale = $validated['locale'];
             $user->save();
 
-            \Illuminate\Support\Facades\Cache::forever('app.current_locale', $validated['locale']);
-            helpers::updateEnv('APP_LOCALE', $validated['locale']);
+            app()->setLocale($validated['locale']);
 
             $message = translateHelper::translateCached(
                 'profile.locale.success',
@@ -492,8 +491,6 @@ class ProfileController extends Controller
                 $user->save();
             }
 
-            \Illuminate\Support\Facades\Cache::forever('app.current_locale', $lang);
-            helpers::updateEnv('APP_LOCALE', $lang);
             app()->setLocale($lang);
 
             $message = translateHelper::translateCached(

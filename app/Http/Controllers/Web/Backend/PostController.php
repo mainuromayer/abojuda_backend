@@ -80,11 +80,7 @@ class PostController extends Controller
                 })
                 ->addColumn('price', function ($row) {
                     if (!$row->price || $row->price <= 0) return '-';
-                    $formattedPrice = '$' . number_format($row->price, 2);
-                    if (app()->getLocale() === 'ar') {
-                        return str_replace(['0','1','2','3','4','5','6','7','8','9'], ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'], $formattedPrice);
-                    }
-                    return $formattedPrice;
+                    return '$' . number_format($row->price, 2);
                 })
                 ->addColumn('status', function ($row) {
                     $classes = [
