@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Web\Backend;
 
 use App\Helpers\helpers;
 use App\Http\Controllers\Controller;
+use App\Mail\ListingApprovedMail;
+use App\Mail\ListingRejectedMail;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Report;
 use App\Models\SystemNotification;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -280,22 +284,225 @@ class PostController extends Controller
     public function approve($id)
     {
         try {
-            $post = Post::findOrFail($id);
+            $post = Post::with(['user', 'category'])->findOrFail($id);
             $post->status = 'active';
             $post->save();
+
+            $creator = $post->user;
+            $locale = $creator?->locale;
+            if (empty($locale)) {
+                $rawTitle = (string) ($post->getRawOriginal('title') ?? $post->title ?? '');
+                $locale = preg_match('/\p{Arabic}/u', $rawTitle) ? 'ar' : 'en';
+            }
+
+            // Resolve listing title
+            $postTitle = '';
+            if (method_exists($post, 'getTranslation')) {
+                $postTitle = $post->getTranslation('title', $locale, false);
+            }
+            if (empty($postTitle)) {
+                $postTitle = $post->title ?: ($post->business_name ?: ($locale === 'ar' ? 'الإعلان' : 'Listing'));
+            }
+
+            // Notification title and message (matching design: "Listing Approved" / "Your listing ‘...’ has been approved and is now live.")
+            if ($locale === 'ar') {
+                $notificationTitle = 'تمت الموافقة على الإعلان';
+                $notificationMessage = "تمت الموافقة على إعلانك ‘{$postTitle}’ وهو متاح الآن.";
+            } else {
+                $notificationTitle = 'Listing Approved';
+                $notificationMessage = "Your listing ‘{$postTitle}’ has been approved and is now live.";
+            }
+
+            // 1. Create In-App Notification for Creator
+            if ($creator) {
+                \App\Models\UserNotification::create([
+                    'user_id' => $creator->id,
+                    'type'    => 'listing_approved',
+                    'title'   => $notificationTitle,
+                    'message' => $notificationMessage,
+                    'data'    => [
+                        'post_id' => $post->id,
+                    ],
+                    'is_read' => false,
+                ]);
+            }
+
+            // 2. Send Firebase Push Notification to creator's mobile devices
+            if ($creator && $creator->enable_notification) {
+                try {
+                    $tokens = $creator->firebaseTokens()
+                        ->where('is_active', true)
+                        ->pluck('token')
+                        ->filter()
+                        ->unique()
+                        ->toArray();
+
+                    if (!empty($tokens)) {
+                        $pushData = [
+                            'title' => $notificationTitle,
+                            'message' => $notificationMessage,
+                            'data' => [
+                                'type' => 'listing_approved',
+                                'post_id' => (string) $post->id,
+                            ],
+                        ];
+
+                        foreach ($tokens as $token) {
+                            helpers::sendNotifyMobile($token, $pushData);
+                        }
+                    }
+                } catch (\Exception $pushEx) {
+                    Log::error('Firebase push notification failed for post approval: ' . $pushEx->getMessage());
+                }
+            }
+
+            // 2. Send Email Notification to post's email and creator's email (if email notification enabled)
+            $recipientEmails = [];
+            if ($post->email) {
+                $recipientEmails[] = $post->email;
+            }
+            if ($creator?->email && $creator->enable_notification && $creator->email_notification) {
+                $recipientEmails[] = $creator->email;
+            }
+            $recipientEmails = array_unique(array_filter($recipientEmails));
+
+            if (!empty($recipientEmails)) {
+                try {
+                    $recipientName = $creator?->name ?? ($locale === 'ar' ? 'المستخدم' : 'User');
+                    foreach ($recipientEmails as $email) {
+                        Mail::to($email)->send(new ListingApprovedMail(
+                            $post,
+                            $postTitle,
+                            $notificationTitle,
+                            $notificationMessage,
+                            $recipientName,
+                            $locale
+                        ));
+                    }
+                } catch (\Exception $mailEx) {
+                    Log::error('Email notification failed for post approval: ' . $mailEx->getMessage());
+                }
+            }
+
             return response()->json(['success' => true, 'message' => 'Post approved successfully.']);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
         try {
-            $post = Post::findOrFail($id);
+            $post = Post::with(['user', 'category'])->findOrFail($id);
             $post->status = 'rejected';
             $post->save();
-            return response()->json(['success' => true, 'message' => 'Post rejected.']);
+
+            $creator = $post->user;
+            $locale = $creator?->locale;
+            if (empty($locale)) {
+                $rawTitle = (string) ($post->getRawOriginal('title') ?? $post->title ?? '');
+                $locale = preg_match('/\p{Arabic}/u', $rawTitle) ? 'ar' : 'en';
+            }
+
+            // Resolve listing title
+            $postTitle = '';
+            if (method_exists($post, 'getTranslation')) {
+                $postTitle = $post->getTranslation('title', $locale, false);
+            }
+            if (empty($postTitle)) {
+                $postTitle = $post->title ?: ($post->business_name ?: ($locale === 'ar' ? 'الإعلان' : 'Listing'));
+            }
+
+            $reason = trim((string) $request->input('reason', ''));
+
+            if ($locale === 'ar') {
+                $notificationTitle = 'تم رفض الإعلان';
+                $notificationMessage = $reason
+                    ? "تم رفض إعلانك ‘{$postTitle}’. السبب: {$reason}"
+                    : "نأسف، لم تتم الموافقة على إعلانك ‘{$postTitle}’.";
+            } else {
+                $notificationTitle = 'Listing Rejected';
+                $notificationMessage = $reason
+                    ? "Your listing ‘{$postTitle}’ was not approved. Reason: {$reason}"
+                    : "We're sorry, your listing ‘{$postTitle}’ was not approved.";
+            }
+
+            // 1. Create In-App Notification for Creator
+            if ($creator) {
+                \App\Models\UserNotification::create([
+                    'user_id' => $creator->id,
+                    'type'    => 'listing_rejected',
+                    'title'   => $notificationTitle,
+                    'message' => $notificationMessage,
+                    'data'    => [
+                        'post_id' => $post->id,
+                        'reason'  => $reason ?: null,
+                    ],
+                    'is_read' => false,
+                ]);
+            }
+
+            // 2. Send Firebase Push Notification to creator's mobile devices
+            if ($creator && $creator->enable_notification) {
+                try {
+                    $tokens = $creator->firebaseTokens()
+                        ->where('is_active', true)
+                        ->pluck('token')
+                        ->filter()
+                        ->unique()
+                        ->toArray();
+
+                    if (!empty($tokens)) {
+                        $pushData = [
+                            'title' => $notificationTitle,
+                            'message' => $notificationMessage,
+                            'channel_id' => 'high_importance_channel',
+                            'data' => [
+                                'type'    => 'listing_rejected',
+                                'post_id' => (string) $post->id,
+                                'reason'  => (string) $reason,
+                            ],
+                        ];
+
+                        foreach ($tokens as $token) {
+                            helpers::sendNotifyMobile($token, $pushData);
+                        }
+                    }
+                } catch (\Exception $pushEx) {
+                    Log::error('Firebase push notification failed for post rejection: ' . $pushEx->getMessage());
+                }
+            }
+
+            // 3. Send Email Notification to post's email and creator's email (if email notification enabled)
+            $recipientEmails = [];
+            if ($post->email) {
+                $recipientEmails[] = $post->email;
+            }
+            if ($creator?->email && $creator->enable_notification && $creator->email_notification) {
+                $recipientEmails[] = $creator->email;
+            }
+            $recipientEmails = array_unique(array_filter($recipientEmails));
+
+            if (!empty($recipientEmails)) {
+                try {
+                    $recipientName = $creator?->name ?? ($locale === 'ar' ? 'المستخدم' : 'User');
+                    foreach ($recipientEmails as $email) {
+                        Mail::to($email)->send(new ListingRejectedMail(
+                            $post,
+                            $postTitle,
+                            $notificationTitle,
+                            $notificationMessage,
+                            $recipientName,
+                            $locale,
+                            $reason ?: null
+                        ));
+                    }
+                } catch (\Exception $mailEx) {
+                    Log::error('Email notification failed for post rejection: ' . $mailEx->getMessage());
+                }
+            }
+
+            return response()->json(['success' => true, 'message' => 'Post rejected successfully.']);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }

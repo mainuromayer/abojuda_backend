@@ -11,6 +11,16 @@ class StoreTokenRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (!$this->filled('token') && $this->filled('fcm_token')) {
+            $this->merge(['token' => $this->input('fcm_token')]);
+        }
+        if (!$this->filled('user_id') && auth('api')->check()) {
+            $this->merge(['user_id' => auth('api')->id()]);
+        }
+    }
+
     public function rules(): array
     {
         return [

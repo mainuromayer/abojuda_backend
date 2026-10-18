@@ -9,8 +9,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Profile\BlockUserRequest;
 use App\Http\Requests\Api\V1\Profile\ChangePasswordRequest;
 use App\Http\Requests\Api\V1\Profile\DeleteAccountRequest;
+use App\Http\Requests\Api\V1\Profile\GetNotificationSettingsRequest;
 use App\Http\Requests\Api\V1\Profile\SetLocaleRequest;
 use App\Http\Requests\Api\V1\Profile\UnblockUserRequest;
+use App\Http\Requests\Api\V1\Profile\UpdateNotificationSettingsRequest;
 use App\Http\Requests\Api\V1\Profile\UpdateRequest;
 use App\Http\Resources\Api\V1\Profile\BlockedUserResource;
 use App\Http\Resources\Api\V1\Profile\getResource;
@@ -336,7 +338,7 @@ class ProfileController extends Controller
     /**
      * Get notification settings
      */
-    public function getNotificationSettings(Request $request)
+    public function getNotificationSettings(GetNotificationSettingsRequest $request)
     {
         $lang = $request->header('Accept-Language', 'en');
 
@@ -349,8 +351,10 @@ class ProfileController extends Controller
                 $lang
             );
 
+            $isMasterActive = (bool) ($user->enable_notification ?? ($user->new_message || $user->marketing || $user->email_notification));
+
             return $this->sendResponse([
-                'all_notification' => $user->new_message && $user->marketing && $user->email_notification,
+                'enable_notification' => $isMasterActive,
                 'new_message' => (bool) $user->new_message,
                 'marketing' => (bool) $user->marketing,
                 'email_notification' => (bool) $user->email_notification,
@@ -363,28 +367,60 @@ class ProfileController extends Controller
     /**
      * Update notification settings
      */
-    public function updateNotificationSettings(Request $request)
+    public function updateNotificationSettings(UpdateNotificationSettingsRequest $request)
     {
         $lang = $request->header('Accept-Language', 'en');
 
         try {
             $user = auth('api')->user();
 
-            if ($request->has('all_notification')) {
-                $status = $request->boolean('all_notification');
-                $user->new_message = $status;
-                $user->marketing = $status;
-                $user->email_notification = $status;
+            $hasMasterToggle = $request->has('enable_notification');
+            $masterToggleValue = $hasMasterToggle ? $request->boolean('enable_notification') : null;
+
+            $hasNewMessage = $request->has('new_message');
+            $hasMarketing = $request->has('marketing');
+            $hasEmailNotification = $request->has('email_notification');
+            $hasSubToggles = $hasNewMessage || $hasMarketing || $hasEmailNotification;
+
+            if ($hasMasterToggle && $masterToggleValue === false) {
+                // If master enable_notification is false, disable all notifications
+                $user->enable_notification = false;
+                $user->new_message = false;
+                $user->marketing = false;
+                $user->email_notification = false;
+            } elseif ($hasMasterToggle && $masterToggleValue === true) {
+                // Master toggle turned on
+                $user->enable_notification = true;
+                if ($hasSubToggles) {
+                    if ($hasNewMessage) {
+                        $user->new_message = $request->boolean('new_message');
+                    }
+                    if ($hasMarketing) {
+                        $user->marketing = $request->boolean('marketing');
+                    }
+                    if ($hasEmailNotification) {
+                        $user->email_notification = $request->boolean('email_notification');
+                    }
+                } else {
+                    // If no specific sub-toggle was sent, enable all
+                    $user->new_message = true;
+                    $user->marketing = true;
+                    $user->email_notification = true;
+                }
             } else {
-                if ($request->has('new_message')) {
+                // Individual sub-toggles updated without master toggle
+                if ($hasNewMessage) {
                     $user->new_message = $request->boolean('new_message');
                 }
-                if ($request->has('marketing')) {
+                if ($hasMarketing) {
                     $user->marketing = $request->boolean('marketing');
                 }
-                if ($request->has('email_notification')) {
+                if ($hasEmailNotification) {
                     $user->email_notification = $request->boolean('email_notification');
                 }
+
+                // If any notification is enabled, master switch is on; if all are off, master switch is off
+                $user->enable_notification = ($user->new_message || $user->marketing || $user->email_notification);
             }
 
             $user->save();
@@ -395,8 +431,10 @@ class ProfileController extends Controller
                 $lang
             );
 
+            $isMasterActive = (bool) $user->enable_notification;
+
             return $this->sendResponse([
-                'all_notification' => $user->new_message && $user->marketing && $user->email_notification,
+                'enable_notification' => $isMasterActive,
                 'new_message' => (bool) $user->new_message,
                 'marketing' => (bool) $user->marketing,
                 'email_notification' => (bool) $user->email_notification,
@@ -491,6 +529,8 @@ class ProfileController extends Controller
                 $user->save();
             }
 
+            \Illuminate\Support\Facades\Cache::put('guest_locale_' . $request->ip(), $lang, now()->addDays(30));
+
             app()->setLocale($lang);
 
             $message = translateHelper::translateCached(
@@ -499,10 +539,12 @@ class ProfileController extends Controller
                 $lang
             );
 
-            return $this->sendResponse(
+            $response = $this->sendResponse(
                 $user ? new SetLocaleResource($user) : null,
                 $message
             );
+
+            return $response->withCookie(cookie('locale', $lang, 60 * 24 * 30));
         } catch (Exception $exception) {
             return $this->sendError(
                 $exception->getMessage(),

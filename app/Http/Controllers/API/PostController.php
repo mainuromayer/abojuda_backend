@@ -22,6 +22,8 @@ use App\Models\BusinessHour;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\PostHistory;
+use App\Models\SystemNotification;
+use App\Models\UserNotification;
 use App\Models\Wish;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
@@ -746,6 +748,36 @@ class PostController extends Controller
 
             Cache::forget($draftKey);
             Cache::forget('user_latest_draft_' . $user->id);
+
+            // In-App Notification for User
+            try {
+                UserNotification::create([
+                    'user_id' => $user->id,
+                    'type'    => 'listing_submitted',
+                    'title'   => 'Listing Submitted',
+                    'message' => 'Your listing has been submitted and is currently under review.',
+                    'data'    => [
+                        'post_id' => $post->id,
+                    ],
+                    'is_read' => false,
+                ]);
+            } catch (\Throwable $e) {
+                // Log and continue
+            }
+
+            // System Notification for Admin Dashboard
+            try {
+                $postTitle = $post->title ?: ($post->business_name ?: 'Listing #' . $post->id);
+                SystemNotification::create([
+                    'type'       => 'post_created',
+                    'title'      => 'New Listing Submitted',
+                    'content'    => "A new listing '{$postTitle}' was submitted by " . ($user->name ?? 'User') . '.',
+                    'target_url' => route('post.show', ['id' => $post->id], false),
+                    'is_read'    => false,
+                ]);
+            } catch (\Throwable $e) {
+                // Log and continue
+            }
 
             $message = translateHelper::translateCached('post.store.success', 'Listing created successfully.', $locale);
 

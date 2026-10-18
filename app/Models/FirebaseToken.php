@@ -19,6 +19,10 @@ class FirebaseToken extends Model
         'device_id'         => 'string',
         'token'             => 'string',
         'is_active'         => 'boolean',
-
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

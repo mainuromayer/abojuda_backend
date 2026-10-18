@@ -244,13 +244,46 @@
         </div>
         <!--end::Ad Management-->
 
+        <!--begin:Contact Support Requests-->
+        <div class="menu-item">
+            <a class="menu-link {{ request()->routeIs('contact-support.*') ? 'active' : '' }}"
+                href="{{ route('contact-support.index') }}">
+                <span class="menu-icon">
+                    <i class="ki-duotone ki-sms fs-2">
+                        <span class="path1"></span><span class="path2"></span>
+                    </i>
+                </span>
+                <span class="menu-title">{{ __('Contact Requests') }}</span>
+                @php
+                    $unreadSupportCount = \App\Models\SystemNotification::where('type', 'contact_support')->where('is_read', false)->count();
+                @endphp
+                @if($unreadSupportCount > 0)
+                    <span class="badge badge-danger fs-8 fw-bold px-2 py-1 ms-2">{{ $unreadSupportCount }}</span>
+                @endif
+            </a>
+        </div>
+        <!--end:Contact Support Requests-->
 
-            <!--begin:Menu item-->
-            <div class="menu-item pt-5">
-                <div class="menu-content">
-                    <span class="fw-bold text-muted text-uppercase fs-7">{{ __('Setting Management') }}</span>
-                </div>
-            </div><!--end:Menu item-->
+        <!--begin:Push Notification Announcements-->
+        <div class="menu-item">
+            <a class="menu-link {{ request()->routeIs('announcement.*') ? 'active' : '' }}"
+                href="{{ route('announcement.index') }}">
+                <span class="menu-icon">
+                    <i class="ki-duotone ki-notification-on fs-2">
+                        <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span>
+                    </i>
+                </span>
+                <span class="menu-title">{{ __('Announcements') }}</span>
+            </a>
+        </div>
+        <!--end:Push Notification Announcements-->
+
+        <!--begin:Menu item-->
+        <div class="menu-item pt-5">
+            <div class="menu-content">
+                <span class="fw-bold text-muted text-uppercase fs-7">{{ __('Setting Management') }}</span>
+            </div>
+        </div><!--end:Menu item-->
 
 
             <!--begin:setting item-->

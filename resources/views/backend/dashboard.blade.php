@@ -123,10 +123,10 @@
                                             <span>{{ __('Unread Reports') }}</span>
                                             <span class="badge badge-light-danger fs-9">{{ formatNumber($metrics['unread_reports']) }}</span>
                                         </div>
-                                        <div class="d-flex justify-content-between">
+                                        <a href="{{ route('contact-support.index') }}" class="d-flex justify-content-between text-gray-700 text-hover-primary text-decoration-none">
                                             <span>{{ __('Support Requests') }}</span>
                                             <span class="badge badge-light-primary fs-9">{{ formatNumber($metrics['total_supports']) }}</span>
-                                        </div>
+                                        </a>
                                     </div>
                                 </div>
                             </div>

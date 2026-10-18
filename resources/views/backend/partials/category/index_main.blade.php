@@ -19,15 +19,7 @@
 
             <!--begin::Card toolbar-->
             <div class="card-toolbar">
-                <!--begin::Toolbar-->
-                <div class="d-flex justify-content-end" data-kt-category-table-toolbar="base">
-                    <!--begin::Add category-->
-                    <button type="button" class="btn btn-primary" id="open_add_category_modal_btn">
-                        <i class="ki-duotone ki-plus fs-2"></i> {{ __('Add Category') }}
-                    </button>
-                    <!--end::Add category-->
-                </div>
-                <!--end::Toolbar-->
+
 
                 <!--begin::Modal - Add category-->
                 @include('backend.partials.category.add')

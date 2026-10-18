@@ -39,12 +39,13 @@ class SupportController extends Controller
             $subjectEn = translateHelper::toEnglish($request->subject, $lang);
             $issueEn = translateHelper::toEnglish($request->describe_issue, $lang);
 
-            // Create Admin System Notification
+            // Create Admin System Notification with relative target_url
             SystemNotification::create([
                 'type' => 'contact_support',
                 'title' => 'New Support Request',
                 'content' => 'Support request from ' . $request->email . '. Issue: ' . Str::limit($issueEn, 100),
                 'is_read' => false,
+                'target_url' => route('contact-support.index', ['id' => $support->id], false),
             ]);
 
             // Send Email to Admin(s)

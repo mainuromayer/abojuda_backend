@@ -506,5 +506,15 @@
     "Post rejected.": "تم رفض المنشور.",
     "Featured status updated.": "تم تحديث حالة التمييز.",
     "Post deleted successfully.": "تم حذف المنشور بنجاح.",
-    "All post reports marked as read.": "تم تحديد جميع بلاغات المنشور كمقروءة."
+    "All post reports marked as read.": "تم تحديد جميع بلاغات المنشور كمقروءة.",
+    "Listing Approved": "تمت الموافقة على الإعلان",
+    "Your listing ‘:title’ has been approved and is now live.": "تمت الموافقة على إعلانك ‘:title’ وهو متاح الآن.",
+    "Notifications retrieved successfully.": "تم استرداد الإشعارات بنجاح.",
+    "Notification marked as read.": "تم تحديد الإشعار كمقروء.",
+    "All notifications marked as read.": "تم تحديد جميع الإشعارات كمقروءة.",
+    "Notification deleted successfully.": "تم حذف الإشعار بنجاح.",
+    "All notifications cleared successfully.": "تم مسح جميع الإشعارات بنجاح.",
+    "New Message": "رسالة جديدة",
+    "Welcome to Wasel Canada!": "مرحباً بك في واصل كندا!",
+    "Start exploring thousands of listings across Canada. Post your first listing for free!": "ابدأ في استكشاف آلاف الإعلانات في جميع أنحاء كندا. انشر إعلانك الأول مجاناً!"
 }

@@ -48,8 +48,39 @@
                 <div class="scroll-y mh-325px my-5 px-8">
                     @forelse($notifications as $notification)
                     <!--begin::Item-->
+                    @php
+                        $notifUrl = $notification->target_url;
+                        if ($notifUrl) {
+                            $parsed = parse_url($notifUrl);
+                            if (!empty($parsed['path'])) {
+                                $notifUrl = $parsed['path'] . (!empty($parsed['query']) ? '?' . $parsed['query'] : '');
+                            }
+                        }
+
+                        if ($notification->type === 'contact_support' && (!$notifUrl || !str_contains($notifUrl, 'id='))) {
+                            $supportId = null;
+                            if (preg_match('/from\s+([^\s,.]+@[^\s,]+)/i', $notification->content, $matches)) {
+                                $matchedSupport = \App\Models\ContactSupport::where('email', trim($matches[1]))->latest()->first();
+                                if ($matchedSupport) {
+                                    $supportId = $matchedSupport->id;
+                                }
+                            }
+                            if (!$supportId && $notification->created_at) {
+                                $matchedSupport = \App\Models\ContactSupport::whereBetween('created_at', [
+                                    $notification->created_at->copy()->subHours(2),
+                                    $notification->created_at->copy()->addHours(2)
+                                ])->first() ?? \App\Models\ContactSupport::latest()->first();
+                                if ($matchedSupport) {
+                                    $supportId = $matchedSupport->id;
+                                }
+                            }
+                            $notifUrl = $supportId 
+                                ? route('contact-support.index', ['id' => $supportId], false) 
+                                : route('contact-support.index', [], false);
+                        }
+                    @endphp
                     <div class="d-flex flex-stack py-4 w-100 ps-3 mb-2 rounded notification-item {{ !$notification->is_read ? 'border-start border-4 border-danger bg-light-danger bg-opacity-20' : '' }}" id="notification_item_{{ $notification->id }}">
-                        <a href="{{ $notification->target_url ?? '#' }}" class="d-flex align-items-center text-gray-800 text-hover-primary text-decoration-none w-100 me-3">
+                        <a href="{{ $notifUrl ?? '#' }}" class="d-flex align-items-center text-gray-800 text-hover-primary text-decoration-none w-100 me-3 notification-link" data-id="{{ $notification->id }}" data-type="{{ $notification->type }}">
                             <!--begin::Symbol-->
                             <div class="symbol symbol-35px me-4">
                                 @if($notification->type === 'contact_support')
@@ -102,22 +133,58 @@
 @push('script')
 <script>
 $(document).ready(function() {
-    // Mark single notification as read
+    // When clicking a notification item link
+    $(document).on('click', '.notification-link', function(e) {
+        var notifId = $(this).data('id');
+        var notifType = $(this).data('type');
+        var href = $(this).attr('href');
+
+        // Mark as read asynchronously
+        if (notifId) {
+            var readUrl = "{{ route('notifications.read', ['id' => '___id___'], false) }}".replace('___id___', notifId);
+            if (navigator.sendBeacon) {
+                var formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                navigator.sendBeacon(readUrl, formData);
+            } else {
+                $.post(readUrl, { _token: '{{ csrf_token() }}' });
+            }
+        }
+
+        // If already on the contact supports page and clicking a contact support notification
+        if (notifType === 'contact_support' && href && window.location.pathname.indexOf('contact-supports') !== -1) {
+            var match = href.match(/[?&]id=([^&]+)/);
+            if (match && match[1]) {
+                e.preventDefault();
+                // Close the notification dropdown
+                var menuEl = document.querySelector('#kt_menu_notifications');
+                if (menuEl && typeof KTMenu !== 'undefined') {
+                    var menu = KTMenu.getInstance(menuEl);
+                    if (menu) menu.hide();
+                }
+                window.history.pushState({}, '', href);
+                if (typeof window.openSupportDetails === 'function') {
+                    window.openSupportDetails(match[1]);
+                }
+                return;
+            }
+        }
+    });
+
+    // Mark single notification as read button
     $(document).on('click', '.mark-notification-read-btn', function(e) {
         e.preventDefault();
         e.stopPropagation();
         var id = $(this).data('id');
         var btn = $(this);
         var item = $('#notification_item_' + id);
-        var url = "{{ route('notifications.read', ['id' => '___id___']) }}".replace('___id___', id);
+        var url = "{{ route('notifications.read', ['id' => '___id___'], false) }}".replace('___id___', id);
         
         $.post(url, { _token: '{{ csrf_token() }}' }, function(res) {
             if (res.success) {
-                // Remove highlight classes instead of deleting row
                 item.removeClass('border-start border-4 border-danger bg-light-danger bg-opacity-20');
-                btn.hide(); // Hide checkmark button
+                btn.hide();
                 
-                // Update count
                 var badges = $('.badge-circle.badge-danger');
                 var count = parseInt(badges.first().text()) - 1;
                 if (count > 0) {
@@ -135,7 +202,7 @@ $(document).ready(function() {
     // Mark all notifications as read
     $(document).on('click', '#mark_all_notifications_read_btn', function(e) {
         e.preventDefault();
-        var url = "{{ route('notifications.read-all') }}";
+        var url = "{{ route('notifications.read-all', [], false) }}";
         $.post(url, { _token: '{{ csrf_token() }}' }, function(res) {
             if (res.success) {
                 $('.notification-item').removeClass('border-start border-4 border-danger bg-light-danger bg-opacity-20');
@@ -150,7 +217,7 @@ $(document).ready(function() {
     // Clear all notifications
     $(document).on('click', '#clear_all_notifications_btn', function(e) {
         e.preventDefault();
-        var url = "{{ route('notifications.clear') }}";
+        var url = "{{ route('notifications.clear', [], false) }}";
         $.post(url, { _token: '{{ csrf_token() }}' }, function(res) {
             if (res.success) {
                 $('.notification-item').fadeOut(300, function() {

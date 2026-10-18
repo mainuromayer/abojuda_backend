@@ -3,6 +3,8 @@
 
 
 use App\Http\Controllers\Web\Backend\CategoryController;
+use App\Http\Controllers\Web\Backend\ContactSupportController;
+use App\Http\Controllers\Web\Backend\AnnouncementController;
 use App\Http\Controllers\Web\Backend\DashboardController;
 use App\Http\Controllers\Web\Backend\DynamicPageController;
 use App\Http\Controllers\Web\Backend\LanguageController;
@@ -124,6 +126,21 @@ Route::controller(\App\Http\Controllers\Web\Backend\AdController::class)->group(
     Route::get('/ads/{id}/edit', 'edit')->name('ad.edit');
     Route::post('/ads/{id}/update', 'update')->name('ad.update');
     Route::delete('/ads/{id}/delete', 'destroy')->name('ad.delete');
+});
+
+//! Route for Contact Support Requests
+Route::controller(ContactSupportController::class)->group(function () {
+    Route::get('/contact-supports', 'index')->name('contact-support.index');
+    Route::get('/contact-supports/{id}', 'show')->name('contact-support.show');
+    Route::post('/contact-supports/{id}/reply', 'reply')->name('contact-support.reply');
+    Route::delete('/contact-supports/{id}', 'destroy')->name('contact-support.destroy');
+});
+
+//! Route for Push Notification Announcement
+Route::controller(AnnouncementController::class)->group(function () {
+    Route::get('/announcements', 'index')->name('announcement.index');
+    Route::post('/announcements/send', 'send')->name('announcement.send');
+    Route::delete('/announcements/{id}', 'destroy')->name('announcement.destroy');
 });
 
 Route::get('/migrate-uploads', function() {

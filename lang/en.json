@@ -124,5 +124,15 @@
     "Unsuspend": "Unsuspend",
     "Suspend": "Suspend",
     "Reject Post": "Reject Post",
-    "No reports found against this user.": "No reports found against this user."
+    "No reports found against this user.": "No reports found against this user.",
+    "Listing Approved": "Listing Approved",
+    "Your listing ‘:title’ has been approved and is now live.": "Your listing ‘:title’ has been approved and is now live.",
+    "Notifications retrieved successfully.": "Notifications retrieved successfully.",
+    "Notification marked as read.": "Notification marked as read.",
+    "All notifications marked as read.": "All notifications marked as read.",
+    "Notification deleted successfully.": "Notification deleted successfully.",
+    "All notifications cleared successfully.": "All notifications cleared successfully.",
+    "New Message": "New Message",
+    "Welcome to Wasel Canada!": "Welcome to Wasel Canada!",
+    "Start exploring thousands of listings across Canada. Post your first listing for free!": "Start exploring thousands of listings across Canada. Post your first listing for free!"
 }

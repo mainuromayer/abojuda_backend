@@ -219,19 +219,38 @@ class ChatController extends Controller
             $notifyReceiverId = ($conversation->sender_id === $senderId) ? $conversation->receiver_id : $conversation->sender_id;
             $receiver = User::find($notifyReceiverId);
             if ($receiver) {
-                $tokens = $receiver->firebaseTokens()->where('is_active', true)->pluck('token')->toArray();
-                if (!empty($tokens)) {
-                    $notificationData = [
-                        'title' => $user->name ?? 'New Message',
-                        'message' => $newMessage->message ?? 'Sent an attachment',
-                        'data' => [
-                            'type' => 'chat',
-                            'conversation_id' => (string)$conversation->id,
-                            'sender_id' => (string)$senderId,
-                        ]
-                    ];
-                    foreach ($tokens as $token) {
-                        helpers::sendNotifyMobile($token, $notificationData);
+                // 1. Create in-app Notification for the receiver
+                $postTitle = $conversation->post?->title ? (' about ' . $conversation->post->title) : '';
+                $senderName = $user->name ?? 'Someone';
+                \App\Models\UserNotification::create([
+                    'user_id' => $receiver->id,
+                    'type'    => 'new_message',
+                    'title'   => 'New Message',
+                    'message' => $senderName . ' sent you a message' . $postTitle,
+                    'data'    => [
+                        'conversation_id' => $conversation->id,
+                        'sender_id'       => $senderId,
+                        'message_id'      => $newMessage->id,
+                    ],
+                    'is_read' => false,
+                ]);
+
+                // 2. Send Firebase push notification if enabled
+                if ($receiver->enable_notification && $receiver->new_message) {
+                    $tokens = $receiver->firebaseTokens()->where('is_active', true)->pluck('token')->toArray();
+                    if (!empty($tokens)) {
+                        $notificationData = [
+                            'title' => $user->name ?? 'New Message',
+                            'message' => $newMessage->message ?? 'Sent an attachment',
+                            'data' => [
+                                'type' => 'chat',
+                                'conversation_id' => (string)$conversation->id,
+                                'sender_id' => (string)$senderId,
+                            ]
+                        ];
+                        foreach ($tokens as $token) {
+                            helpers::sendNotifyMobile($token, $notificationData);
+                        }
                     }
                 }
             }

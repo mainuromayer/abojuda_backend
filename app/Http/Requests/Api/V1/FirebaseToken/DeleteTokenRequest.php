@@ -11,10 +11,17 @@ class DeleteTokenRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (!$this->filled('user_id') && auth('api')->check()) {
+            $this->merge(['user_id' => auth('api')->id()]);
+        }
+    }
+
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer',
+            'user_id'   => 'nullable|integer',
             'device_id' => 'required|string',
         ];
     }

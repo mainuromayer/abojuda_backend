@@ -8,6 +8,7 @@ use App\Http\Controllers\API\ChatController;
 use App\Http\Controllers\API\DynamicPageController;
 use App\Http\Controllers\API\FirebaseTokenController;
 use App\Http\Controllers\API\LocationController;
+use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\ReportController;
 use App\Http\Controllers\API\SupportController;
@@ -103,6 +104,13 @@ Route::group(['middleware' => ['jwt.verify']], function () {
             Route::post('/delete-account', [ProfileController::class, 'deleteAccount']);
             Route::get('/notification-settings', [ProfileController::class, 'getNotificationSettings']);
             Route::put('/notification-settings', [ProfileController::class, 'updateNotificationSettings']);
+
+            // In-App Notification Center
+            Route::get('/notification/list', [NotificationController::class, 'index']);
+            Route::post('/notification/read-all', [NotificationController::class, 'markAllRead']);
+            Route::post('/notification/clear-all', [NotificationController::class, 'clearAll']);
+            Route::post('/notification/{id}/read', [NotificationController::class, 'markRead']);
+            Route::delete('/notification/{id}', [NotificationController::class, 'destroy']);
 
             Route::post('/post/draft', [PostController::class, 'saveDraft']);
             Route::get('/post/draft', [PostController::class, 'getDraft']);

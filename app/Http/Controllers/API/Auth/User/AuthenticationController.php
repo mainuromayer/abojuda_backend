@@ -180,6 +180,16 @@ class AuthenticationController extends Controller
                     }
                 }
 
+                // Welcome Notification in In-App Inbox
+                \App\Models\UserNotification::create([
+                    'user_id' => $user->id,
+                    'type'    => 'welcome',
+                    'title'   => 'Welcome to Wasel Canada!',
+                    'message' => 'Start exploring thousands of listings across Canada. Post your first listing for free!',
+                    'data'    => [],
+                    'is_read' => false,
+                ]);
+
                 $token = auth('api')->login($user);
 
                 Cache::forget($otpKey);
@@ -305,7 +315,7 @@ class AuthenticationController extends Controller
     public function guestLogin(\Illuminate\Http\Request $request)
     {
         try {
-            $lang = $request->header('Accept-Language', 'en');
+            $lang = app()->getLocale();
             $randomString = Str::random(10);
 
             $guestUser = new User();
@@ -313,6 +323,7 @@ class AuthenticationController extends Controller
             $guestUser->email = null;
             $guestUser->password = Hash::make($randomString);
             $guestUser->role = Role::GUEST;
+            $guestUser->locale = $lang;
             $guestUser->guest_expires_at = now()->addWeek()->timestamp;
             $guestUser->status = 'active';
             $guestUser->save();

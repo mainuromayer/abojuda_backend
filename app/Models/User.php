@@ -45,6 +45,7 @@ class User extends Authenticatable implements JWTSubject
         'new_message',
         'marketing',
         'email_notification',
+        'enable_notification',
         'guest_token',
         'guest_expires_at',
         'provider',
@@ -74,6 +75,7 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'role' => Role::class,
+            'enable_notification' => 'boolean',
             'new_message' => 'boolean',
             'marketing' => 'boolean',
             'email_notification' => 'boolean',
@@ -159,6 +161,11 @@ class User extends Authenticatable implements JWTSubject
     public function firebaseTokens()
     {
         return $this->hasMany(FirebaseToken::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(UserNotification::class);
     }
 
     public function getNameAttribute($value)

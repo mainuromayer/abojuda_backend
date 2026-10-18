@@ -21,16 +21,21 @@ class FirebaseTokenController extends Controller
     public function store(StoreTokenRequest $request)
     {
         try {
-            $user = FirebaseToken::where('user_id', $request->user_id)->where('device_id', $request->device_id)->first();
-            if ($user) {
-                $user->delete();
-            }
+            $userId   = $request->user_id ?? (auth('api')->check() ? auth('api')->id() : null);
+            $token    = $request->token;
+            $deviceId = $request->device_id;
 
+            // Remove any old record associated with this device or token
+            FirebaseToken::where('device_id', $deviceId)
+                ->orWhere('token', $token)
+                ->delete();
+
+            // Create new object and save
             $data = new FirebaseToken();
-            $data->user_id = $request->user_id;
-            $data->token = $request->token;
-            $data->device_id = $request->device_id;
-            $data->is_active = $request->is_active ?? true;
+            $data->user_id   = $userId;
+            $data->token     = $token;
+            $data->device_id = $deviceId;
+            $data->is_active = $request->has('is_active') ? (bool)$request->is_active : true;
             $data->save();
 
             return $this->sendResponse(new FirebaseResource($data), 'Token saved successfully');
@@ -60,12 +65,23 @@ class FirebaseTokenController extends Controller
      */
     public function deleteToken(DeleteTokenRequest $request)
     {
-        $user = FirebaseToken::where('user_id', $request->user_id)->where('device_id', $request->device_id)->first();
-        if ($user) {
-            $user->delete();
-            return $this->sendResponse([], 'Token deleted successfully');
-        } else {
-            return $this->sendError('No records found', [], 404);
+        try {
+            $userId   = $request->user_id ?? (auth('api')->check() ? auth('api')->id() : null);
+            $deviceId = $request->device_id;
+
+            $query = FirebaseToken::query()->where('device_id', $deviceId);
+            if ($userId) {
+                $query->where('user_id', $userId);
+            }
+
+            $deleted = $query->delete();
+            if ($deleted) {
+                return $this->sendResponse([], 'Token deleted successfully');
+            } else {
+                return $this->sendError('No records found', [], 404);
+            }
+        } catch (Exception $e) {
+            return $this->sendError('An error occurred: ' . $e->getMessage(), [], 500);
         }
     }
 }

@@ -24,30 +24,33 @@ class SetLocaleMiddleware
                 }
             }
 
-            // 1. Explicit request query parameter (e.g. ?lang=ar or ?locale=ar)
-            if ($request->has('lang') && in_array($request->get('lang'), ['en', 'ar'])) {
-                $locale = $request->get('lang');
-            } elseif ($request->has('locale') && in_array($request->get('locale'), ['en', 'ar'])) {
-                $locale = $request->get('locale');
-            }
-            // 2. Explicit custom HTTP header (e.g. lang: ar or locale: ar)
-            elseif ($request->header('lang') && in_array($request->header('lang'), ['en', 'ar'])) {
-                $locale = $request->header('lang');
-            } elseif ($request->header('locale') && in_array($request->header('locale'), ['en', 'ar'])) {
-                $locale = $request->header('locale');
-            }
+            // 1. Explicit request body or query parameter (supports JSON body, form data, query string)
+            $inputLang = strtolower((string) ($request->input('lang') ?? $request->input('locale') ?? ''));
+
+            // 2. Explicit custom HTTP header (e.g. lang: en, locale: en, x-locale: en)
+            $headerLang = strtolower((string) ($request->header('lang') ?? $request->header('locale') ?? $request->header('X-Locale') ?? $request->header('X-Language') ?? ''));
+
             // 3. Standard HTTP Accept-Language header
-            elseif ($request->header('Accept-Language')) {
-                $preferredLang = substr($request->header('Accept-Language'), 0, 2);
-                if (in_array($preferredLang, ['en', 'ar'])) {
-                    $locale = $preferredLang;
-                } elseif ($user && $user->locale && in_array($user->locale, ['en', 'ar'])) {
-                    $locale = $user->locale;
-                }
+            $acceptLang = '';
+            if ($request->header('Accept-Language')) {
+                $acceptLang = strtolower(substr(trim($request->header('Accept-Language')), 0, 2));
             }
-            // 4. Authenticated user's preference in DB
-            elseif ($user && $user->locale && in_array($user->locale, ['en', 'ar'])) {
+
+            if (in_array($inputLang, ['en', 'ar'])) {
+                $locale = $inputLang;
+            } elseif (in_array($headerLang, ['en', 'ar'])) {
+                $locale = $headerLang;
+            } elseif (in_array($acceptLang, ['en', 'ar'])) {
+                $locale = $acceptLang;
+            } elseif ($user && $user->locale && in_array($user->locale, ['en', 'ar'])) {
                 $locale = $user->locale;
+            } elseif ($request->hasCookie('locale') && in_array($request->cookie('locale'), ['en', 'ar'])) {
+                $locale = $request->cookie('locale');
+            } elseif (\Illuminate\Support\Facades\Cache::has('guest_locale_' . $request->ip())) {
+                $cached = \Illuminate\Support\Facades\Cache::get('guest_locale_' . $request->ip());
+                if (in_array($cached, ['en', 'ar'])) {
+                    $locale = $cached;
+                }
             }
 
             $request->headers->set('Accept-Language', $locale);

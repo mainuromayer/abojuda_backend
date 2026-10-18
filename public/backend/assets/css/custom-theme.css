@@ -82,6 +82,57 @@
   background-color: var(--bs-primary) !important;
 }
 
+/* Ensure child icons in light buttons turn white on hover */
+.btn-light-primary:hover i,
+.btn-light-primary:hover [class^="fa-"],
+.btn-light-primary:hover [class*=" fa-"],
+.btn-light-primary:hover [class^="ki-"],
+.btn-light-primary:hover [class*=" ki-"],
+.btn-light-primary:focus i,
+.btn-light-primary.active i {
+  color: #ffffff !important;
+}
+
+.btn-light-info:hover i,
+.btn-light-info:hover [class^="fa-"],
+.btn-light-info:hover [class*=" fa-"],
+.btn-light-info:hover [class^="ki-"],
+.btn-light-info:hover [class*=" ki-"],
+.btn-light-info:focus i,
+.btn-light-info.active i {
+  color: #ffffff !important;
+}
+
+.btn-light-danger:hover i,
+.btn-light-danger:hover [class^="fa-"],
+.btn-light-danger:hover [class*=" fa-"],
+.btn-light-danger:hover [class^="ki-"],
+.btn-light-danger:hover [class*=" ki-"],
+.btn-light-danger:focus i,
+.btn-light-danger.active i {
+  color: #ffffff !important;
+}
+
+.btn-light-success:hover i,
+.btn-light-success:hover [class^="fa-"],
+.btn-light-success:hover [class*=" fa-"],
+.btn-light-success:hover [class^="ki-"],
+.btn-light-success:hover [class*=" ki-"],
+.btn-light-success:focus i,
+.btn-light-success.active i {
+  color: #ffffff !important;
+}
+
+.btn-light-warning:hover i,
+.btn-light-warning:hover [class^="fa-"],
+.btn-light-warning:hover [class*=" fa-"],
+.btn-light-warning:hover [class^="ki-"],
+.btn-light-warning:hover [class*=" ki-"],
+.btn-light-warning:focus i,
+.btn-light-warning.active i {
+  color: #ffffff !important;
+}
+
 .btn-active-light-primary:active, 
 .btn-active-light-primary.active, 
 .show > .btn-active-light-primary.dropdown-toggle,

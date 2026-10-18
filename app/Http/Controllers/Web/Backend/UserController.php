@@ -35,7 +35,8 @@ class UserController extends Controller
                 })
                 ->addColumn('user', function ($row) {
                     $fullName = $row->name;
-                    $avatarUrl = $row->avatar ? Helpers::generateTempURL($row->avatar,config('app.file_system')) : asset('backend/assets/media/avatars/300-1.jpg');
+                    $defaultAvatar = asset('backend/assets/media/avatars/300-1.jpg');
+                    $avatarUrl = $row->avatar ? (Helpers::generateTempURL($row->avatar, config('app.file_system')) ?? $defaultAvatar) : $defaultAvatar;
  
                     $statusBadge = '';
                     if ($row->status === 'pending_delete') {

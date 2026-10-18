@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
+use Kreait\Firebase\Messaging\AndroidConfig;
+use Kreait\Firebase\Messaging\ApnsConfig;
 use Throwable;
 
 class helpers
@@ -56,7 +58,16 @@ class helpers
      */
     public static function generateTempURL($path, $disk = 'public'): ?string
     {
-        if (!$path || !Storage::disk($disk)->exists($path)) {
+        if (!$path) {
+            return null;
+        }
+
+        // If path is already a complete URL (e.g. Google avatar or external link), return as is
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || filter_var($path, FILTER_VALIDATE_URL)) {
+            return $path;
+        }
+
+        if (!Storage::disk($disk)->exists($path)) {
             return null;
         }
 
@@ -73,38 +84,107 @@ class helpers
     /**
      * Send firebase notification
      */
-    public static function sendNotifyMobile($token, $data): void
+    public static function sendNotifyMobile($token, $data): bool
     {
         try {
             if (!class_exists(Factory::class)) {
                 Log::error('Class "Kreait\\Firebase\\Factory" not found. Check if the Firebase SDK is installed.');
-                return;
+                return false;
             }
             
             $credentialsPath = env('FIREBASE_CREDENTIALS');
+            if ($credentialsPath && !file_exists($credentialsPath) && file_exists(base_path($credentialsPath))) {
+                $credentialsPath = base_path($credentialsPath);
+            }
             if (!$credentialsPath || !file_exists($credentialsPath)) {
-                if (file_exists(storage_path('app/public/chat.json'))) {
-                    $credentialsPath = storage_path('app/public/chat.json');
-                } else {
-                    $credentialsPath = storage_path('app/private/google-services.json');
+                $candidates = [
+                    storage_path('app/firebase/wasel-canada-firebase-adminsdk.json'),
+                    storage_path('app/public/chat.json'),
+                    storage_path('app/private/google-services.json'),
+                ];
+                foreach ($candidates as $candidate) {
+                    if (file_exists($candidate)) {
+                        $credentialsPath = $candidate;
+                        break;
+                    }
                 }
             }
 
+            if (!$credentialsPath || !file_exists($credentialsPath)) {
+                Log::error('Firebase push notification failed: Credentials file not found.');
+                return false;
+            }
+
             $factory = (new Factory)->withServiceAccount($credentialsPath);
+            $messaging = $factory->createMessaging();
 
-            $messaging    = $factory->createMessaging();
-            $notification = FirebaseNotification::create($data['title'], Str::limit($data['message'], 100));
+            $title = (string)($data['title'] ?? 'Notification');
+            $body = Str::limit((string)($data['message'] ?? $data['body'] ?? ''), 250);
 
-            $message = CloudMessage::withTarget('token', $token)
-                ->withNotification($notification);
+            $notification = FirebaseNotification::create($title, $body);
+
+            // Channel ID configuration - Default to high_importance_channel as required by Android app
+            $channelId = $data['channel_id'] ?? 'high_importance_channel';
+
+            $androidConfig = AndroidConfig::fromArray([
+                'priority' => 'high',
+                'notification' => [
+                    'channel_id' => $channelId,
+                    'sound' => 'default',
+                    'default_sound' => true,
+                    'default_vibrate_timings' => true,
+                    'notification_priority' => 'PRIORITY_HIGH',
+                ],
+            ]);
+
+            $apnsConfig = ApnsConfig::fromArray([
+                'headers' => [
+                    'apns-priority' => '10',
+                ],
+                'payload' => [
+                    'aps' => [
+                        'alert' => [
+                            'title' => $title,
+                            'body'  => $body,
+                        ],
+                        'sound' => 'default',
+                        'badge' => 1,
+                        'content-available' => 1,
+                    ],
+                ],
+            ]);
+
+            $message = CloudMessage::new()
+                ->toToken($token)
+                ->withNotification($notification)
+                ->withAndroidConfig($androidConfig)
+                ->withApnsConfig($apnsConfig);
                 
-            if (isset($data['data'])) {
-                $message = $message->withData($data['data']);
+            if (isset($data['data']) && is_array($data['data'])) {
+                // Ensure all values in FCM data payload are strings
+                $stringData = [];
+                foreach ($data['data'] as $k => $v) {
+                    if (is_array($v) || is_object($v)) {
+                        $stringData[(string)$k] = json_encode($v, JSON_UNESCAPED_UNICODE);
+                    } else {
+                        $stringData[(string)$k] = (string)$v;
+                    }
+                }
+                if (!isset($stringData['channel_id'])) {
+                    $stringData['channel_id'] = $channelId;
+                }
+                $message = $message->withData($stringData);
             }
 
             $messaging->send($message);
-        } catch (\Exception $exception) {
+            return true;
+        } catch (\Kreait\Firebase\Exception\Messaging\NotFound $e) {
+            Log::warning("FCM token not found / unregistered: {$token}");
+            \App\Models\FirebaseToken::where('token', $token)->update(['is_active' => false]);
+            return false;
+        } catch (\Throwable $exception) {
             Log::error('Firebase push notification failed: ' . $exception->getMessage());
+            return false;
         }
     }
 
