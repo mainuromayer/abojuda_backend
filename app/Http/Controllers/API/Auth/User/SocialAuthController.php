@@ -30,19 +30,46 @@ class SocialAuthController extends Controller
             $isNewUser = false;
 
             if ($socialiteUser) {
+                $socialEmail = $socialiteUser->getEmail();
+                $providerId  = $socialiteUser->getId();
+
+                if (!empty($socialEmail)) {
+                    $trashedUser = User::withTrashed()->where('email', $socialEmail)->first();
+                    if ($trashedUser && $trashedUser->trashed()) {
+                        $deletedMsg = translateHelper::translateCached('social_auth.account_deleted', 'This account has been deleted and cannot be logged in.', $lang);
+                        return $this->sendError($deletedMsg, [], 403);
+                    }
+                }
+
+                if (!empty($providerId)) {
+                    $trashedByProvider = User::withTrashed()
+                        ->where('provider', $provider)
+                        ->where('provider_id', $providerId)
+                        ->first();
+                    if ($trashedByProvider && $trashedByProvider->trashed()) {
+                        $deletedMsg = translateHelper::translateCached('social_auth.account_deleted', 'This account has been deleted and cannot be logged in.', $lang);
+                        return $this->sendError($deletedMsg, [], 403);
+                    }
+                }
+
                 // 1. Try to find the user by provider and provider_id
-                $user = User::where('provider', $provider)
-                    ->where('provider_id', $socialiteUser->getId())
-                    ->first();
+                $user = null;
+                if (!empty($providerId)) {
+                    $user = User::where('provider', $provider)
+                        ->where('provider_id', $providerId)
+                        ->first();
+                }
 
                 if (!$user) {
                     // 2. Check if a user already exists with the same email
-                    $user = User::where('email', $socialiteUser->getEmail())->first();
+                    if (!empty($socialEmail)) {
+                        $user = User::where('email', $socialEmail)->first();
+                    }
 
                     if ($user) {
                         // Link the provider details to the existing email account
                         $user->provider = $provider;
-                        $user->provider_id = $socialiteUser->getId();
+                        $user->provider_id = $providerId;
                         if (empty($user->avatar)) {
                             $user->avatar = $socialiteUser->getAvatar();
                         }
@@ -53,10 +80,10 @@ class SocialAuthController extends Controller
 
                         $user = new User();
                         $user->name = $socialiteUser->getName() ?? "Social User";
-                        $user->email = $socialiteUser->getEmail();
+                        $user->email = $socialEmail;
                         $user->avatar = $socialiteUser->getAvatar();
                         $user->provider = $provider;
-                        $user->provider_id = $socialiteUser->getId();
+                        $user->provider_id = $providerId;
                         $user->password = Hash::make($password);
                         $user->role = Role::USER;
                         $user->status = 'active';
